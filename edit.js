@@ -15,8 +15,11 @@
   let savedSelection = null;
   let fields = existing?.fields?.length ? existing.fields : [];
 
-  // Simpan logo & QR sebagai data URL supaya bisa disimpan ke localStorage
-  let logoDataUrl = existing?.logo || "";
+  // Token yang diisi otomatis oleh sistem, tidak perlu jadi field
+  const SYSTEM_TOKENS = new Set(["nomor_surat"]);
+
+  // Simpan logo & QR sebagai data URL
+  let logoDataUrl = existing?.logo_url || "";
   let qrDataUrl = existing?.signature_qr_url || "";
 
   const byId = (id) => document.getElementById(id);
@@ -76,7 +79,8 @@
       ? field.categories
       : [{ name: field.label || "Kategori", options: Array.isArray(field.options) ? field.options : [] }];
     const categoryMarkup = isCategory ? `<div class="category-options"><label>Kategori utama dan subkategori</label><div class="category-rows" data-category-rows>${categories.map((category) => `<div class="category-row" data-category-row><input data-category-name value="${escapeHtml(category.name || "")}" placeholder="Contoh: Kesehatan"><input data-category-options value="${escapeHtml((category.options || []).join(", "))}" placeholder="Contoh: Diabetes, Asam Urat"><button type="button" class="remove-category" data-remove-category ${categories.length === 1 ? "hidden" : ""}>Hapus</button></div>`).join("")}</div><button type="button" class="btn btn-ghost add-category" data-add-category>+ Tambah kategori utama</button><small>Kategori utama ditampilkan di dropdown pertama. Subkategori dipakai untuk dropdown kedua.</small></div>` : "";
-    return `<div class="field-card" data-field-index="${index}">
+    // Simpan name asli di data-field-name supaya tidak hilang saat label diubah
+    return `<div class="field-card" data-field-index="${index}" data-field-name="${escapeHtml(field.name || "")}">
       <div class="field-card-top"><strong>Data ${index + 1}</strong><button type="button" class="remove-field" data-remove-field="${index}">Hapus</button></div>
       <div class="field-card-grid">
         <div class="field"><label for="field-label-${index}">Pertanyaan atau nama data</label><input id="field-label-${index}" data-field-label value="${escapeHtml(field.label || "")}" placeholder="Contoh: Nama pemohon" required></div>
@@ -126,14 +130,26 @@
     });
   }
 
+  // Baca field dari DOM — pertahankan name asli dari data-field-name
+  function readFieldsFromDom() {
+    return [...fieldList.querySelectorAll("[data-field-index]")].map((row) => {
+      const label = row.querySelector("[data-field-label]").value.trim();
+      const originalName = row.dataset.fieldName || "";
+      return {
+        name: originalName || slugify(label),
+        label,
+        type: row.querySelector("[data-field-type]").value,
+        categories: [...row.querySelectorAll("[data-category-row]")].map((categoryRow) => ({
+          name: categoryRow.querySelector("[data-category-name]").value.trim(),
+          options: categoryRow.querySelector("[data-category-options]").value.split(",").map((option) => option.trim()).filter(Boolean),
+        })).filter((category) => category.name),
+        required: row.querySelector("[data-field-required]").checked,
+      };
+    });
+  }
+
   function syncFields() {
-    fields = [...fieldList.querySelectorAll("[data-field-index]")].map((row) => ({
-      name: slugify(row.querySelector("[data-field-label]").value),
-      label: row.querySelector("[data-field-label]").value.trim(),
-      type: row.querySelector("[data-field-type]").value,
-      categories: [...row.querySelectorAll("[data-category-row]")].map((categoryRow) => ({ name: categoryRow.querySelector("[data-category-name]").value.trim(), options: categoryRow.querySelector("[data-category-options]").value.split(",").map((option) => option.trim()).filter(Boolean) })).filter((category) => category.name),
-      required: row.querySelector("[data-field-required]").checked,
-    }));
+    fields = readFieldsFromDom();
     renderDialogFields();
     renderPreview();
   }
@@ -214,13 +230,13 @@
   function syncFieldsFromDom() {
     const rows = [...fieldList.querySelectorAll("[data-field-index]")];
     if (!rows.length) return;
-    fields = rows.map((row) => ({ name: slugify(row.querySelector("[data-field-label]").value), label: row.querySelector("[data-field-label]").value.trim(), type: row.querySelector("[data-field-type]").value, categories: [...row.querySelectorAll("[data-category-row]")].map((categoryRow) => ({ name: categoryRow.querySelector("[data-category-name]").value.trim(), options: categoryRow.querySelector("[data-category-options]").value.split(",").map((option) => option.trim()).filter(Boolean) })).filter((category) => category.name), required: row.querySelector("[data-field-required]").checked }));
+    fields = readFieldsFromDom();
   }
 
   function validateTokens() {
     const known = new Set(fields.map((field) => field.name));
     const tokens = [...serializeEditor().matchAll(/{{\s*([\w-]+)\s*}}/g)].map((match) => match[1]);
-    const unknown = [...new Set(tokens.filter((token) => !known.has(token)))];
+    const unknown = [...new Set(tokens.filter((token) => !known.has(token) && !SYSTEM_TOKENS.has(token)))];
     setStatus(unknown.length ? `Data tidak dikenali: ${unknown.join(", ")}. Tambahkan datanya atau hapus dari isi surat.` : "Isi surat siap disimpan.", unknown.length);
   }
 
@@ -266,8 +282,15 @@
     const name = byId("template-nama").value.trim();
     const key = byId("template-key").value.trim() || slugify(name);
     const tokens = [...serializeEditor().matchAll(/{{\s*([\w-]+)\s*}}/g)].map((match) => match[1]);
-    const unknown = tokens.filter((token) => !fields.some((field) => field.name === token));
-    if (!name || fields.some((field) => !field.label) || unknown.length) return setStatus(unknown.length ? `Data belum tersedia: ${[...new Set(unknown)].join(", ")}.` : "Lengkapi nama surat dan semua data terlebih dahulu.", true);
+    const unknown = tokens.filter((token) => !fields.some((field) => field.name === token) && !SYSTEM_TOKENS.has(token));
+    if (!name || fields.some((field) => !field.label) || unknown.length) {
+      return setStatus(
+        unknown.length
+          ? `Data belum tersedia: ${[...new Set(unknown)].join(", ")}.`
+          : "Lengkapi nama surat dan semua data terlebih dahulu.",
+        true
+      );
+    }
     if (templates.some((item) => item.key === key && item.key !== existing?.key)) return setStatus("Nama surat ini sudah digunakan. Pilih nama yang berbeda.", true);
 
     const savedTemplate = upsertTemplate({
@@ -276,7 +299,7 @@
       deskripsi: byId("template-deskripsi").value.trim(),
       template: serializeEditor(),
       fields,
-      logo: logoDataUrl,
+      logo_url: logoDataUrl,
       signature_qr_url: qrDataUrl,
     });
     const savedTemplates = getTemplates();
