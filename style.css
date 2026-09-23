@@ -430,3 +430,12 @@ button, input { font: inherit; }
   .letter-structure-heading span { display: block; margin-top: 4px; }
   .letter-structure-grid { grid-template-columns: 1fr; }
 }
+/* Kop surat dari foto inputan */
+.paper-kop {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0 0 18px;
+  object-fit: contain;
+}
+.paper-kop[hidden] { display: none; }
