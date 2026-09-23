@@ -9,6 +9,17 @@
   .preview-actions { display: flex; align-items: center; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
   .attachment-note { margin: 12px 0 0; color: var(--muted); font-size: 13px; }
   .attachment-note a { color: var(--green); font-weight: 700; }
+
+  /* Kop surat dari foto inputan — ukuran besar, full lebar halaman */
+  .paper-kop {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 0 0 18px;
+    object-fit: contain;
+  }
+  .paper-kop[hidden] { display: none; }
+
   @media (max-width: 700px) { .preview-header { align-items: flex-start; flex-wrap: wrap; } .preview-actions { width: 100%; justify-content: flex-start; } }
 </style>
 </head>
@@ -28,6 +39,9 @@
   </header>
 
   <main class="paper" id="paper">
+    <!-- Kop surat dari foto inputan, ukuran besar -->
+    <img id="paper-kop" class="paper-kop" alt="Kop Surat" hidden>
+
     <div class="paper-meta" id="paper-meta">
       <span>Nomor: <strong id="letter-number"></strong></span>
     </div>
@@ -62,6 +76,23 @@
   document.getElementById("letter-number").textContent = session.nomor_surat;
   document.getElementById("letter-title").textContent = template.nama;
   document.getElementById("letter-content").innerHTML = renderTemplate(template.template, { ...session.data, nomor_surat: session.nomor_surat });
+
+  // Tampilkan foto inputan sebagai kop surat ukuran besar
+  const kopSrc =
+    session.logo ||
+    session.logo_url ||
+    session.kop ||
+    session.data?.logo ||
+    session.data?.kop ||
+    session.data?.kop_surat ||
+    "";
+
+  if (kopSrc) {
+    const kop = document.getElementById("paper-kop");
+    kop.src = kopSrc;
+    kop.hidden = false;
+  }
+
   if (template.key === "dummy_keabsahan_akta_blitar") {
     const qr = document.querySelector(".official-qr");
     if (qr && template.signature_qr_url) qr.src = template.signature_qr_url;
