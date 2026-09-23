@@ -13,7 +13,7 @@
   const dialogFields = document.getElementById("dialog-field-list");
   const dialogEmpty = document.getElementById("dialog-empty");
   let savedSelection = null;
-  let fields = existing?.fields?.length ? existing.fields : [{ label: "Nama", type: "text", required: true }];
+  let fields = existing?.fields?.length ? existing.fields : [];
 
   const byId = (id) => document.getElementById(id);
 
@@ -27,12 +27,18 @@
   }
 
   function createFieldMarkup(field, index) {
+    const isCategory = field.type === "category";
+    const categories = Array.isArray(field.categories) && field.categories.length
+      ? field.categories
+      : [{ name: field.label || "Kategori", options: Array.isArray(field.options) ? field.options : [] }];
+    const categoryMarkup = isCategory ? `<div class="category-options"><label>Kategori utama dan subkategori</label><div class="category-rows" data-category-rows>${categories.map((category) => `<div class="category-row" data-category-row><input data-category-name value="${escapeHtml(category.name || "")}" placeholder="Contoh: Kesehatan"><input data-category-options value="${escapeHtml((category.options || []).join(", "))}" placeholder="Contoh: Diabetes, Asam Urat"><button type="button" class="remove-category" data-remove-category ${categories.length === 1 ? "hidden" : ""}>Hapus</button></div>`).join("")}</div><button type="button" class="btn btn-ghost add-category" data-add-category>+ Tambah kategori utama</button><small>Kategori utama ditampilkan di dropdown pertama. Subkategori dipakai untuk dropdown kedua.</small></div>` : "";
     return `<div class="field-card" data-field-index="${index}">
       <div class="field-card-top"><strong>Data ${index + 1}</strong><button type="button" class="remove-field" data-remove-field="${index}">Hapus</button></div>
       <div class="field-card-grid">
         <div class="field"><label for="field-label-${index}">Pertanyaan atau nama data</label><input id="field-label-${index}" data-field-label value="${escapeHtml(field.label || "")}" placeholder="Contoh: Nama pemohon" required></div>
-        <div class="field"><label for="field-type-${index}">Cara mengisi</label><select id="field-type-${index}" data-field-type><option value="text" ${field.type === "text" || !field.type ? "selected" : ""}>Teks pendek</option><option value="date" ${field.type === "date" ? "selected" : ""}>Tanggal</option><option value="textarea" ${field.type === "textarea" ? "selected" : ""}>Paragraf panjang</option></select></div>
+        <div class="field"><label for="field-type-${index}">Jenis data</label><select id="field-type-${index}" data-field-type><option value="text" ${field.type === "text" || !field.type ? "selected" : ""}>String biasa</option><option value="category" ${isCategory ? "selected" : ""}>Kategori / dropdown</option><option value="date" ${field.type === "date" ? "selected" : ""}>Tanggal</option><option value="textarea" ${field.type === "textarea" ? "selected" : ""}>Paragraf panjang</option></select></div>
       </div>
+      ${categoryMarkup}
       <label class="required-toggle"><input type="checkbox" data-field-required ${field.required ? "checked" : ""}> Wajib diisi saat membuat surat</label>
     </div>`;
   }
@@ -47,9 +53,33 @@
     }));
     fieldList.querySelectorAll("input, select").forEach((input) => {
       input.addEventListener("input", syncFields);
-      input.addEventListener("change", syncFields);
+      input.addEventListener("change", () => {
+        if (input.matches("[data-field-type]")) {
+          syncFields();
+          renderFields();
+          renderPreview();
+          return;
+        }
+        syncFields();
+      });
     });
+    fieldList.querySelectorAll("[data-field-index]").forEach(bindCategoryRows);
+    fieldList.querySelectorAll("[data-add-category]").forEach((button) => button.addEventListener("click", () => {
+      const rows = button.parentElement.querySelector("[data-category-rows]");
+      rows.insertAdjacentHTML("beforeend", '<div class="category-row" data-category-row><input data-category-name placeholder="Contoh: Administrasi"><input data-category-options placeholder="Contoh: Kartu Keluarga, KTP"><button type="button" class="remove-category" data-remove-category>Hapus</button></div>');
+      bindCategoryRows(button.closest("[data-field-index]"));
+      syncFields();
+    }));
     renderDialogFields();
+  }
+
+  function bindCategoryRows(fieldRow) {
+    fieldRow.querySelectorAll("[data-remove-category]").forEach((button) => button.onclick = () => {
+      const rows = fieldRow.querySelectorAll("[data-category-row]");
+      if (rows.length <= 1) return;
+      button.closest("[data-category-row]").remove();
+      syncFields();
+    });
   }
 
   function syncFields() {
@@ -57,6 +87,7 @@
       name: slugify(row.querySelector("[data-field-label]").value),
       label: row.querySelector("[data-field-label]").value.trim(),
       type: row.querySelector("[data-field-type]").value,
+      categories: [...row.querySelectorAll("[data-category-row]")].map((categoryRow) => ({ name: categoryRow.querySelector("[data-category-name]").value.trim(), options: categoryRow.querySelector("[data-category-options]").value.split(",").map((option) => option.trim()).filter(Boolean) })).filter((category) => category.name),
       required: row.querySelector("[data-field-required]").checked,
     }));
     renderDialogFields();
@@ -66,7 +97,7 @@
   function renderDialogFields() {
     const usableFields = fields.filter((field) => field.label);
     dialogEmpty.hidden = usableFields.length > 0;
-    dialogFields.innerHTML = usableFields.map((field) => `<button type="button" class="dialog-field" data-field-name="${escapeHtml(field.name)}"><span class="field-chip">Aa</span><span><strong>${escapeHtml(field.label)}</strong><small>${field.type === "date" ? "Tanggal" : field.type === "textarea" ? "Paragraf panjang" : "Teks pendek"}</small></span></button>`).join("");
+    dialogFields.innerHTML = usableFields.map((field) => `<button type="button" class="dialog-field" data-field-name="${escapeHtml(field.name)}"><span class="field-chip">Aa</span><span><strong>${escapeHtml(field.label)}</strong><small>${field.type === "category" ? "Kategori / dropdown" : field.type === "date" ? "Tanggal" : field.type === "textarea" ? "Paragraf panjang" : "String biasa"}</small></span></button>`).join("");
     dialogFields.querySelectorAll("[data-field-name]").forEach((button) => button.addEventListener("click", () => insertField(button.dataset.fieldName)));
   }
 
@@ -139,7 +170,7 @@
   function syncFieldsFromDom() {
     const rows = [...fieldList.querySelectorAll("[data-field-index]")];
     if (!rows.length) return;
-    fields = rows.map((row) => ({ name: slugify(row.querySelector("[data-field-label]").value), label: row.querySelector("[data-field-label]").value.trim(), type: row.querySelector("[data-field-type]").value, required: row.querySelector("[data-field-required]").checked }));
+    fields = rows.map((row) => ({ name: slugify(row.querySelector("[data-field-label]").value), label: row.querySelector("[data-field-label]").value.trim(), type: row.querySelector("[data-field-type]").value, categories: [...row.querySelectorAll("[data-category-row]")].map((categoryRow) => ({ name: categoryRow.querySelector("[data-category-name]").value.trim(), options: categoryRow.querySelector("[data-category-options]").value.split(",").map((option) => option.trim()).filter(Boolean) })).filter((category) => category.name), required: row.querySelector("[data-field-required]").checked }));
   }
 
   function validateTokens() {
@@ -167,7 +198,22 @@
   editor.addEventListener("keyup", renderPreview);
   editor.addEventListener("mouseup", saveSelection);
   editor.addEventListener("input", renderPreview);
-  byId("add-field-button").addEventListener("click", () => { fields.push({ label: `Data ${fields.length + 1}`, type: "text", required: false }); renderFields(); });
+  function addField(type) {
+    fields.push(type === "category"
+      ? { label: `Kategori ${fields.length + 1}`, type: "category", categories: [{ name: "Kategori utama", options: [] }], required: false }
+      : { label: `Data ${fields.length + 1}`, type: "text", required: false });
+    renderFields();
+    renderPreview();
+  }
+
+  byId("add-string-button").addEventListener("click", (event) => {
+    event.preventDefault();
+    addField("text");
+  });
+  byId("add-category-button").addEventListener("click", (event) => {
+    event.preventDefault();
+    addField("category");
+  });
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -178,7 +224,13 @@
     const unknown = tokens.filter((token) => !fields.some((field) => field.name === token));
     if (!name || fields.some((field) => !field.label) || unknown.length) return setStatus(unknown.length ? `Data belum tersedia: ${[...new Set(unknown)].join(", ")}.` : "Lengkapi nama surat dan semua data terlebih dahulu.", true);
     if (templates.some((item) => item.key === key && item.key !== existing?.key)) return setStatus("Nama surat ini sudah digunakan. Pilih nama yang berbeda.", true);
-    upsertTemplate({ key, nama: name, deskripsi: byId("template-deskripsi").value.trim(), template: serializeEditor(), fields });
+    const savedTemplate = upsertTemplate({ key, nama: name, deskripsi: byId("template-deskripsi").value.trim(), template: serializeEditor(), fields });
+    const savedTemplates = getTemplates();
+    const saved = savedTemplates.find((template) => template.key === savedTemplate.key);
+    if (!saved || saved.nama !== name || saved.fields.length !== fields.length) {
+      return setStatus("Template belum tersimpan. Periksa kembali data lalu coba lagi.", true);
+    }
+    setStatus("Template berhasil disimpan. Membuka daftar template...");
     window.location.href = "template.html";
   });
 

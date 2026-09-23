@@ -1,8 +1,8 @@
-# SuratApp: Dokumen Niat & Arsitektur
+# Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban: Dokumen Niat & Arsitektur
 
 ## 1. Niat
 
-SuratApp adalah aplikasi web untuk membuat surat resmi dari template yang sudah disiapkan.
+Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban adalah aplikasi web untuk membuat surat resmi dari template yang sudah disiapkan.
 
 Tujuan utamanya: staf bisa membuat surat dinas dalam hitungan menit, tanpa perlu mengerti format surat, tanpa perlu membuka Word, dan tanpa perlu bertanya sana-sini.
 
@@ -12,7 +12,7 @@ Cukup isi data, pilih penandatangan, lalu cetak.
 
 Pembuatan surat resmi masih sering dilakukan secara manual: menyalin template lama, mengganti nama dan nomor satu per satu, lalu menyimpan arsip secara terpisah. Cara ini rawan salah format, salah nomor, dan salah penandatangan.
 
-SuratApp menyediakan alat sederhana untuk:
+Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban menyediakan alat sederhana untuk:
 
 - menyimpan template di satu tempat;
 - memisahkan data dari format;

@@ -3,8 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Preview Surat · SuratApp</title>
+<title>Preview Surat · Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban</title>
 <link rel="stylesheet" href="style.css">
+<style>
+  .preview-actions { display: flex; align-items: center; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
+  .attachment-note { margin: 12px 0 0; color: var(--muted); font-size: 13px; }
+  .attachment-note a { color: var(--green); font-weight: 700; }
+  @media (max-width: 700px) { .preview-header { align-items: flex-start; flex-wrap: wrap; } .preview-actions { width: 100%; justify-content: flex-start; } }
+</style>
 </head>
 <body class="preview-page">
 <div class="preview-shell">
@@ -14,22 +20,26 @@
       <div class="preview-eyebrow">Surat siap diperiksa</div>
       <h1 class="preview-title">Preview Surat</h1>
     </div>
-    <button class="btn btn-primary" id="print-button" type="button">Cetak / Simpan PDF</button>
+    <div class="preview-actions">
+      <button class="btn btn-ghost" id="dashboard-button" type="button">Kembali ke Dashboard</button>
+      <button class="btn btn-primary" id="save-button" type="button">Simpan & Dashboard</button>
+      <button class="btn btn-primary" id="print-button" type="button">Cetak / Simpan PDF</button>
+    </div>
   </header>
 
   <main class="paper" id="paper">
     <div class="paper-head">
-      <div class="paper-brand">SURATAPP</div>
-      <div class="paper-address">Dokumen Surat Resmi</div>
+      <img class="paper-logo" src="Lambang_Kabupaten_Tuban.webp" alt="Lambang Kabupaten Tuban">
+      <div class="paper-head-copy"><div class="paper-brand">DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL KABUPATEN TUBAN</div><div class="paper-address">Jl. Dr. Wahidin Sudirohusodo No. 10, Tuban | Telp. (0356) 321234 | www.disdukcapil.tubankab.go.id | disdukcapil@tubankab.go.id</div></div>
     </div>
     <div class="paper-rule"></div>
-    <div class="paper-meta">
+    <div class="paper-meta" id="paper-meta">
       <span>Nomor: <strong id="letter-number"></strong></span>
     </div>
     <h2 id="letter-title" class="letter-title"></h2>
     <section id="letter-content" class="letter-content"></section>
     <div class="signature">
-      <div id="signature-place">Jakarta</div>
+      <div id="signature-place">Tuban</div>
       <div>Penandatangan,</div>
       <div class="signature-space"></div>
       <strong id="signer-name"></strong>
@@ -39,6 +49,7 @@
   </main>
 
   <p class="archive-note" id="archive-note"></p>
+  <p class="attachment-note" id="attachment-note"></p>
 </div>
 
 <script src="data.js"></script>
@@ -55,13 +66,46 @@
 
   document.getElementById("letter-number").textContent = session.nomor_surat;
   document.getElementById("letter-title").textContent = template.nama;
-  document.getElementById("letter-content").innerHTML = renderTemplate(template.template, session.data);
+  document.getElementById("letter-content").innerHTML = renderTemplate(template.template, { ...session.data, nomor_surat: session.nomor_surat });
+  if (template.key === "dummy_keabsahan_akta_blitar") {
+    const qr = document.querySelector(".official-qr");
+    if (qr && template.signature_qr_url) qr.src = template.signature_qr_url;
+    document.getElementById("paper").classList.add("official-paper");
+    document.getElementById("paper-meta").hidden = true;
+    document.getElementById("letter-title").textContent = session.data.perihal || template.nama;
+  }
   document.getElementById("signer-name").textContent = session.signer_nama;
   document.getElementById("signer-role").textContent = session.signer_jabatan;
   document.getElementById("signer-nip").textContent = session.signer_nip ? `NIP. ${session.signer_nip}` : "";
 
-  if (!session.letter_id) {
-    const letter = saveLetter({
+  const letter = upsertLetter({
+    id: session.letter_id,
+    template_key: session.template_key,
+    created_by: session.pembuat.nama,
+    created_by_detail: { jabatan: session.pembuat.jabatan },
+    signer_mode: session.signer_mode,
+    signer_id: session.signer_id,
+    signer_nama: session.signer_nama,
+    signer_jabatan: session.signer_jabatan,
+    signer_nip: session.signer_nip,
+    nomor_surat: session.nomor_surat,
+    data: session.data,
+    attachment: session.attachment || null,
+    status: "final",
+  });
+  patchSession({ letter_id: letter.id });
+  document.getElementById("archive-note").textContent = `Surat ${letter.id} otomatis tersimpan di arsip.`;
+  if (session.attachment?.data_url) {
+    const attachmentLink = document.createElement("a");
+    attachmentLink.href = session.attachment.data_url;
+    attachmentLink.download = session.attachment.name;
+    attachmentLink.textContent = `Lampiran: ${session.attachment.name} (buka/unduh)`;
+    document.getElementById("attachment-note").append("Surat pendamping tersedia. ", attachmentLink);
+  }
+
+  document.getElementById("save-button").addEventListener("click", () => {
+    upsertLetter({
+      id: letter.id,
       template_key: session.template_key,
       created_by: session.pembuat.nama,
       created_by_detail: { jabatan: session.pembuat.jabatan },
@@ -72,14 +116,14 @@
       signer_nip: session.signer_nip,
       nomor_surat: session.nomor_surat,
       data: session.data,
+      attachment: session.attachment || null,
       status: "final",
     });
-    patchSession({ letter_id: letter.id });
-    document.getElementById("archive-note").textContent = `Surat ${letter.id} otomatis tersimpan di arsip.`;
-  } else {
-    document.getElementById("archive-note").textContent = `Surat ${session.letter_id} tersimpan di arsip.`;
-  }
-
+    location.href = "index.html";
+  });
+  document.getElementById("dashboard-button").addEventListener("click", () => {
+    location.href = "index.html";
+  });
   document.getElementById("print-button").addEventListener("click", () => window.print());
 </script>
 </body>

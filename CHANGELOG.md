@@ -1,6 +1,6 @@
 # Changelog
 
-Semua perubahan penting pada SuratApp dicatat di sini.
+Semua perubahan penting pada Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban dicatat di sini.
 
 ## [Unreleased]
 

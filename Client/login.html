@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Masuk · Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="auth-page">
+  <main class="auth-layout">
+    <section class="auth-aside">
+      <div class="auth-logo" aria-label="Lambang Kabupaten Tuban"></div>
+      <div>
+        <h1>Dinas Kependudukan dan Pencatatan Sipil<br>Kabupaten Tuban</h1>
+        <p>Ruang kerja sederhana untuk membuat dan menyimpan surat dinas dengan lebih tertib.</p>
+      </div>
+    </section>
+    <section class="auth-content">
+      <div class="preview-eyebrow">Akses petugas</div>
+      <h2>Selamat datang</h2>
+      <p>Masuk untuk melanjutkan ke dashboard pengelolaan surat.</p>
+      <form id="login-form" class="auth-form">
+        <div class="field">
+          <label for="username">Nama pengguna</label>
+          <input id="username" name="username" type="text" placeholder="contoh: admin" autocomplete="username" required>
+        </div>
+        <div class="field">
+          <label for="password">Kata sandi</label>
+          <input id="password" name="password" type="password" placeholder="masukkan kata sandi" autocomplete="current-password" required>
+        </div>
+        <p id="login-error" class="auth-error" role="alert"></p>
+        <button type="submit" class="btn btn-primary">Masuk ke dashboard <span aria-hidden="true">→</span></button>
+      </form>
+      <p class="auth-note"><strong>Akun:</strong> nama pengguna <strong>admin</strong> dan kata sandi <strong>12345678</strong>.</p>
+    </section>
+  </main>
+  <script src="data.js"></script>
+  <script>
+    document.getElementById("login-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const formData = new FormData(event.currentTarget);
+      const username = String(formData.get("username") || "").trim();
+      const password = String(formData.get("password") || "");
+      const error = document.getElementById("login-error");
+
+      if (username !== "admin" || password !== "12345678") {
+        error.textContent = "Nama pengguna atau kata sandi belum sesuai.";
+        return;
+      }
+
+      setAuth({ username, nama: "Admin Surat" });
+      location.href = "index.html";
+    });
+  </script>
+</body>
+</html>

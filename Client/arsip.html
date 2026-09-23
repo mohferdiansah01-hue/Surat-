@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Arsip Surat · SuratApp</title>
+<title>Arsip Surat · Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban</title>
 <link rel="stylesheet" href="style.css">
 <style>
   .archive-shell {
@@ -16,6 +16,11 @@
     gap: 16px;
     margin-top: 24px;
   }
+  .archive-toolbar { display: flex; align-items: center; gap: 12px; margin-top: 24px; }
+  .archive-search { width: min(100%, 460px); padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); color: var(--ink); outline: none; }
+  .archive-search:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(23,123,92,.12); }
+  .archive-count { margin: 0; color: var(--muted); font-size: 12px; }
+  .archive-empty { padding: 20px 22px; border: 1px dashed var(--line); border-radius: 14px; color: var(--muted); background: var(--paper); }
   .archive-item {
     padding: 20px 22px;
     border: 1px solid var(--line);
@@ -32,50 +37,130 @@
     line-height: 1.6;
     font-size: 14px;
   }
+  .archive-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+  .archive-actions .btn { min-height: 36px; padding: 8px 12px; font-size: 12px; }
 </style>
 </head>
 <body>
   <div class="archive-shell">
+    <nav class="category-nav" aria-label="Kategori Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban" style="margin-bottom:24px;">
+      <a class="category-link" href="buat-surat.html">Buat Surat</a>
+      <a class="category-link" href="template.html">Kelola Surat</a>
+      <span class="category-link active" aria-current="page">Histori</span>
+    </nav>
     <div class="dashboard-top" style="margin-bottom:0;">
       <div>
         <div class="preview-eyebrow">Arsip</div>
         <h1 class="preview-title" style="text-align:left; margin-top:8px;">Riwayat Surat</h1>
       </div>
-      <a href="dashboard.html" class="btn btn-ghost">← Dashboard</a>
+      <a href="index.html" class="btn btn-ghost">← Dashboard</a>
     </div>
 
+    <div class="archive-toolbar">
+      <label for="archive-search" class="sr-only">Cari histori surat</label>
+      <input id="archive-search" class="archive-search" type="search" placeholder="Cari nomor, jenis, pembuat, penandatangan..." autocomplete="off">
+      <p id="archive-count" class="archive-count"></p>
+    </div>
     <div id="archive-list" class="archive-list"></div>
   </div>
 
   <script src="data.js"></script>
   <script>
     const list = document.getElementById("archive-list");
-    let letters = [];
-    try {
-      letters = JSON.parse(localStorage.getItem("suratapp_letters")) || [];
-    } catch (error) {
-      letters = [];
-    }
+    let letters = getLetters();
+    const templates = getTemplates();
+    const searchInput = document.getElementById("archive-search");
+    const count = document.getElementById("archive-count");
 
     if (!letters.length) {
-      list.innerHTML = '<div class="archive-item"><h3>Belum ada surat</h3><p class="archive-meta">Surat yang dibuat akan otomatis masuk ke sini.</p></div>';
-      return;
+      list.innerHTML = '<div class="archive-empty">Belum ada surat. Surat yang dibuat akan otomatis masuk ke sini.</div>';
+    } else {
+      renderLetters(letters);
     }
 
-    list.innerHTML = letters.map((letter) => {
-      const template = getTemplates().find((item) => item.key === letter.template_key) || { nama: "Template" };
-      return `
-        <article class="archive-item">
-          <h3>${escapeHtml(letter.nomor_surat || letter.id)}</h3>
-          <div class="archive-meta">
-            <div><strong>Jenis:</strong> ${escapeHtml(template.nama)}</div>
-            <div><strong>Penandatangan:</strong> ${escapeHtml(letter.signer_nama || "-")}</div>
-            <div><strong>Pembuat:</strong> ${escapeHtml(letter.created_by || "-")}</div>
-            <div><strong>Status:</strong> ${escapeHtml(letter.status || "final")}</div>
-          </div>
-        </article>
-      `;
-    }).join("");
+    function renderLetters(items) {
+      count.textContent = `${items.length} surat`;
+      if (!items.length) {
+        list.innerHTML = '<div class="archive-empty">Surat yang dicari tidak ditemukan.</div>';
+        return;
+      }
+      list.innerHTML = items.map((letter) => {
+        const template = templates.find((item) => item.key === letter.template_key) || { nama: "Template" };
+        return `
+          <article class="archive-item">
+            <h3>${escapeHtml(letter.nomor_surat || letter.id)}</h3>
+            <div class="archive-meta">
+              <div><strong>Jenis:</strong> ${escapeHtml(template.nama)}</div>
+              <div><strong>Penandatangan:</strong> ${escapeHtml(letter.signer_nama || "-")}</div>
+              <div><strong>Pembuat:</strong> ${escapeHtml(letter.created_by || "-")}</div>
+              <div><strong>Status:</strong> ${escapeHtml(letter.status || "final")}</div>
+              ${letter.attachment?.name ? `<div><strong>Lampiran:</strong> ${escapeHtml(letter.attachment.name)}</div>` : ""}
+            </div>
+            <div class="archive-actions">
+              <button class="btn btn-ghost" type="button" data-letter-view="${escapeHtml(letter.id)}">Lihat</button>
+              <button class="btn btn-ghost" type="button" data-letter-edit="${escapeHtml(letter.id)}">Edit</button>
+              ${letter.attachment?.data_url ? `<a class="btn btn-ghost" href="${escapeHtml(letter.attachment.data_url)}" download="${escapeHtml(letter.attachment.name || "lampiran")}">Lampiran</a>` : ""}
+              <button class="btn btn-primary" type="button" data-letter-delete="${escapeHtml(letter.id)}">Hapus</button>
+            </div>
+          </article>
+        `;
+      }).join("");
+      bindActions();
+    }
+
+    function selectLetter(letterId) {
+      return letters.find((letter) => letter.id === letterId);
+    }
+
+    function putLetterInSession(letter) {
+      if (!letter) return false;
+      patchSession({
+        letter_id: letter.id,
+        pembuat: { nama: letter.created_by || "", jabatan: letter.created_by_detail?.jabatan || "" },
+        template_key: letter.template_key,
+        signer_mode: letter.signer_mode,
+        signer_id: letter.signer_id,
+        signer_nama: letter.signer_nama,
+        signer_jabatan: letter.signer_jabatan,
+        signer_nip: letter.signer_nip,
+        nomor_surat: letter.nomor_surat,
+        data: letter.data || {},
+        attachment: letter.attachment || null,
+      });
+      return true;
+    }
+
+    function bindActions() {
+      document.querySelectorAll("[data-letter-view]").forEach((button) => {
+        button.addEventListener("click", () => {
+          if (putLetterInSession(selectLetter(button.dataset.letterView))) location.href = "preview.html";
+        });
+      });
+      document.querySelectorAll("[data-letter-edit]").forEach((button) => {
+        button.addEventListener("click", () => {
+          if (putLetterInSession(selectLetter(button.dataset.letterEdit))) location.href = "form.html";
+        });
+      });
+      document.querySelectorAll("[data-letter-delete]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const letter = selectLetter(button.dataset.letterDelete);
+          if (!letter || !window.confirm(`Hapus surat ${letter.nomor_surat || letter.id} dari histori?`)) return;
+          deleteLetter(letter.id);
+          letters = letters.filter((item) => item.id !== letter.id);
+          renderLetters(letters);
+        });
+      });
+    }
+
+    searchInput.addEventListener("input", () => {
+      const query = searchInput.value.trim().toLowerCase();
+      const filtered = letters.filter((letter) => {
+        const template = templates.find((item) => item.key === letter.template_key);
+        return [letter.nomor_surat, letter.id, letter.created_by, letter.signer_nama, template?.nama]
+          .some((value) => String(value || "").toLowerCase().includes(query));
+      });
+      renderLetters(filtered);
+    });
   </script>
 </body>
 </html>

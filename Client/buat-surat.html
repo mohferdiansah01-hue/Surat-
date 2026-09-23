@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Buat Surat · Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="split">
+  <aside class="split-left">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">S</span> DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL KABUPATEN TUBAN
+    </a>
+
+    <div class="split-left-content">
+      <h1>Mari buat<br>surat resmi Anda</h1>
+      <p class="sub">Isi data pembuat, pilih jenis surat, tentukan penandatangan, lalu cetak. Semua dalam 4 langkah singkat.</p>
+    </div>
+
+    <div class="quote-card">
+      <div class="q-title">Cepat dan rapi</div>
+      <div class="q-body">Surat dinas jadi dalam hitungan menit. Template sudah disiapkan, tinggal isi data dan cetak.</div>
+      <div class="q-author">
+        <div class="avatar">BS</div>
+        <div>
+          <div style="font-weight:600">perdi ganteng</div>
+          <div style="color:rgba(255,255,255,.7);font-size:12px">Direktur Utama</div>
+        </div>
+        <div class="stars">★★★★★</div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="split-right">
+    <nav class="category-nav" aria-label="Kategori Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban">
+      <span class="category-link active" aria-current="page">Buat Surat</span>
+      <a class="category-link" href="template.html">Kelola Surat</a>
+      <a class="category-link" href="arsip.html">Histori</a>
+    </nav>
+
+    <div class="progress">
+      <div class="progress-step active"><div class="progress-dot"></div><div class="progress-line"></div></div>
+      <div class="progress-step"><div class="progress-dot"></div><div class="progress-line"></div></div>
+      <div class="progress-step"><div class="progress-dot"></div><div class="progress-line"></div></div>
+      <div class="progress-step"><div class="progress-dot"></div></div>
+    </div>
+
+    <section class="editor-section">
+      <div class="section-heading">
+        <div>
+          <span class="section-kicker">01</span>
+          <h2>Data Pembuat</h2>
+        </div>
+        <p>Informasi ini hanya untuk arsip, tidak akan tercetak di surat.</p>
+      </div>
+
+      <form id="form" class="editor-width">
+        <div class="form-grid editor-width">
+          <div class="field full">
+            <label for="nama">Nama lengkap</label>
+            <input id="nama" type="text" name="nama" placeholder="Masukkan nama" autocomplete="name" required>
+          </div>
+          <div class="field full">
+            <label for="jabatan">Jabatan</label>
+            <input id="jabatan" type="text" name="jabatan" placeholder="Masukkan jabatan" autocomplete="organization-title" required>
+          </div>
+        </div>
+
+        <div class="actions editor-width">
+          <a class="btn btn-ghost" href="index.html">← Dashboard</a>
+          <button type="submit" class="btn btn-primary">Lanjut <span style="opacity:.7">→</span></button>
+        </div>
+      </form>
+    </section>
+  </main>
+</div>
+
+<script src="data.js"></script>
+<script>
+  document.getElementById("form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const pembuat = { nama: fd.get("nama").trim(), jabatan: fd.get("jabatan").trim() };
+    clearSession();
+    patchSession({ pembuat });
+    location.href = "jenis.html";
+  });
+</script>
+</body>
+</html>

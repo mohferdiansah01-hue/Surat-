@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Isi Data Surat · SuratApp</title>
+<title>Isi Data Surat · Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="split">
   <aside class="split-left">
-    <a href="dashboard.html" class="brand"><span class="brand-mark">S</span> SURATAPP</a>
+    <a href="index.html" class="brand"><span class="brand-mark">S</span> DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL KABUPATEN TUBAN</a>
     <div class="split-left-content">
       <h1>Lengkapi<br>data surat</h1>
       <p class="sub">Isi field yang tersedia. Format dan isi surat akan dirender otomatis dari template yang sudah dipilih.</p>
@@ -21,9 +21,10 @@
   </aside>
 
   <main class="split-right">
-    <nav class="category-nav" aria-label="Kategori SuratApp">
+    <nav class="category-nav" aria-label="Kategori Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban">
       <span class="category-link active" aria-current="page">Buat Surat</span>
-      <a class="category-link" href="template.html">Edit Isi Surat</a>
+      <a class="category-link" href="template.html">Kelola Surat</a>
+      <a class="category-link" href="arsip.html">Histori</a>
     </nav>
 
     <div class="progress">
@@ -63,25 +64,81 @@
   fieldList.innerHTML = `
     <div class="field full">
       <label for="nomor_surat">Nomor surat</label>
-      <input id="nomor_surat" name="nomor_surat" type="text" placeholder="000/SuratApp/IX/2026" required>
+        <input id="nomor_surat" name="nomor_surat" type="text" required>
     </div>
     ${(template.fields || []).map((field) => `
-      <div class="field ${field.type === "textarea" ? "full" : ""}">
+      <div class="field ${field.type === "textarea" || field.type === "category" ? "full" : ""} ${field.type === "category" ? "category-input" : ""}">
         <label for="${escapeHtml(field.name)}">${escapeHtml(field.label)}</label>
-        ${field.type === "textarea"
-          ? `<textarea id="${escapeHtml(field.name)}" name="${escapeHtml(field.name)}" rows="4"${field.required ? " required" : ""}></textarea>`
-          : `<input id="${escapeHtml(field.name)}" name="${escapeHtml(field.name)}" type="${escapeHtml(field.type || "text")}"${field.required ? " required" : ""}>`}
+          ${field.type === "category"
+            ? `<div class="category-input-grid"><select id="${escapeHtml(field.name)}_category" name="${escapeHtml(field.name)}_category" data-category-field="${escapeHtml(field.name)}"><option value="">Pilih kategori utama</option>${(field.categories || []).map((category) => `<option value="${escapeHtml(category.name)}">${escapeHtml(category.name)}</option>`).join("")}</select></div>`
+            : field.type === "textarea"
+            ? `<textarea id="${escapeHtml(field.name)}" name="${escapeHtml(field.name)}" rows="4"${field.required ? " required" : ""}></textarea>`
+            : `<input id="${escapeHtml(field.name)}" name="${escapeHtml(field.name)}" type="${escapeHtml(field.type || "text")}"${field.required ? " required" : ""}>`}
       </div>
     `).join("")}
+    <div class="field full">
+      <label for="attachment">Surat pendamping</label>
+      <input id="attachment" name="attachment" type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+      <small id="attachment-help" class="form-sub">Opsional. Format PDF, DOC, atau DOCX, maksimal 3 MB.</small>
+    </div>
   `;
 
-  document.getElementById("letter-form").addEventListener("submit", (event) => {
+  const existingData = session.data || {};
+  const sampleData = template.sample_data || {};
+  document.getElementById("nomor_surat").value = session.nomor_surat || sampleData.nomor_surat || "";
+  (template.fields || []).forEach((field) => {
+    if (field.type === "category") {
+      const categoryInput = document.getElementById(`${field.name}_category`);
+      if (categoryInput) categoryInput.value = existingData[`${field.name}_category`] || sampleData[`${field.name}_category`] || "";
+    } else {
+      const input = document.getElementById(field.name);
+      if (input) input.value = existingData[field.name] || sampleData[field.name] || "";
+    }
+  });
+  const attachmentInput = document.getElementById("attachment");
+  const attachmentHelp = document.getElementById("attachment-help");
+  if (session.attachment?.name) {
+    attachmentHelp.textContent = `Lampiran saat ini: ${session.attachment.name}. Pilih file baru untuk menggantinya.`;
+  }
+
+  document.getElementById("letter-form").addEventListener("submit", async (event) => {
     event.preventDefault();
     const values = Object.fromEntries(new FormData(event.target).entries());
     const { nomor_surat, ...data } = values;
-    patchSession({ nomor_surat, data });
+    delete data.attachment;
+    const file = attachmentInput.files[0];
+    const fileExtension = file?.name.toLowerCase().split(".").pop();
+    if (file && !["pdf", "doc", "docx"].includes(fileExtension)) {
+      attachmentHelp.textContent = "Format tidak didukung. Pilih file PDF, DOC, atau DOCX.";
+      attachmentHelp.style.color = "#b42318";
+      return;
+    }
+    if (file && file.size > 3 * 1024 * 1024) {
+      attachmentHelp.textContent = "Ukuran file terlalu besar. Maksimal lampiran adalah 3 MB.";
+      attachmentHelp.style.color = "#b42318";
+      return;
+    }
+
+    const attachment = file ? await readAttachment(file) : session.attachment || null;
+    try {
+      patchSession({ nomor_surat, data, attachment });
+    } catch (error) {
+      attachmentHelp.textContent = "File terlalu besar untuk disimpan di browser. Gunakan file yang lebih kecil.";
+      attachmentHelp.style.color = "#b42318";
+      return;
+    }
     location.href = "preview.html";
   });
+
+  function readAttachment(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.addEventListener("load", () => resolve({ name: file.name, type: file.type || "application/octet-stream", size: file.size, data_url: reader.result }));
+      reader.addEventListener("error", reject);
+      reader.readAsDataURL(file);
+    });
+  }
+
 </script>
 </body>
 </html>
