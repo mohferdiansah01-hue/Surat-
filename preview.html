@@ -77,8 +77,9 @@
   document.getElementById("letter-title").textContent = template.nama;
   document.getElementById("letter-content").innerHTML = renderTemplate(template.template, { ...session.data, nomor_surat: session.nomor_surat });
 
-  // Tampilkan foto inputan sebagai kop surat ukuran besar
+  // Kop surat: prioritas dari template.logo (upload di editor), fallback ke session
   const kopSrc =
+    template.logo ||
     session.logo ||
     session.logo_url ||
     session.kop ||
