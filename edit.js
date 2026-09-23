@@ -15,6 +15,10 @@
   let savedSelection = null;
   let fields = existing?.fields?.length ? existing.fields : [];
 
+  // Simpan logo & QR sebagai data URL supaya bisa disimpan ke localStorage
+  let logoDataUrl = existing?.logo || "";
+  let qrDataUrl = existing?.signature_qr_url || "";
+
   const byId = (id) => document.getElementById(id);
 
   function setInitialValues() {
@@ -23,8 +27,48 @@
     byId("template-nama").value = existing?.nama || "";
     byId("template-deskripsi").value = existing?.deskripsi || "";
     editor.innerHTML = existing?.template || "<p>Dengan hormat,</p><p>Dengan ini kami menerangkan bahwa </p>";
+
+    const logoPreview = byId("template-logo-preview");
+    if (logoDataUrl) {
+      logoPreview.src = logoDataUrl;
+      logoPreview.hidden = false;
+    }
+    const qrPreview = byId("template-qr-preview");
+    if (qrDataUrl) {
+      qrPreview.src = qrDataUrl;
+      qrPreview.hidden = false;
+    }
+
     convertTokensToChips();
   }
+
+  // ==== UPLOAD LOGO (kop surat) ====
+  byId("template-logo").addEventListener("change", (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      logoDataUrl = String(reader.result || "");
+      const img = byId("template-logo-preview");
+      img.src = logoDataUrl;
+      img.hidden = false;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // ==== UPLOAD QR tanda tangan ====
+  byId("template-qr").addEventListener("change", (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      qrDataUrl = String(reader.result || "");
+      const img = byId("template-qr-preview");
+      img.src = qrDataUrl;
+      img.hidden = false;
+    };
+    reader.readAsDataURL(file);
+  });
 
   function createFieldMarkup(field, index) {
     const isCategory = field.type === "category";
@@ -198,6 +242,7 @@
   editor.addEventListener("keyup", renderPreview);
   editor.addEventListener("mouseup", saveSelection);
   editor.addEventListener("input", renderPreview);
+
   function addField(type) {
     fields.push(type === "category"
       ? { label: `Kategori ${fields.length + 1}`, type: "category", categories: [{ name: "Kategori utama", options: [] }], required: false }
@@ -224,7 +269,16 @@
     const unknown = tokens.filter((token) => !fields.some((field) => field.name === token));
     if (!name || fields.some((field) => !field.label) || unknown.length) return setStatus(unknown.length ? `Data belum tersedia: ${[...new Set(unknown)].join(", ")}.` : "Lengkapi nama surat dan semua data terlebih dahulu.", true);
     if (templates.some((item) => item.key === key && item.key !== existing?.key)) return setStatus("Nama surat ini sudah digunakan. Pilih nama yang berbeda.", true);
-    const savedTemplate = upsertTemplate({ key, nama: name, deskripsi: byId("template-deskripsi").value.trim(), template: serializeEditor(), fields });
+
+    const savedTemplate = upsertTemplate({
+      key,
+      nama: name,
+      deskripsi: byId("template-deskripsi").value.trim(),
+      template: serializeEditor(),
+      fields,
+      logo: logoDataUrl,
+      signature_qr_url: qrDataUrl,
+    });
     const savedTemplates = getTemplates();
     const saved = savedTemplates.find((template) => template.key === savedTemplate.key);
     if (!saved || saved.nama !== name || saved.fields.length !== fields.length) {
