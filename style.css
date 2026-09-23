@@ -75,7 +75,7 @@ button, input { font: inherit; }
   place-items: center;
   border: 1px solid rgba(255, 255, 255, .52);
   border-radius: 10px;
-  background: rgba(255, 255, 255, .9) url('Lambang_Kabupaten_Tuban.webp') center / 23px 23px no-repeat;
+  background: rgba(255, 255, 255, .9) url('Lambang_Kabupaten_Tuban.webp') center / contain no-repeat;
   color: transparent;
   font-size: 0;
   letter-spacing: 0;
@@ -172,16 +172,16 @@ button, input { font: inherit; }
 .auth-aside { position: relative; display: flex; flex-direction: column; justify-content: space-between; padding: 34px; overflow: hidden; color: #f5fff9; background: linear-gradient(145deg, #0f654a, #1e8b68 65%, #679f49); }
 .auth-aside::after { position: absolute; right: -80px; bottom: -130px; width: 300px; height: 300px; border: 1px solid rgba(255,255,255,.25); border-radius: 50%; box-shadow: 0 0 0 34px rgba(255,255,255,.06), 0 0 0 68px rgba(255,255,255,.04); content: ''; }
 
-/* Logo diperbaiki: contain, tanpa border tebal, tidak dipaksa gepeng */
+/* Logo pakai <img> — pakai object-fit: contain, tanpa border tebal, tidak dipaksa gepeng */
 .auth-logo {
   position: relative;
   z-index: 1;
+  display: block;
   width: 84px;
   height: 84px;
-  padding: 10px;
-  border-radius: 18px;
-  background: #fff url('Lambang_Kabupaten_Tuban.webp') center / contain no-repeat;
-  box-shadow: 0 10px 22px rgba(6,50,35,.2);
+  object-fit: contain;
+  filter: drop-shadow(0 10px 22px rgba(6, 50, 35, .35));
+  flex-shrink: 0;
 }
 
 .auth-aside h1 { position: relative; z-index: 1; max-width: 330px; margin: auto 0 14px; font-family: 'Manrope', sans-serif; font-size: clamp(30px, 4vw, 48px); letter-spacing: -.05em; line-height: 1.05; }
@@ -228,6 +228,7 @@ button, input { font: inherit; }
   .auth-layout { display: block; width: 100%; min-height: 100vh; border: 0; border-radius: 0; }
   .auth-aside { min-height: 290px; padding: 28px 24px; }
   .auth-aside h1 { margin-top: 46px; font-size: 34px; }
+  .auth-logo { width: 68px; height: 68px; }
   .auth-content { padding: 42px 24px 50px; }
   .dashboard-stats { grid-template-columns: 1fr; }
   .dashboard-top { align-items: flex-start; flex-direction: column; }
