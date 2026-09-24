@@ -1,3 +1,5 @@
+Coba AI secara langsung di aplikasi favorit Anda … Gunakan Gemini untuk membuat draf dan menyempurnakan konten, serta dapatkan Gemini Pro dengan akses ke AI generasi berikutnya dari Google seharga Rp 309.000 Rp 77.000 selama 3 bulan
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -7,100 +9,211 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="split">
-  <aside class="split-left">
-    <a href="index.html" class="brand"><span class="brand-mark">S</span> DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL KABUPATEN TUBAN</a>
-    <div class="split-left-content">
-      <h1>Ubah isi<br>surat</h1>
-      <p class="sub">Tulis seperti biasa. Sisipkan data lewat tombol, tanpa perlu memahami kode.</p>
-    </div>
-    <div class="quote-card">
-      <div class="q-title">Editor sederhana</div>
-      <div class="q-body">Yang terlihat di sini adalah isi surat. Format teknis disimpan otomatis oleh sistem.</div>
-    </div>
-  </aside>
 
-  <main class="split-right">
-    <nav class="category-nav" aria-label="Kategori Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban">
-      <a class="category-link" href="buat-surat.html">Buat Surat</a>
-      <a class="category-link" href="arsip.html">Histori</a>
-      <span class="category-link active" aria-current="page">Kelola Surat</span>
+<div class="edit-layout">
+
+  <!-- ============ PANEL KIRI ============ -->
+  <aside class="edit-sidebar">
+
+    <a href="index.html" class="edit-brand">
+      <span class="brand-mark">S</span>
+      <span>DINAS KEPENDUDUKAN &amp;<br>PENCATATAN SIPIL TUBAN</span>
+    </a>
+
+    <nav class="edit-nav">
+      <a class="edit-nav-link" href="buat-surat.html">Buat Surat</a>
+      <a class="edit-nav-link" href="arsip.html">Histori</a>
+      <span class="edit-nav-link active">Kelola Surat</span>
     </nav>
 
-    <h1 class="form-title" id="page-title">Template baru</h1>
-    <p class="form-sub">Buat format surat sekali, lalu staf cukup mengisi data yang diperlukan.</p>
+    <!-- 00 INFO -->
+    <section class="ctrl-group">
+      <h2 class="ctrl-title"><span class="ctrl-num">00</span> Info Template</h2>
+      <div class="ctrl-field"><label>Nama jenis surat</label><input id="template-nama" type="text" placeholder="Surat Keterangan Kehilangan"></div>
+      <div class="ctrl-field"><label>Keterangan singkat</label><input id="template-deskripsi" type="text" placeholder="Untuk menerangkan kehilangan dokumen"></div>
+      <input id="template-key" type="hidden">
+    </section>
 
-    <form id="template-editor-form" action="template.html" novalidate>
-      <section class="editor-section">
-        <div class="section-heading"><div><span class="section-kicker">01</span><h2>Identitas surat</h2></div><p>Nama ini akan tampil saat staf memilih jenis surat.</p></div>
-        <div class="form-grid editor-width">
-          <div class="field full"><label for="template-nama">Nama jenis surat</label><input id="template-nama" name="nama" type="text" placeholder="Contoh: Surat Keterangan Kehilangan" required></div>
-          <div class="field full"><label for="template-deskripsi">Keterangan singkat</label><input id="template-deskripsi" name="deskripsi" type="text" placeholder="Contoh: Surat untuk menerangkan kehilangan dokumen"></div>
-          <div class="field full"><label for="template-logo">Logo kop surat</label><input id="template-logo" name="logo" type="file" accept="image/png,image/jpeg,image/webp"><small class="editor-hint">Logo disimpan di template dan ditampilkan dengan ukuran tetap 25 × 25 mm.</small><img id="template-logo-preview" class="template-logo-preview" alt="Pratinjau logo" hidden></div>
-          <div class="field full"><label for="template-qr">QR tanda tangan elektronik (opsional)</label><input id="template-qr" name="qr" type="file" accept="image/png,image/jpeg,image/webp"><small class="editor-hint">QR disimpan dengan ukuran tetap 22 × 22 mm pada blok tanda tangan.</small><img id="template-qr-preview" class="template-logo-preview" alt="Pratinjau QR" hidden></div>
-          <input id="template-key" name="key" type="hidden">
+    <!-- 01 KOP -->
+    <section class="ctrl-group" data-block="kop">
+      <header class="ctrl-header">
+        <h2 class="ctrl-title"><span class="ctrl-num">01</span> Kop Surat</h2>
+        <label class="switch"><input type="checkbox" data-toggle="kop"><span>Tampilkan</span></label>
+      </header>
+
+      <div class="ctrl-field">
+        <label>Mode Kop</label>
+        <select id="kop-mode">
+          <option value="terstruktur" selected>Terstruktur (logo + teks instansi)</option>
+          <option value="foto">Foto Utuh (scan kop asli)</option>
+        </select>
+      </div>
+
+      <!-- MODE TERSTRUKTUR -->
+      <div id="kop-terstruktur-fields">
+        <div class="ctrl-field">
+          <label>Logo (kiri)</label>
+          <input id="kop-logo" type="file" accept="image/*">
+          <img id="kop-logo-prev" class="ctrl-thumb" hidden alt="">
         </div>
-      </section>
-
-      <section class="editor-section">
-        <div class="section-heading"><div><span class="section-kicker">02</span><h2>Isi surat</h2></div><p>Tulis kalimat surat, lalu sisipkan data di tempat yang sesuai.</p></div>
-        <div class="editor-width">
-          <div class="letter-structure" aria-label="Struktur isi surat">
-            <div class="letter-structure-heading"><strong>Struktur surat</strong><span>Pilih bagian untuk menambahkan kerangka ke editor.</span></div>
-            <div class="letter-structure-grid">
-              <button type="button" class="letter-structure-card" data-section-template="kop"><span class="letter-structure-number">01</span><span><strong>Kop surat</strong><small>Nomor, sifat, lampiran, dan hal</small></span></button>
-              <button type="button" class="letter-structure-card" data-section-template="tujuan"><span class="letter-structure-number">02</span><span><strong>Yth. / Tujuan</strong><small>Alamat dan tujuan surat</small></span></button>
-              <button type="button" class="letter-structure-card" data-section-template="isi"><span class="letter-structure-number">03</span><span><strong>Isi surat</strong><small>Pembuka, data, dan penjelasan</small></span></button>
-              <button type="button" class="letter-structure-card" data-section-template="ttd"><span class="letter-structure-number">04</span><span><strong>Tanda tangan</strong><small>Penutup dan pejabat</small></span></button>
-            </div>
-          </div>
-          <div class="editor-toolbar" role="toolbar" aria-label="Format isi surat">
-            <button type="button" class="toolbar-button" data-command="bold"><strong>B</strong><span>Tebal</span></button>
-            <button type="button" class="toolbar-button" data-command="italic"><em>I</em><span>Miring</span></button>
-            <button type="button" class="toolbar-button toolbar-insert" id="insert-field-button">+ <span>Sisipkan data</span></button>
-          </div>
-          <div id="template-editor" class="template-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Contoh: Dengan hormat,&#10;&#10;Dengan ini kami menerangkan bahwa ..."></div>
-          <p class="editor-hint">Data yang disisipkan tampil sebagai tanda berwarna dan akan menjadi isi saat surat dibuat.</p>
-          <p id="editor-status" class="editor-status" role="status"></p>
+        <div class="ctrl-field"><label>Nama Instansi</label><input id="kop-instansi" type="text" placeholder="PEMERINTAH KABUPATEN TUBAN"></div>
+        <div class="ctrl-field"><label>Nama Dinas</label><input id="kop-dinas" type="text" placeholder="DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL"></div>
+        <div class="ctrl-field"><label>Alamat &amp; Kontak</label><input id="kop-alamat" type="text" placeholder="Jl. Raya Tuban No. 123 · Telp. (0356) 12345"></div>
+        <div class="ctrl-field">
+          <label>Gaya Garis Bawah</label>
+          <select id="kop-garis">
+            <option value="none">Tanpa Garis</option>
+            <option value="thin">Tipis</option>
+            <option value="medium" selected>Sedang</option>
+            <option value="thick">Tebal</option>
+            <option value="double">Garis Ganda</option>
+            <option value="dashed">Putus-putus</option>
+            <option value="dotted">Titik-titik</option>
+          </select>
         </div>
-      </section>
+      </div>
 
-      <section class="editor-section">
-        <div class="section-heading"><div><span class="section-kicker">03</span><h2>Data yang perlu diisi</h2></div><p>Tambahkan pertanyaan yang akan dilihat staf saat membuat surat.</p></div>
-        <div id="field-list" class="field-list editor-width"></div>
-        <div class="add-field-actions">
-          <button type="button" class="btn btn-ghost add-field-button" id="add-string-button">+ Tambah string</button>
-          <button type="button" class="btn btn-ghost add-field-button" id="add-category-button">+ Tambah kategori</button>
+      <!-- MODE FOTO UTUH -->
+      <div id="kop-foto-fields" style="display:none;">
+        <div class="ctrl-field">
+          <label>Foto Kop Utuh</label>
+          <input id="kop-foto" type="file" accept="image/*">
+          <img id="kop-foto-prev" class="ctrl-thumb" style="width:100%;height:auto;" hidden alt="">
         </div>
-      </section>
+        <p class="ctrl-hint">Foto akan tampil full-width di atas kertas.</p>
+      </div>
+    </section>
 
-      <section class="editor-preview editor-width">
-        <div class="preview-heading"><div><span class="section-kicker">HASIL</span><h2>Tampilan contoh</h2></div><span class="preview-badge">Data contoh</span></div>
-        <div id="template-preview" class="template-preview"></div>
-      </section>
+    <!-- 02 IDENTITAS -->
+    <section class="ctrl-group" data-block="identitas">
+      <header class="ctrl-header">
+        <h2 class="ctrl-title"><span class="ctrl-num">02</span> Nomor, Sifat, Lampiran, Hal</h2>
+        <label class="switch"><input type="checkbox" data-toggle="identitas"><span>Tampilkan</span></label>
+      </header>
+      <div class="ctrl-field"><label>Nomor</label><input id="id-nomor" type="text" placeholder="Kosongkan = {{nomor_surat}}"></div>
+      <div class="ctrl-field"><label>Sifat</label><input id="id-sifat" type="text" placeholder="Biasa"></div>
+      <div class="ctrl-field"><label>Lampiran</label><input id="id-lampiran" type="text" placeholder="-"></div>
+      <div class="ctrl-field"><label>Hal</label><input id="id-hal" type="text" placeholder="Jawaban Keabsahan Akta Kelahiran"></div>
+      <div class="ctrl-field"><label>Tanggal (kanan atas)</label><input id="id-tanggal" type="text" placeholder="Tuban, 22 September 2026"></div>
+    </section>
 
-      <div class="actions editor-width"><a class="btn btn-ghost" href="template.html">← Kembali</a><button type="submit" class="btn btn-primary">Simpan template</button></div>
-    </form>
+    <!-- 03 TUJUAN -->
+    <section class="ctrl-group" data-block="tujuan">
+      <header class="ctrl-header">
+        <h2 class="ctrl-title"><span class="ctrl-num">03</span> Tujuan Surat</h2>
+        <label class="switch"><input type="checkbox" data-toggle="tujuan"><span>Tampilkan</span></label>
+      </header>
+      <div class="ctrl-field"><label>Yth. Baris 1</label><input id="yth-1" type="text" placeholder="Kepala Dinas Kependudukan dan"></div>
+      <div class="ctrl-field"><label>Yth. Baris 2</label><input id="yth-2" type="text" placeholder="Pencatatan Sipil Kabupaten Tuban"></div>
+      <div class="ctrl-field"><label>Di</label><input id="yth-di" type="text" placeholder="TUBAN"></div>
+    </section>
+
+    <!-- 04 ISI -->
+    <section class="ctrl-group" data-block="isi">
+      <header class="ctrl-header">
+        <h2 class="ctrl-title"><span class="ctrl-num">04</span> Isi Surat</h2>
+        <label class="switch"><input type="checkbox" data-toggle="isi"><span>Tampilkan</span></label>
+      </header>
+      <div class="ctrl-field">
+        <label>Isi Surat</label>
+        <textarea id="isi-text" rows="6" placeholder="Ketik isi surat...&#10;&#10;Gunakan {{nama_field}} untuk data yang diisi staf."></textarea>
+      </div>
+      <div class="ctrl-field">
+        <label>Perataan</label>
+        <select id="isi-align">
+          <option value="justify" selected>Rata Kiri-Kanan</option>
+          <option value="left">Rata Kiri</option>
+          <option value="center">Rata Tengah</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- 05 TTD -->
+    <section class="ctrl-group" data-block="ttd">
+      <header class="ctrl-header">
+        <h2 class="ctrl-title"><span class="ctrl-num">05</span> Tanda Tangan</h2>
+        <label class="switch"><input type="checkbox" data-toggle="ttd"><span>Tampilkan</span></label>
+      </header>
+      <div class="ctrl-field">
+        <label>Pejabat Penandatangan</label>
+        <select id="ttd-pejabat">
+          <option value="">-- Pilih --</option>
+          <option value="1">Drs. Supriyanto, M.Si. (Kepala Dinas)</option>
+          <option value="2">Dina Widyaningtyas W., SE., MM (Kabid - A.n.)</option>
+          <option value="3">Drs. Supriyanto, M.Si. (Plt. Kepala Dinas)</option>
+        </select>
+      </div>
+      <div class="ctrl-field"><label>QR TTE (opsional)</label><input id="ttd-qr" type="file" accept="image/*"><img id="ttd-qr-prev" class="ctrl-thumb" hidden alt=""></div>
+      <div class="ctrl-field">
+        <label>Posisi Blok</label>
+        <select id="ttd-posisi">
+          <option value="kanan" selected>Kanan</option>
+          <option value="kiri">Kiri</option>
+          <option value="tengah">Tengah</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- 06 DATA STAF -->
+    <section class="ctrl-group">
+      <h2 class="ctrl-title"><span class="ctrl-num">06</span> Data yang Perlu Diisi Staf</h2>
+      <p class="ctrl-hint">Field ini muncul sebagai pertanyaan di halaman <strong>Buat Surat</strong>. Isi <em>Contoh Isi</em> agar preview tampak seperti surat jadi.</p>
+      <div id="field-list" class="field-list"></div>
+      <div class="add-field-actions">
+        <button type="button" class="btn-ctrl-ghost" id="add-text">+ Teks</button>
+        <button type="button" class="btn-ctrl-ghost" id="add-date">+ Tanggal</button>
+        <button type="button" class="btn-ctrl-ghost" id="add-long">+ Paragraf</button>
+      </div>
+    </section>
+
+    <!-- 07 KERTAS -->
+    <section class="ctrl-group">
+      <h2 class="ctrl-title"><span class="ctrl-num">📄</span> Ukuran &amp; Margin</h2>
+      <div class="ctrl-field">
+        <label>Ukuran Kertas</label>
+        <select id="paper-size">
+          <option value="a4" selected>A4 (210 × 297 mm)</option>
+          <option value="f4">F4 / Folio (215 × 330 mm)</option>
+          <option value="letter">Letter (216 × 279 mm)</option>
+        </select>
+      </div>
+      <div class="margin-grid">
+        <div class="ctrl-field"><label>Atas (mm)</label><input type="number" id="m-top" value="25" min="0"></div>
+        <div class="ctrl-field"><label>Bawah (mm)</label><input type="number" id="m-bottom" value="25" min="0"></div>
+        <div class="ctrl-field"><label>Kiri (mm)</label><input type="number" id="m-left" value="30" min="0"></div>
+        <div class="ctrl-field"><label>Kanan (mm)</label><input type="number" id="m-right" value="20" min="0"></div>
+      </div>
+      <button type="button" class="btn-ctrl-ghost" id="reset-margin">↺ Standar Dinas (30/20/25/25)</button>
+    </section>
+
+    <div class="ctrl-actions">
+      <a class="btn-ctrl-ghost" href="template.html">← Kembali</a>
+      <button type="button" class="btn-ctrl-primary" id="btn-save">💾 Simpan Template</button>
+    </div>
+
+    <p id="status" class="ctrl-status" role="status"></p>
+  </aside>
+
+  <!-- ============ PANEL KANAN: PREVIEW ============ -->
+  <main class="edit-preview">
+    <div class="preview-toolbar">
+      <div><span class="section-kicker">PRATINJAU SURAT</span> <span class="preview-badge">● Live</span></div>
+      <div class="preview-controls">
+        <button type="button" class="tool-btn" id="zoom-out">−</button>
+        <span id="zoom-label" class="zoom-label">100%</span>
+        <button type="button" class="tool-btn" id="zoom-in">+</button>
+        <button type="button" class="tool-btn" id="zoom-reset">Reset</button>
+      </div>
+    </div>
+    <div class="paper-viewport" id="paper-viewport">
+      <div class="paper-scale" id="paper-scale">
+        <div class="paper" id="paper">
+          <div id="template-preview" class="letter-content"></div>
+        </div>
+      </div>
+    </div>
   </main>
-</div>
 
-<div id="field-dialog" class="field-dialog" hidden>
-  <div class="dialog-backdrop" data-close-dialog></div>
-  <section class="dialog-panel" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
-    <button type="button" class="dialog-close" data-close-dialog aria-label="Tutup">×</button>
-    <span class="section-kicker">SISIPKAN KE SURAT</span><h2 id="dialog-title">Pilih data</h2><p>Data ini akan menjadi pertanyaan yang diisi staf.</p>
-    <div id="dialog-field-list" class="dialog-field-list"></div><p id="dialog-empty" class="dialog-empty" hidden>Tambahkan data terlebih dahulu di bagian bawah.</p>
-  </section>
-</div>
-
-<div id="editor-notice" class="editor-notice" hidden>
-  <div class="editor-notice-backdrop" data-close-notice></div>
-  <section class="editor-notice-panel" role="alertdialog" aria-modal="true" aria-labelledby="editor-notice-title">
-    <span class="section-kicker">PEMBERITAHUAN</span>
-    <h2 id="editor-notice-title">Template belum tersimpan</h2>
-    <p id="editor-notice-message"></p>
-    <button type="button" class="btn btn-primary" data-close-notice>Tutup</button>
-  </section>
 </div>
 
 <script src="data.js"></script>
