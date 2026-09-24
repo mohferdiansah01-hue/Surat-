@@ -1,4 +1,3 @@
-Coba AI secara langsung di aplikasi favorit Anda … Gunakan Gemini untuk membuat draf dan menyempurnakan konten, serta dapatkan Gemini Pro dengan akses ke AI generasi berikutnya dari Google seharga Rp 309.000 Rp 77.000 selama 3 bulan
 
 (function () {
   /* =========================================================
@@ -24,19 +23,11 @@ Coba AI secara langsung di aplikasi favorit Anda … Gunakan Gemini untuk membua
   const BLOCK_ORDER = ["kop", "identitas", "tujuan", "isi", "ttd"];
 
   const PAPER_SIZES = {
-<<<<<<< HEAD
     a4: { w: 210, h: 297 },
     f4: { w: 215, h: 330 },
     letter: { w: 216, h: 279 }
   };
   const MM_TO_PX = 3.7795;
-=======
-    a4: { w: 21, h: 29.7 },
-    f4: { w: 21.5, h: 33.0 },
-    letter: { w: 21.6, h: 27.9 }
-  };
-  const CM_TO_PX = 37.795;
->>>>>>> 7fcbeb9 (Update template surat dari Codespaces)
 
   const PEJABAT = {
     "1": {
@@ -70,19 +61,13 @@ Coba AI secara langsung di aplikasi favorit Anda … Gunakan Gemini untuk membua
     kop: {
       enabled: existing?.blocks?.kop?.enabled ?? false,
       mode: existing?.blocks?.kop?.mode || "terstruktur",
-<<<<<<< HEAD
       // Mode terstruktur
-=======
->>>>>>> 7fcbeb9 (Update template surat dari Codespaces)
       instansi: existing?.blocks?.kop?.instansi || "PEMERINTAH KABUPATEN TUBAN",
       dinas: existing?.blocks?.kop?.dinas || "DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL",
       alamat: existing?.blocks?.kop?.alamat || "Jl. Raya Tuban No. 123 · Telp. (0356) 12345",
       line: existing?.blocks?.kop?.line || "medium",
       logoUrl: existing?.blocks?.kop?.logoUrl || existing?.logo_url || "",
-<<<<<<< HEAD
       // Mode foto utuh
-=======
->>>>>>> 7fcbeb9 (Update template surat dari Codespaces)
       fotoUrl: existing?.blocks?.kop?.fotoUrl || existing?.kop_foto_url || ""
     },
     identitas: {
@@ -480,7 +465,6 @@ Coba AI secara langsung di aplikasi favorit Anda … Gunakan Gemini untuk membua
   // =========================================================
   function applyPaperSize() {
     const size = PAPER_SIZES[byId("paper-size").value] || PAPER_SIZES.a4;
-<<<<<<< HEAD
     paper.style.width = (size.w * MM_TO_PX) + "px";
     paper.style.minHeight = (size.h * MM_TO_PX) + "px";
     applyMargin();
@@ -498,28 +482,6 @@ Coba AI secara langsung di aplikasi favorit Anda … Gunakan Gemini untuk membua
     byId("m-bottom").value = 25;
     byId("m-left").value = 30;
     byId("m-right").value = 20;
-=======
-    paper.style.width = (size.w * CM_TO_PX) + "px";
-    paper.style.minHeight = (size.h * CM_TO_PX) + "px";
-    applyMargin();
-  }
-
-  function applyMargin() {
-    paper.style.paddingTop = (Number(byId("m-top").value) * CM_TO_PX) + "px";
-    paper.style.paddingBottom = (Number(byId("m-bottom").value) * CM_TO_PX) + "px";
-    paper.style.paddingLeft = (Number(byId("m-left").value) * CM_TO_PX) + "px";
-    paper.style.paddingRight = (Number(byId("m-right").value) * CM_TO_PX) + "px";
-  }
-
-  byId("paper-size").addEventListener("change", applyPaperSize);
-  ["m-top", "m-bottom", "m-left", "m-right"].forEach((id) => byId(id).addEventListener("input", applyMargin));
-
-  byId("reset-margin").addEventListener("click", () => {
-    byId("m-top").value = 2.5;
-    byId("m-bottom").value = 2.5;
-    byId("m-left").value = 3;
-    byId("m-right").value = 2;
->>>>>>> 7fcbeb9 (Update template surat dari Codespaces)
     applyMargin();
   });
 
@@ -531,26 +493,14 @@ Coba AI secara langsung di aplikasi favorit Anda … Gunakan Gemini untuk membua
     paperScale.style.transform = `scale(${zoom})`;
     byId("zoom-label").textContent = Math.round(zoom * 100) + "%";
   }
-<<<<<<< HEAD
-=======
-
->>>>>>> 7fcbeb9 (Update template surat dari Codespaces)
   byId("zoom-in").addEventListener("click", () => {
     zoom = Math.min(2, zoom + 0.1);
     applyZoom();
   });
-<<<<<<< HEAD
-=======
-
->>>>>>> 7fcbeb9 (Update template surat dari Codespaces)
   byId("zoom-out").addEventListener("click", () => {
     zoom = Math.max(0.3, zoom - 0.1);
     applyZoom();
   });
-<<<<<<< HEAD
-=======
-
->>>>>>> 7fcbeb9 (Update template surat dari Codespaces)
   byId("zoom-reset").addEventListener("click", () => {
     zoom = 1;
     applyZoom();
@@ -566,19 +516,11 @@ Coba AI secara langsung di aplikasi favorit Anda … Gunakan Gemini untuk membua
     sl = viewport.scrollLeft; st = viewport.scrollTop;
     e.preventDefault();
   });
-<<<<<<< HEAD
-=======
-
->>>>>>> 7fcbeb9 (Update template surat dari Codespaces)
   document.addEventListener("mousemove", (e) => {
     if (!isPan) return;
     viewport.scrollLeft = sl - (e.pageX - sX);
     viewport.scrollTop = st - (e.pageY - sY);
   });
-<<<<<<< HEAD
-=======
-
->>>>>>> 7fcbeb9 (Update template surat dari Codespaces)
   document.addEventListener("mouseup", () => {
     isPan = false;
     viewport.classList.remove("is-panning");
@@ -623,7 +565,6 @@ Coba AI secara langsung di aplikasi favorit Anda … Gunakan Gemini untuk membua
         template: templateHtml,
         fields,
         blocks: state,
-<<<<<<< HEAD
         // Kop terstruktur
         logo_url: state.kop.mode === "terstruktur" ? state.kop.logoUrl : "",
         logo: state.kop.mode === "terstruktur" ? state.kop.logoUrl : "",
@@ -632,12 +573,6 @@ Coba AI secara langsung di aplikasi favorit Anda … Gunakan Gemini untuk membua
         // QR TTE
         signature_qr_url: state.ttd.qrUrl,
         // Sample data
-=======
-        logo_url: state.kop.mode === "terstruktur" ? state.kop.logoUrl : "",
-        logo: state.kop.mode === "terstruktur" ? state.kop.logoUrl : "",
-        kop_foto_url: state.kop.mode === "foto" ? state.kop.fotoUrl : "",
-        signature_qr_url: state.ttd.qrUrl,
->>>>>>> 7fcbeb9 (Update template surat dari Codespaces)
         sample_data: buildSampleDataFromFields()
       });
       setStatus("Tersimpan. Mengalihkan...", false);
@@ -656,8 +591,4 @@ Coba AI secara langsung di aplikasi favorit Anda … Gunakan Gemini untuk membua
   }
 
   init();
-<<<<<<< HEAD
 })();
-=======
-})();
->>>>>>> 7fcbeb9 (Update template surat dari Codespaces)

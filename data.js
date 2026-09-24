@@ -1,5 +1,3 @@
-Coba AI secara langsung di aplikasi favorit Anda … Gunakan Gemini untuk membuat draf dan menyempurnakan konten, serta dapatkan Gemini Pro dengan akses ke AI generasi berikutnya dari Google seharga Rp 309.000 Rp 77.000 selama 3 bulan
-
 const SESSION_KEY = "suratapp_session";
 const AUTH_KEY = "suratapp_auth";
 const AUTH_VERSION = 2;
@@ -14,136 +12,6 @@ let pendingProtectedControl = null;
 // DEFAULT TEMPLATES
 // =========================================================
 const DEFAULT_TEMPLATES = [
-  {
-  key: "dummy_peminjaman_pendopo",
-  nama: "Peminjaman Pendopo",
-  deskripsi: "Template dummy surat peminjaman pendopo untuk keperluan rapat / kegiatan dinas.",
-  layout: "official",
-  logo_url: "Lambang_Kabupaten_Tuban.webp",
-  logo: "Lambang_Kabupaten_Tuban.webp",
-  kop_foto_url: "",
-  signature_qr_url: "",
-  template: `
-    <table class="blok-kop">
-      <tr>
-        <td class="kop-logo"><img src="Lambang_Kabupaten_Tuban.webp" alt="Logo"></td>
-        <td class="kop-teks">
-          <div class="kop-instansi">PEMERINTAH KABUPATEN TUBAN</div>
-          <div class="kop-dinas">DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL</div>
-          <div class="kop-alamat">Jalan Teuku Umar No. 7 Telp. (0356) 321785</div>
-          <div class="kop-alamat">Laman disdukcapil.tuban.go.id</div>
-        </td>
-      </tr>
-    </table>
-    <div class="kop-garis garis-medium"></div>
-
-    <div class="date-box">Tuban, {{tanggal_surat}}</div>
-
-    <table class="blok-identitas">
-      <tr>
-        <td class="id-kiri">
-          <table class="id-table">
-            <tr><td class="id-label">Nomor</td><td class="id-colon">:</td><td>{{nomor_surat}}</td></tr>
-            <tr><td class="id-label">Sifat</td><td class="id-colon">:</td><td>{{sifat_surat}}</td></tr>
-            <tr><td class="id-label">Lampiran</td><td class="id-colon">:</td><td>{{lampiran}}</td></tr>
-            <tr><td class="id-label">Perihal</td><td class="id-colon">:</td><td>{{perihal}}</td></tr>
-          </table>
-        </td>
-      </tr>
-    </table>
-
-    <div class="blok-tujuan">
-      <div>Yth. Bupati Tuban</div>
-      <div>di</div>
-      <div class="tujuan-kota">{{tujuan_kota}}</div>
-    </div>
-
-    <div class="blok-isi">
-      <p class="isi-justify">Dalam rangka peningkatan pelayanan administrasi Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban terus melakukan berbagai inovasi dan transformasi digital. Oleh karena itu akan dilaksanakan Pencatangan PELITA DESA (Pelayanan Administrasi Tanpa Baya di Desa) dan Bimtek Operator Aplikasi SAKTI (Sistem Administrasi Kependudukan Terintegrasi). Berkaitan dengan hal tersebut mohon berkenan Bupati mengijinkan kami meminjam Pendopo Kridomangunggal besok pada:</p>
-
-      <p class="isi-justify" style="margin-left: 28px;">
-        Hari / Tanggal : {{hari_tanggal}}<br>
-        Jam : {{jam}}<br>
-        Keterangan : {{keterangan}}
-      </p>
-
-      <p class="isi-justify">Demikian atas perkenan Bupati disampaikan terima kasih.</p>
-    </div>
-
-    <div class="blok-ttd blok-ttd-kanan">
-      <div class="ttd-jabatan">Kepala Dinas Kependudukan dan<br>Pencatatan Sipil<br>Kabupaten Tuban</div>
-      <div class="ttd-qr-wrap"><div class="ttd-space-dummy"></div></div>
-      <div class="ttd-nama">{{nama_penandatangan}}</div>
-      <div class="ttd-pangkat">{{pangkat_penandatangan}}</div>
-      <div class="ttd-nip">NIP. {{nip_penandatangan}}</div>
-    </div>
-  `,
-  fields: [
-    { name: "nomor_surat", label: "Nomor surat", type: "text", required: true },
-    { name: "tanggal_surat", label: "Tanggal surat", type: "date", required: true },
-    { name: "sifat_surat", label: "Sifat surat", type: "text", required: true },
-    { name: "lampiran", label: "Lampiran", type: "text", required: true },
-    { name: "perihal", label: "Perihal", type: "text", required: true },
-    { name: "tujuan_kota", label: "Tempat tujuan", type: "text", required: true },
-    { name: "hari_tanggal", label: "Hari / tanggal", type: "text", required: true },
-    { name: "jam", label: "Jam", type: "text", required: true },
-    { name: "keterangan", label: "Keterangan peserta / jadwal", type: "textarea", required: true },
-    { name: "nama_penandatangan", label: "Nama penandatangan", type: "text", required: true },
-    { name: "pangkat_penandatangan", label: "Pangkat penandatangan", type: "text", required: true },
-    { name: "nip_penandatangan", label: "NIP penandatangan", type: "text", required: true },
-  ],
-  sample_data: {
-    nomor_surat: "000.1.4/414.107/2026",
-    tanggal_surat: "2026-09-16",
-    sifat_surat: "Penting",
-    lampiran: "-",
-    perihal: "Peminjaman Pendopo Kridomangunggal",
-    tujuan_kota: "Tempat",
-    hari_tanggal: "Rabu / 23 September 2026",
-    jam: "10.00 WIB – selesai",
-    keterangan: "Peserta 350 orang, terdiri dari:\n- Camat 20 orang\n- Operator SAKTI 328 orang\n- Operator SIAK di Kecamatan 19 orang\n- JF Analisis Kebijakan di Dinas Dukcapil 8 orang",
-    nama_penandatangan: "Agung Triwibowo, SE., MM",
-    pangkat_penandatangan: "Pembina Utama Muda",
-    nip_penandatangan: "196802191993031005"
-  },
-  blocks: {
-    kop: {
-      enabled: true,
-      mode: "terstruktur",
-      instansi: "PEMERINTAH KABUPATEN TUBAN",
-      dinas: "DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL",
-      alamat: "Jalan Teuku Umar No. 7 Telp. (0356) 321785",
-      line: "medium",
-      logoUrl: "Lambang_Kabupaten_Tuban.webp",
-      fotoUrl: ""
-    },
-    identitas: {
-      enabled: true,
-      nomor: "",
-      sifat: "Penting",
-      lampiran: "-",
-      hal: "Peminjaman Pendopo Kridomangunggal",
-      tanggal: ""
-    },
-    tujuan: {
-      enabled: true,
-      y1: "Bupati Tuban",
-      y2: "",
-      di: "Tempat"
-    },
-    isi: {
-      enabled: true,
-      text: "Dalam rangka peningkatan pelayanan administrasi Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban terus melakukan berbagai inovasi dan transformasi digital. Oleh karena itu akan dilaksanakan Pencatangan PELITA DESA (Pelayanan Administrasi Tanpa Baya di Desa) dan Bimtek Operator Aplikasi SAKTI (Sistem Administrasi Kependudukan Terintegrasi). Berkaitan dengan hal tersebut mohon berkenan Bupati mengijinkan kami meminjam Pendopo Kridomangunggal besok pada:\n\nHari / Tanggal : {{hari_tanggal}}\nJam : {{jam}}\nKeterangan : {{keterangan}}",
-      align: "justify"
-    },
-    ttd: {
-      enabled: true,
-      pejabatId: "1",
-      posisi: "kanan",
-      qrUrl: ""
-    }
-  }
-},
   {
     key: "konfirmasi_akta",
     nama: "Konfirmasi Keabsahan Kutipan Akta Kelahiran",
@@ -618,8 +486,4 @@ function deleteLetter(letterId) {
   return letters;
 }
 
-<<<<<<< HEAD
 function saveLetter(letter) { return upsertLetter(letter); }
-=======
-function saveLetter(letter) { return upsertLetter(letter); }
->>>>>>> 7fcbeb9 (Update template surat dari Codespaces)
