@@ -1,11 +1,17 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7fcbeb9 (Update template surat dari Codespaces)
 /* =========================================================
    IMPORT FONT
    - DM Sans   : font utama untuk UI/tampilan aplikasi
    - Manrope   : font display untuk judul & angka besar
    ========================================================= */
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap');
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7fcbeb9 (Update template surat dari Codespaces)
 /* =========================================================
    VARIABEL GLOBAL (CSS Custom Properties)
    Ubah nilai di sini untuk mengganti tema warna seluruh situs
@@ -411,6 +417,7 @@ button, input { font: inherit; }
    ========================================================= */
 .edit-layout {
   display: grid;
+<<<<<<< HEAD
   grid-template-columns: minmax(380px, 460px) 1fr;
   height: 100vh;
   background: var(--mist);
@@ -1429,4 +1436,1023 @@ button, input { font: inherit; }
 }
 .official-paper .blok-tujuan {
   margin: 0 0 12px;
+=======
+  grid-template-columns: minmax(360px, 440px) minmax(0, 1fr);
+  min-height: 100vh;
+  background: linear-gradient(180deg, #edf7f0 0%, #f5faf6 100%);
+}
+
+/* ---- Panel kiri: branding sesuai tema aplikasi ---- */
+.edit-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px 18px 28px;
+  color: #f5fff9;
+  background: linear-gradient(160deg, #0f654a 0%, #0f5d49 40%, #0a4639 100%);
+  overflow-y: auto;
+  box-shadow: inset -1px 0 0 rgba(255,255,255,.08);
+>>>>>>> 7fcbeb9 (Update template surat dari Codespaces)
+}
+
+.edit-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: inherit;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  line-height: 1.3;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.edit-brand .brand-mark {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border: 1px solid rgba(255,255,255,.52);
+  border-radius: 10px;
+  background: rgba(255,255,255,.9) url('Lambang_Kabupaten_Tuban.webp') center/contain no-repeat;
+  color: transparent;
+  font-size: 0;
+}
+
+.edit-nav {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 12px;
+  background: rgba(8, 48, 35, .22);
+}
+
+.edit-nav-link {
+  flex: 1;
+  padding: 9px 6px;
+  border-radius: 8px;
+  color: rgba(245,255,249,.78);
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  transition: background .2s, color .2s, transform .15s;
+}
+
+.edit-nav-link:hover {
+  color: #fff;
+  background: rgba(255,255,255,.08);
+}
+
+.edit-nav-link.active {
+  color: var(--green-dark);
+  background: var(--lime);
+}
+
+/* ---- Grup Kontrol (setiap section 00-06) ---- */
+.ctrl-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 12px;
+  background: rgba(8, 48, 35, .22);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+}
+
+.ctrl-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  color: rgba(245,255,249,.75);
+  cursor: pointer;
+  user-select: none;
+}
+
+.switch input { accent-color: var(--lime); }
+
+.ctrl-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--lime);
+  font-family: 'Manrope', sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.ctrl-num {
+  display: inline-grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  border-radius: 5px;
+  color: var(--green-dark);
+  background: var(--lime);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.ctrl-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ctrl-field label {
+  color: rgba(245,255,249,.82);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+
+.ctrl-field input,
+.ctrl-field select,
+.ctrl-field textarea {
+  width: 100%;
+  padding: 9px 10px;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 8px;
+  color: #f6fff9;
+  background: rgba(13, 27, 22, .18);
+  font-size: 12px;
+  font-family: inherit;
+  outline: 0;
+  resize: vertical;
+  transition: border-color .2s, background .2s, box-shadow .2s;
+}
+
+.ctrl-field input::placeholder,
+.ctrl-field textarea::placeholder {
+  color: rgba(255,255,255,.42);
+}
+
+.ctrl-field input:focus,
+.ctrl-field select:focus,
+.ctrl-field textarea:focus {
+  border-color: rgba(214,239,189,.9);
+  background: rgba(9, 19, 16, .2);
+  box-shadow: 0 0 0 3px rgba(214,239,189,.12);
+}
+
+.ctrl-field select option {
+  color: #111;
+  background: #fff;
+}
+
+.ctrl-hint {
+  margin: 0; font-size: 11px;
+  color: rgba(245,255,249,.6); line-height: 1.4;
+}
+.ctrl-hint code {
+  padding: 1px 5px; border-radius: 4px;
+  background: rgba(214,239,189,.2);
+  color: var(--lime); font-size: 10px;
+}
+.ctrl-status {
+  min-height: 16px; margin: 4px 0 0;
+  color: var(--lime); font-size: 11px;
+}
+.ctrl-status.is-error { color: #ffb3a6; }
+.ctrl-thumb {
+  width: 60px; height: 60px; object-fit: contain;
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 6px; background: #fff; margin-top: 4px;
+}
+
+/* ---- Tombol ---- */
+.btn-ctrl, .btn-ctrl-ghost, .btn-ctrl-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 9px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background .2s, transform .1s, box-shadow .2s;
+}
+
+.btn-ctrl {
+  color: var(--green-dark);
+  background: var(--lime);
+  box-shadow: 0 6px 16px rgba(13, 96, 71, .15);
+}
+
+.btn-ctrl:hover { background: #cfe9aa; }
+.btn-ctrl:active { transform: scale(.98); }
+
+.btn-ctrl-ghost {
+  color: #f5fff9;
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.22);
+}
+
+.btn-ctrl-ghost:hover {
+  background: rgba(255,255,255,.18);
+}
+
+.btn-ctrl-primary {
+  color: var(--green-dark);
+  background: var(--lime);
+  flex: 1;
+  box-shadow: 0 8px 18px rgba(13, 96, 71, .14);
+}
+
+.btn-ctrl-primary:hover {
+  background: #cfe9aa;
+}
+
+.margin-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+}
+
+/* ---- Toolbar editor ---- */
+.editor-toolbar {
+  display: flex; gap: 4px; padding: 6px;
+  border: 1px solid rgba(255,255,255,.18);
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  background: rgba(0,0,0,.22);
+}
+.toolbar-button {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 28px; padding: 4px 10px;
+  border: 0; border-radius: 6px;
+  color: rgba(245,255,249,.75); background: transparent;
+  font-size: 12px; font-weight: 700; cursor: pointer;
+  transition: background .2s;
+}
+.toolbar-button:hover { color: #fff; background: rgba(255,255,255,.1); }
+.toolbar-insert {
+  margin-left: auto;
+  color: var(--green-dark); background: var(--lime);
+}
+.toolbar-insert:hover { background: #c8e8a7; color: var(--green-dark); }
+
+/* ---- Area editor (contenteditable) — putih seperti kertas ---- */
+.template-editor {
+  min-height: 200px; max-width: 100%;
+  padding: 14px;
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 0 0 8px 8px;
+  color: var(--ink);
+  background: #fbfdfc;
+  font-family: Georgia, serif;
+  font-size: 13px; line-height: 1.6;
+  outline: 0;
+  transition: border-color .2s, background .2s, box-shadow .2s;
+}
+.template-editor:focus {
+  border-color: var(--lime);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(214,239,189,.2);
+}
+.template-editor:empty::before {
+  color: #a1ada7; content: attr(data-placeholder);
+}
+.template-editor p { margin: 0 0 12px; }
+
+/* ---- Field list (data staf) ---- */
+.field-list { display: grid; gap: 8px; }
+.field-card {
+  padding: 10px;
+  border-radius: 10px;
+  background: rgba(7, 31, 25, .18);
+  border: 1px solid rgba(255,255,255,.12);
+}
+.field-card-top {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 8px;
+  color: rgba(245,255,249,.65); font-size: 11px;
+}
+.remove-field, .remove-category {
+  padding: 0; border: 0; color: #ffb3a6;
+  background: none; font: inherit; font-size: 11px;
+  cursor: pointer;
+}
+.remove-field:hover, .remove-category:hover { color: #fff; }
+.field-card-grid {
+  display: grid; grid-template-columns: 1.4fr 1fr; gap: 8px;
+}
+.category-rows { display: grid; gap: 6px; margin: 8px 0; }
+.category-row {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr auto;
+  gap: 4px; align-items: center;
+}
+.category-row input {
+  padding: 6px 8px; font-size: 11px;
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 5px; color: #fff;
+  background: rgba(0,0,0,.28);
+  outline: 0; min-width: 0;
+}
+.category-row input:focus { border-color: var(--lime); }
+.required-toggle {
+  display: flex; align-items: center; gap: 6px;
+  margin-top: 8px;
+  color: rgba(245,255,249,.75); font-size: 11px;
+  cursor: pointer;
+}
+.required-toggle input { accent-color: var(--lime); }
+.add-field-actions { display: flex; gap: 8px; margin-top: 8px; }
+.add-field-actions .btn-ctrl-ghost { flex: 1; }
+
+.ctrl-actions { display: flex; gap: 10px; margin-top: 6px; }
+
+/* =========================================================
+   PANEL KANAN: PREVIEW
+   ========================================================= */
+.edit-preview {
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #edf5f1 0%, #f7faf8 100%);
+  overflow: hidden;
+  height: 100vh;
+}
+.preview-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  border-bottom: 1px solid rgba(20, 52, 41, .08);
+  background: rgba(255,255,255,.7);
+  backdrop-filter: blur(6px);
+  flex-shrink: 0;
+}
+.preview-toolbar .section-kicker { color: var(--green); }
+.preview-controls { display: flex; align-items: center; gap: 6px; }
+.zoom-label {
+  font-size: 12px;
+  font-weight: 700;
+  min-width: 44px;
+  text-align: center;
+  color: var(--ink);
+}
+.tool-btn {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .2s, border-color .2s;
+}
+.tool-btn:hover {
+  background: var(--mist);
+  border-color: #afd2b6;
+}
+
+/* Viewport scroll & pan */
+.paper-viewport {
+  flex: 1;
+  overflow: auto;
+  background: #dfe8e2;
+  padding: 24px;
+  cursor: grab;
+  background-image:
+    linear-gradient(45deg, #d2ded7 25%, transparent 25%),
+    linear-gradient(-45deg, #d2ded7 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #d2ded7 75%),
+    linear-gradient(-45deg, transparent 75%, #d2ded7 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0;
+}
+.paper-viewport.is-panning { cursor: grabbing; }
+.paper-viewport.is-panning * { user-select: none; }
+
+.paper-scale {
+  transform-origin: top center;
+  width: fit-content;
+  margin: 0 auto;
+  transition: transform .15s ease;
+}
+
+.paper {
+  width: 794px; min-height: 1123px;
+  background: var(--paper);
+  box-shadow: var(--shadow);
+  color: #1c2823;
+  font-family: Georgia, serif;
+  font-size: 13.5px; line-height: 1.6;
+  box-sizing: border-box;
+  padding: 94px 76px 94px 113px;
+  flex-shrink: 0;
+}
+.letter-content { min-height: 400px; }
+
+/* =========================================================
+   STYLING BLOK HASIL SISIPAN
+   ========================================================= */
+.blok-kop { margin-bottom: 8px; }
+.blok-kop .kop-logo { width: 90px; vertical-align: middle; padding-right: 15px; }
+.blok-kop .kop-logo img { width: 75px; height: 75px; object-fit: contain; }
+.blok-kop .kop-teks { text-align: center; vertical-align: middle; }
+.kop-instansi { font-family: Arial, sans-serif; font-size: 13pt; font-weight: bold; letter-spacing: 1px; }
+.kop-dinas    { font-family: Arial, sans-serif; font-size: 15pt; font-weight: bold; letter-spacing: 1px; }
+.kop-alamat   { margin-top: 3px; font-family: Arial, sans-serif; font-size: 9pt; }
+.kop-garis { margin: 4px 0 14px; }
+.kop-garis.garis-medium { border-top: 2px solid #1c2823; }
+
+.blok-identitas { margin: 10px 0 16px; font-family: Arial, sans-serif; font-size: 11pt; }
+.blok-identitas .id-table { border-collapse: collapse; }
+.blok-identitas .id-label { width: 90px; vertical-align: top; }
+.blok-identitas .id-colon { width: 15px; vertical-align: top; }
+.blok-identitas .id-kanan  { text-align: right; vertical-align: top; }
+
+.blok-tujuan {
+  margin: 0 0 14px;
+  font-family: Arial, sans-serif; font-size: 11pt;
+  line-height: 1.4;
+}
+.blok-tujuan .tujuan-2,
+.blok-tujuan .tujuan-kota { padding-left: 32px; }
+.blok-tujuan .tujuan-kota {
+  font-weight: bold; text-decoration: underline;
+  text-transform: uppercase;
+}
+
+.blok-isi { font-family: Arial, sans-serif; font-size: 11pt; line-height: 1.6; }
+.blok-isi p {
+  margin: 0 0 12px;
+  text-align: justify;
+  text-indent: 1.27cm;
+}
+
+.blok-ttd {
+  width: 300px; margin: 32px 0 0;
+  font-family: Arial, sans-serif; font-size: 11pt;
+  line-height: 1.45;
+  page-break-inside: avoid;
+}
+.blok-ttd-kanan { margin-left: auto; margin-right: 0; }
+.blok-ttd .ttd-qr-wrap {
+  height: 80px; display: flex; align-items: center; margin: 6px 0;
+}
+.blok-ttd .ttd-qr-wrap img { width: 70px; height: 70px; object-fit: contain; }
+.blok-ttd .ttd-nama {
+  font-weight: bold; text-decoration: underline;
+  text-transform: uppercase;
+}
+.blok-ttd .ttd-pangkat, .blok-ttd .ttd-nip { margin: 0; }
+
+/* Chip di editor & preview (warna konsisten) */
+.letter-content .field-chip,
+.field-chip {
+  display: inline-block; padding: 1px 8px;
+  border-radius: 6px;
+  color: var(--green-dark);
+  background: var(--lime);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px; font-weight: 700;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+@media (max-width: 980px) {
+  .edit-layout { grid-template-columns: 1fr; height: auto; }
+  .edit-sidebar { max-height: none; }
+  .edit-preview { height: auto; }
+  .paper-viewport { min-height: 60vh; }
+}
+/* =========================================================
+   =========================================================
+   RENDER SURAT — dipakai BERSAMA oleh edit.html & preview.html
+   Jangan ubah class di sini tanpa tes di kedua halaman.
+   =========================================================
+   ========================================================= */
+
+/* ---- Kertas (wrapper utama surat) ---- */
+.paper {
+  width: 794px;
+  min-height: 1123px;
+  background: var(--paper);
+  box-shadow: var(--shadow);
+  color: #1c2823;
+  font-family: Georgia, serif;
+  font-size: 13.5px;
+  line-height: 1.6;
+  box-sizing: border-box;
+  padding: 94px 76px 94px 113px;
+  flex-shrink: 0;
+  position: relative;
+}
+.letter-content { min-height: 400px; }
+
+/* Print: hilangkan shadow, sesuaikan ukuran */
+@media print {
+  .paper {
+    box-shadow: none;
+    width: 100%;
+    min-height: 0;
+    padding: 0;
+  }
+}
+
+/* =========================================================
+   01. BLOK KOP SURAT
+   ========================================================= */
+.blok-kop {
+  width: 100%;
+  margin-bottom: 8px;
+}
+.blok-kop .kop-logo {
+  width: 90px;
+  vertical-align: middle;
+  padding-right: 15px;
+}
+.blok-kop .kop-logo img {
+  width: 75px;
+  height: 75px;
+  object-fit: contain;
+  display: block;
+}
+.blok-kop .kop-teks {
+  text-align: center;
+  vertical-align: middle;
+}
+.blok-kop .kop-instansi {
+  font-family: Arial, sans-serif;
+  font-size: 13pt;
+  font-weight: bold;
+  letter-spacing: 1px;
+  line-height: 1.3;
+}
+.blok-kop .kop-dinas {
+  font-family: Arial, sans-serif;
+  font-size: 15pt;
+  font-weight: bold;
+  letter-spacing: 1px;
+  line-height: 1.3;
+}
+.blok-kop .kop-alamat {
+  margin-top: 3px;
+  font-family: Arial, sans-serif;
+  font-size: 9pt;
+  line-height: 1.3;
+}
+
+/* Variasi garis kop */
+.kop-garis { margin: 4px 0 14px; }
+.kop-garis.garis-none   { display: none; }
+.kop-garis.garis-thin   { border-top: 1px solid #1c2823; }
+.kop-garis.garis-medium { border-top: 2px solid #1c2823; }
+.kop-garis.garis-thick  { border-top: 4px solid #1c2823; }
+.kop-garis.garis-double { border-top: 1px solid #1c2823; border-bottom: 3px solid #1c2823; height: 3px; }
+.kop-garis.garis-dashed { border-top: 2px dashed #1c2823; }
+.kop-garis.garis-dotted { border-top: 2px dotted #1c2823; }
+
+/* =========================================================
+   02. BLOK IDENTITAS (Nomor/Sifat/Lampiran/Hal)
+   ========================================================= */
+.blok-identitas {
+  margin: 10px 0 16px;
+  font-family: Arial, sans-serif;
+  font-size: 11pt;
+  line-height: 1.4;
+}
+.blok-identitas table { border-collapse: collapse; width: 100%; }
+.blok-identitas .id-kiri { vertical-align: top; width: 70%; }
+.blok-identitas .id-kiri table { width: auto; }
+.blok-identitas .id-label { width: 90px; vertical-align: top; }
+.blok-identitas .id-colon { width: 15px; vertical-align: top; }
+.blok-identitas .id-kanan {
+  text-align: right;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   03. BLOK TUJUAN (Yth)
+   ========================================================= */
+.blok-tujuan {
+  margin: 0 0 14px;
+  font-family: Arial, sans-serif;
+  font-size: 11pt;
+  line-height: 1.4;
+}
+.blok-tujuan .tujuan-2,
+.blok-tujuan .tujuan-kota { padding-left: 32px; }
+.blok-tujuan .tujuan-kota {
+  font-weight: bold;
+  text-decoration: underline;
+  text-transform: uppercase;
+}
+
+/* =========================================================
+   04. BLOK ISI SURAT
+   ========================================================= */
+.blok-isi {
+  font-family: Arial, sans-serif;
+  font-size: 11pt;
+  line-height: 1.6;
+}
+.blok-isi p { margin: 0 0 12px; }
+.blok-isi p.isi-justify {
+  text-align: justify;
+  text-indent: 1.27cm;
+}
+.blok-isi p.isi-left { text-align: left; }
+.blok-isi p.isi-center { text-align: center; }
+
+/* =========================================================
+   05. BLOK TANDA TANGAN
+   ========================================================= */
+.blok-ttd {
+  width: 300px;
+  margin: 32px 0 0;
+  font-family: Arial, sans-serif;
+  font-size: 11pt;
+  line-height: 1.45;
+  page-break-inside: avoid;
+}
+.blok-ttd-kanan  { margin-left: auto; margin-right: 0; }
+.blok-ttd-kiri   { margin-left: 0; margin-right: auto; }
+.blok-ttd-tengah { margin-left: auto; margin-right: auto; }
+
+.blok-ttd .ttd-jabatan { margin-bottom: 0; }
+
+/* Ruang TTD / QR */
+.blok-ttd .ttd-qr-wrap {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  margin: 6px 0;
+}
+.blok-ttd .ttd-qr {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+}
+.blok-ttd .ttd-space-dummy {
+  width: 70px;
+  height: 70px;
+}
+
+.blok-ttd .ttd-nama {
+  font-weight: bold;
+  text-decoration: underline;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+.blok-ttd .ttd-pangkat,
+.blok-ttd .ttd-nip { margin: 0; }
+
+/* =========================================================
+   Placeholder saat blok kosong
+   ========================================================= */
+.isi-empty {
+  color: #a1ada7;
+  font-style: italic;
+  text-align: center;
+  font-size: 11pt;
+  padding: 20px 0;
+  margin: 0;
+}
+
+/* Chip di preview — non-aktifkan warna supaya tampak seperti surat jadi */
+.letter-content .field-chip,
+.letter-content .editor-chip {
+  display: inline;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+/* =========================================================
+   KOP FOTO UTUH — dipakai di edit.html & preview.html
+   ========================================================= */
+.blok-kop-foto {
+  display: block;
+  margin: 0 0 14px;
+}
+.blok-kop-foto img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+.blok-kop-foto.isi-empty {
+  color: #a1ada7;
+  font-style: italic;
+  text-align: center;
+  padding: 20px 0;
+}
+
+/* Di preview.html, mode foto besar */
+.paper-kop {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0 0 18px;
+  object-fit: contain;
+}
+.paper-kop[hidden] { display: none; }
+/* =========================================================
+   TAMBAHAN UNTUK TEMPLATE FORMAL
+   (garis ganda, tabel data, indent lanjutan)
+   ========================================================= */
+
+/* Garis kop tebal + tipis (standar surat dinas formal) */
+.kop-garis.garis-double {
+  border-top: 1px solid #1c2823;
+  border-bottom: 3px solid #1c2823;
+  height: 2px;
+  margin: 4px 0 14px;
+}
+
+/* Lanjutan teks di bawah baris "Hal" */
+.id-lanjutan {
+  display: inline-block;
+  padding-left: 0;   /* sudah otomatis indent karena di dalam <td> */
+}
+
+/* Tabel data (Nama, TTL, No Akta, dll) */
+.tabel-data {
+  margin: 0 0 14px 30px;     /* indent dari kiri, sejajar dengan paragraf */
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+  font-size: 11pt;
+  line-height: 1.4;
+}
+.tabel-data .data-label {
+  width: 160px;
+  vertical-align: top;
+  padding-right: 6px;
+}
+.tabel-data .data-colon {
+  width: 15px;
+  vertical-align: top;
+}
+.tabel-data tr {
+  vertical-align: top;
+}
+
+/* TTD dengan format "a.n." — pastikan rapi tanpa ruang berlebih */
+.blok-ttd .ttd-jabatan {
+  line-height: 1.4;
+  margin-bottom: 0;
+}
+/* =========================================================
+   STYLING DUMMY SURAT FORMAL
+   ========================================================= */
+
+/* Kertas mode official (A4 formal) */
+.official-paper {
+  width: 215mm !important;
+  min-height: 330mm !important;
+  padding: 20mm 20mm 25mm 30mm !important;
+  font-family: Arial, sans-serif;
+  font-size: 12pt;
+  line-height: 1.15;
+}
+
+/* Garis kop ganda (baku surat dinas) */
+.kop-garis.garis-double {
+  border-top: 1px solid #1c2823;
+  border-bottom: 3px solid #1c2823;
+  height: 2px;
+  margin: 4px 0 14px;
+}
+
+/* Tabel data (Nama, TTL, No Akta, dst.) */
+.tabel-data {
+  margin: 8px 0 14px 30px;
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+  font-size: 11pt;
+  line-height: 1.4;
+}
+.tabel-data .data-label {
+  width: 160px;
+  vertical-align: top;
+  padding-right: 6px;
+}
+.tabel-data .data-colon {
+  width: 15px;
+  vertical-align: top;
+}
+.tabel-data tr { vertical-align: top; }
+
+/* Blok TTD panjang (a.n.) */
+.blok-ttd .ttd-jabatan {
+  line-height: 1.4;
+  margin-bottom: 0;
+}
+
+/* Space dummy untuk TTD */
+.ttd-space-dummy {
+  width: 70px;
+  height: 70px;
+}
+
+/* Footer "ditandatangani elektronik" */
+.official-footer {
+  margin-top: 12mm;
+  color: #5d6862;
+  font-size: 8pt;
+  text-align: center;
+}
+
+/* Jarak blok official biar rapi */
+.official-paper .blok-isi p {
+  margin: 0 0 10px;
+}
+.official-paper .blok-identitas {
+  margin: 10px 0 14px;
+}
+.official-paper .blok-tujuan {
+  margin: 0 0 12px;
+}
+/* Preview tetap berada di tempat saat sidebar kiri di-scroll */
+@media (min-width: 981px) {
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .edit-layout {
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .edit-sidebar {
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  .edit-preview {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+  }
+}
+
+/* Tampilan mobile tetap bisa scroll normal */
+@media (max-width: 980px) {
+  html,
+  body {
+    overflow: auto;
+  }
+
+  .edit-layout {
+    height: auto;
+    overflow: visible;
+  }
+
+  .edit-sidebar,
+  .edit-preview {
+    height: auto;
+    overflow: visible;
+  }
+
+  .edit-preview {
+    position: static;
+  }
+}
+/* =========================================================
+   SCROLL TERPISAH EDITOR DAN PRATINJAU
+   ========================================================= */
+
+@media (min-width: 981px) {
+  html,
+  body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .edit-layout {
+    display: grid;
+    grid-template-columns: minmax(380px, 460px) minmax(0, 1fr);
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Panel kiri: area edit memiliki scroll sendiri */
+  .edit-sidebar {
+    width: 100%;
+    height: 100vh;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  /* Panel kanan tetap berada di tempat */
+  .edit-preview {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100vh;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /*
+   * Area kertas bisa digeser:
+   * - atas dan bawah
+   * - kiri dan kanan
+   */
+  .paper-viewport {
+    position: relative;
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+    padding: 32px;
+  }
+
+  /*
+   * Jangan gunakan width: fit-content karena pada beberapa
+   * browser ukuran scroll horizontal bisa tidak terbaca dengan baik.
+   */
+  .paper-scale {
+    width: max-content;
+    min-width: 100%;
+    min-height: max-content;
+    margin: 0 auto;
+  }
+
+  .paper {
+    flex-shrink: 0;
+  }
+}
+
+/* Tampilan layar kecil/HP */
+@media (max-width: 980px) {
+  html,
+  body {
+    height: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .edit-layout {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .edit-sidebar {
+    width: 100%;
+    height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .edit-preview {
+    position: relative;
+    width: 100%;
+    height: 80vh;
+    min-height: 600px;
+    overflow: hidden;
+  }
+
+  .paper-viewport {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    overflow: auto;
+    padding: 24px;
+  }
+
+  .paper-scale {
+    width: max-content;
+    min-width: 100%;
+    min-height: max-content;
+  }
 }
