@@ -1,10 +1,10 @@
-
 (function () {
   /* =========================================================
      EDIT.JS — Builder Template
      - Mode Kop: "terstruktur" (logo+teks) atau "foto" (scan utuh)
      - Preview selalu render ulang dari state (anti-nimbun)
      - Simpan logo_url (terstruktur) dan kop_foto_url (foto) terpisah
+     - Penandatangan diambil dari getDirut() (sinkron dengan penandatangan.html)
      ========================================================= */
 
   const params = new URLSearchParams(window.location.search);
@@ -29,31 +29,6 @@
   };
   const MM_TO_PX = 3.7795;
 
-  const PEJABAT = {
-    "1": {
-      tipe: "langsung",
-      jabatan: "Kepala Dinas Kependudukan dan Pencatatan Sipil",
-      nama: "Drs. SUPRIYANTO, M.Si.",
-      pangkat: "Pembina Utama Muda (IV/c)",
-      nip: "NIP. 19680315 199303 1 004"
-    },
-    "2": {
-      tipe: "an",
-      jabatan_atasan: "Kepala Dinas Kependudukan dan Pencatatan Sipil",
-      jabatan: "Kepala Bidang Pelayanan Pencatatan Sipil",
-      nama: "DINA WIDYANINGTYAS WINARNI, SE., MM",
-      pangkat: "Pembina (IV/a)",
-      nip: "NIP. 19731103 200312 2 002"
-    },
-    "3": {
-      tipe: "plt",
-      jabatan: "Plt. Kepala Dinas Kependudukan dan Pencatatan Sipil",
-      nama: "Drs. SUPRIYANTO, M.Si.",
-      pangkat: "Pembina Utama Muda (IV/c)",
-      nip: "NIP. 19680315 199303 1 004"
-    }
-  };
-
   // =========================================================
   // STATE
   // =========================================================
@@ -61,13 +36,11 @@
     kop: {
       enabled: existing?.blocks?.kop?.enabled ?? false,
       mode: existing?.blocks?.kop?.mode || "terstruktur",
-      // Mode terstruktur
       instansi: existing?.blocks?.kop?.instansi || "PEMERINTAH KABUPATEN TUBAN",
       dinas: existing?.blocks?.kop?.dinas || "DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL",
       alamat: existing?.blocks?.kop?.alamat || "Jl. Raya Tuban No. 123 · Telp. (0356) 12345",
       line: existing?.blocks?.kop?.line || "medium",
       logoUrl: existing?.blocks?.kop?.logoUrl || existing?.logo_url || "",
-      // Mode foto utuh
       fotoUrl: existing?.blocks?.kop?.fotoUrl || existing?.kop_foto_url || ""
     },
     identitas: {
@@ -145,7 +118,8 @@
     byId("isi-text").value = state.isi.text;
     byId("isi-align").value = state.isi.align;
 
-    byId("ttd-pejabat").value = state.ttd.pejabatId;
+    // Isi dropdown pejabat dari getDirut()
+    fillPejabatOptions();
     byId("ttd-posisi").value = state.ttd.posisi;
     if (state.ttd.qrUrl) {
       byId("ttd-qr-prev").src = state.ttd.qrUrl;
@@ -164,6 +138,24 @@
     setTimeout(() => {
       viewport.scrollLeft = (viewport.scrollWidth - viewport.clientWidth) / 2;
     }, 80);
+  }
+
+  // =========================================================
+  // ISI DROPDOWN PEJABAT DARI getDirut()
+  // =========================================================
+  function fillPejabatOptions() {
+    const select = byId("ttd-pejabat");
+    if (!select) return;
+    const list = getDirut();
+    select.innerHTML = '<option value="">-- Pilih --</option>' +
+      list.map((s) => `<option value="${escapeHtml(s.id)}">${escapeHtml(s.nama)} — ${escapeHtml(s.jabatan)}</option>`).join("");
+
+    // Kalau pejabatId lama tidak ada di daftar (misal "1", "2"), pakai yang pertama
+    const exists = list.some((s) => s.id === state.ttd.pejabatId);
+    if (!exists) {
+      state.ttd.pejabatId = list[0]?.id || "";
+    }
+    select.value = state.ttd.pejabatId || "";
   }
 
   // =========================================================
@@ -307,7 +299,6 @@
       case "kop": {
         const s = state.kop;
 
-        // --- MODE FOTO UTUH ---
         if (s.mode === "foto") {
           if (!s.fotoUrl) {
             return `<div class="blok-kop-foto"><p class="isi-empty">(Belum upload foto kop)</p></div>`;
@@ -315,7 +306,6 @@
           return `<div class="blok-kop-foto"><img src="${s.fotoUrl}" alt="Kop Surat"></div>`;
         }
 
-        // --- MODE TERSTRUKTUR (default) ---
         const logoSrc = s.logoUrl || "Lambang_Kabupaten_Tuban.webp";
         return `
           <table class="blok-kop">
@@ -380,20 +370,20 @@
         if (!s.pejabatId) {
           return `<div class="blok-ttd blok-ttd-${s.posisi}"><p class="isi-empty">(Pilih pejabat penandatangan)</p></div>`;
         }
-        const d = PEJABAT[s.pejabatId];
-        const jabatan = d.tipe === "an"
-          ? `a.n. ${escapeHtml(d.jabatan_atasan)}<br>${escapeHtml(d.jabatan)},`
-          : `${escapeHtml(d.jabatan)},`;
+        const d = getDirut().find((item) => item.id === s.pejabatId);
+        if (!d) {
+          return `<div class="blok-ttd blok-ttd-${s.posisi}"><p class="isi-empty">(Pejabat tidak ditemukan — pilih ulang di panel kiri)</p></div>`;
+        }
         const qrHtml = s.qrUrl
           ? `<img src="${s.qrUrl}" class="ttd-qr" alt="QR">`
           : `<div class="ttd-space-dummy"></div>`;
         return `
           <div class="blok-ttd blok-ttd-${s.posisi}">
-            <div class="ttd-jabatan">${jabatan}</div>
+            <div class="ttd-jabatan">${escapeHtml(d.jabatan || "")},</div>
             <div class="ttd-qr-wrap">${qrHtml}</div>
-            <div class="ttd-nama">${escapeHtml(d.nama)}</div>
-            <div class="ttd-pangkat">${escapeHtml(d.pangkat)}</div>
-            <div class="ttd-nip">${escapeHtml(d.nip)}</div>
+            <div class="ttd-nama">${escapeHtml(d.nama || "")}</div>
+            <div class="ttd-pangkat">${escapeHtml(d.pangkat || "")}</div>
+            <div class="ttd-nip">${d.nip ? "NIP. " + escapeHtml(d.nip) : ""}</div>
           </div>`;
       }
     }
@@ -565,14 +555,10 @@
         template: templateHtml,
         fields,
         blocks: state,
-        // Kop terstruktur
         logo_url: state.kop.mode === "terstruktur" ? state.kop.logoUrl : "",
         logo: state.kop.mode === "terstruktur" ? state.kop.logoUrl : "",
-        // Foto kop utuh
         kop_foto_url: state.kop.mode === "foto" ? state.kop.fotoUrl : "",
-        // QR TTE
         signature_qr_url: state.ttd.qrUrl,
-        // Sample data
         sample_data: buildSampleDataFromFields()
       });
       setStatus("Tersimpan. Mengalihkan...", false);
