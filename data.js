@@ -91,7 +91,7 @@ const DEFAULT_TEMPLATES = [
   <p class="isi-justify">Demikian untuk menjadikan maklum dan atas kerjasamanya disampaikan terima kasih.</p>
 </div>
 <div class="blok-ttd blok-ttd-kanan">
-  <div class="ttd-jabatan">a.n. Kepala Dinas Kependudukan dan<br>Pencatatan Sipil<br>Kepala Bidang Pelayanan Pencatatan Sipil,</div>
+  <div class="ttd-jabatan">Kepala Dinas Kependudukan dan<br>Pencatatan Sipil<br>Kabupaten Tuban</div>
   <div class="ttd-qr-wrap"><div class="ttd-space-dummy"></div></div>
   <div class="ttd-nama">{{nama_penandatangan}}</div>
   <div class="ttd-pangkat">{{pangkat_penandatangan}}</div>
@@ -128,9 +128,9 @@ const DEFAULT_TEMPLATES = [
       tanggal_akta: "1993-03-09",
       nama_ayah: "Sugiono",
       nama_ibu: "Hani'ah",
-      nama_penandatangan: "Dina Widyaningtyas Winarni, SE., MM",
-      pangkat_penandatangan: "Pembina, (IV/a)",
-      nip_penandatangan: "197311032003122002",
+      nama_penandatangan: "Agung Triwibowo, SE, MM",
+      pangkat_penandatangan: "Pembina Utama Muda",
+      nip_penandatangan: "19680219 199303 1 005",
     },
     blocks: {
       kop: {
@@ -164,7 +164,7 @@ const DEFAULT_TEMPLATES = [
       },
       ttd: {
         enabled: true,
-        pejabatId: "2",
+        pejabatId: "1",
         posisi: "kanan",
         qrUrl: ""
       }
@@ -173,8 +173,8 @@ const DEFAULT_TEMPLATES = [
 ];
 
 const DEFAULT_DIRUT = [
-  { id: "dirut-001", nama: "Budi Santoso", jabatan: "Direktur Utama", nip: "19850101 201001 1 001" },
-  { id: "dirut-002", nama: "Siti Rahmawati", jabatan: "Direktur Operasional", nip: "19870312 201203 2 002" },
+  { id: "dirut-001", nama: "Agung Triwibowo, SE, MM", jabatan: "Kepala Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban", pangkat: "Pembina Utama Muda", nip: "19680219 199303 1 005" },
+  { id: "dirut-002", nama: "Dina Widyaningtyas Winarni, SE., MM", jabatan: "Kepala Bidang Pelayanan Pencatatan Sipil", pangkat: "Pembina (IV/a)", nip: "197311032003122002" },
 ];
 
 // =========================================================
@@ -336,14 +336,14 @@ function getTemplates() {
     let templates = deduped.length ? deduped : DEFAULT_TEMPLATES;
     const seededDummy = DEFAULT_TEMPLATES.find((template) => template.key === "dummy_keabsahan_akta_blitar");
 
-    // ===== BUMP VERSION: 4 → 5 =====
-    if (seededDummy && localStorage.getItem(DUMMY_TEMPLATE_VERSION_KEY) !== "5") {
+    // ===== BUMP VERSION: 5 → 6 =====
+    if (seededDummy && localStorage.getItem(DUMMY_TEMPLATE_VERSION_KEY) !== "6") {
       const dummyIndex = templates.findIndex((template) => template.key === seededDummy.key);
       templates = dummyIndex >= 0
         ? templates.map((template, index) => index === dummyIndex ? seededDummy : template)
         : [...templates, seededDummy];
       localStorage.setItem(DUMMY_TEMPLATE_SEED_KEY, "1");
-      localStorage.setItem(DUMMY_TEMPLATE_VERSION_KEY, "5");
+      localStorage.setItem(DUMMY_TEMPLATE_VERSION_KEY, "6");
     }
 
     const normalized = setTemplates(templates);
@@ -388,18 +388,49 @@ function buildTemplatePreview(template) {
 }
 
 // =========================================================
-// DIRUT / SIGNERS
+// DIRUT / SIGNERS  (CRUD)
 // =========================================================
 function getDirut() {
   try {
-    const saved = JSON.parse(localStorage.getItem(DIRUT_KEY));
-    return Array.isArray(saved) && saved.length ? saved : DEFAULT_DIRUT;
+    const raw = localStorage.getItem(DIRUT_KEY);
+    if (raw === null) return DEFAULT_DIRUT;
+    const saved = JSON.parse(raw);
+    return Array.isArray(saved) ? saved : DEFAULT_DIRUT;
   } catch (error) { return DEFAULT_DIRUT; }
 }
+
 function setDirut(signers) {
-  const normalized = Array.isArray(signers) ? signers : DEFAULT_DIRUT;
+  const normalized = Array.isArray(signers)
+    ? signers.map((s, i) => ({
+        id: String(s?.id || `dirut-${Date.now()}-${i}`),
+        nama: String(s?.nama || "").trim(),
+        jabatan: String(s?.jabatan || "").trim(),
+        pangkat: String(s?.pangkat || "").trim(),
+        nip: String(s?.nip || "").trim(),
+      })).filter((s) => s.nama)
+    : [];
   localStorage.setItem(DIRUT_KEY, JSON.stringify(normalized));
   return normalized;
+}
+
+function upsertDirut(signer) {
+  const list = [...getDirut()];
+  const incoming = {
+    id: String(signer?.id || `dirut-${Date.now()}`),
+    nama: String(signer?.nama || "").trim(),
+    jabatan: String(signer?.jabatan || "").trim(),
+    pangkat: String(signer?.pangkat || "").trim(),
+    nip: String(signer?.nip || "").trim(),
+  };
+  if (!incoming.nama) return list;
+  const idx = list.findIndex((s) => s.id === incoming.id);
+  if (idx >= 0) list[idx] = incoming;
+  else list.push(incoming);
+  return setDirut(list);
+}
+
+function deleteDirut(id) {
+  return setDirut(getDirut().filter((s) => s.id !== id));
 }
 
 // =========================================================
