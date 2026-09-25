@@ -91,7 +91,7 @@ const DEFAULT_TEMPLATES = [
   <p class="isi-justify">Demikian untuk menjadikan maklum dan atas kerjasamanya disampaikan terima kasih.</p>
 </div>
 <div class="blok-ttd blok-ttd-kanan">
-  <div class="ttd-jabatan">Kepala Dinas Kependudukan dan<br>Pencatatan Sipil<br>Kabupaten Tuban</div>
+  <div class="ttd-jabatan">{{jabatan_penandatangan}},</div>
   <div class="ttd-qr-wrap"><div class="ttd-space-dummy"></div></div>
   <div class="ttd-nama">{{nama_penandatangan}}</div>
   <div class="ttd-pangkat">{{pangkat_penandatangan}}</div>
@@ -110,9 +110,6 @@ const DEFAULT_TEMPLATES = [
       { name: "nama_ayah", label: "Nama ayah", type: "text", required: true },
       { name: "nama_ibu", label: "Nama ibu", type: "text", required: true },
       { name: "tanggal_akta", label: "Tanggal akta kelahiran", type: "date", required: true },
-      { name: "nama_penandatangan", label: "Nama penandatangan", type: "text", required: true },
-      { name: "pangkat_penandatangan", label: "Pangkat / golongan", type: "text", required: true },
-      { name: "nip_penandatangan", label: "NIP penandatangan", type: "text", required: true },
     ],
     sample_data: {
       nomor_surat: "B/470.02/1785/409.20.3/2026",
@@ -128,9 +125,6 @@ const DEFAULT_TEMPLATES = [
       tanggal_akta: "1993-03-09",
       nama_ayah: "Sugiono",
       nama_ibu: "Hani'ah",
-      nama_penandatangan: "Agung Triwibowo, SE, MM",
-      pangkat_penandatangan: "Pembina Utama Muda",
-      nip_penandatangan: "19680219 199303 1 005",
     },
     blocks: {
       kop: {
@@ -164,7 +158,7 @@ const DEFAULT_TEMPLATES = [
       },
       ttd: {
         enabled: true,
-        pejabatId: "1",
+        pejabatId: "dirut-001",
         posisi: "kanan",
         qrUrl: ""
       }
@@ -336,14 +330,14 @@ function getTemplates() {
     let templates = deduped.length ? deduped : DEFAULT_TEMPLATES;
     const seededDummy = DEFAULT_TEMPLATES.find((template) => template.key === "dummy_keabsahan_akta_blitar");
 
-    // ===== BUMP VERSION: 5 → 6 =====
-    if (seededDummy && localStorage.getItem(DUMMY_TEMPLATE_VERSION_KEY) !== "6") {
+    // ===== BUMP VERSION: 6 → 7 =====
+    if (seededDummy && localStorage.getItem(DUMMY_TEMPLATE_VERSION_KEY) !== "7") {
       const dummyIndex = templates.findIndex((template) => template.key === seededDummy.key);
       templates = dummyIndex >= 0
         ? templates.map((template, index) => index === dummyIndex ? seededDummy : template)
         : [...templates, seededDummy];
       localStorage.setItem(DUMMY_TEMPLATE_SEED_KEY, "1");
-      localStorage.setItem(DUMMY_TEMPLATE_VERSION_KEY, "6");
+      localStorage.setItem(DUMMY_TEMPLATE_VERSION_KEY, "7");
     }
 
     const normalized = setTemplates(templates);

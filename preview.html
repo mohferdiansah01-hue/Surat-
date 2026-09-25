@@ -76,16 +76,32 @@
   }
 
   // =========================================================
-  // 1. DATA UNTUK RENDER TEMPLATE
-  //    Gabungkan: session.data + nomor_surat + data penandatangan
+  // DATA PENANDATANGAN
+  // Prioritas: getDirut() (data terbaru) → fallback session
+  // =========================================================
+  const signerFromStore = session.signer_id
+    ? getDirut().find((s) => s.id === session.signer_id)
+    : null;
+
+  const signer = {
+    nama:    signerFromStore?.nama    || session.signer_nama    || "",
+    jabatan: signerFromStore?.jabatan || session.signer_jabatan || "",
+    pangkat: signerFromStore?.pangkat || session.signer_pangkat || "",
+    nip:     signerFromStore?.nip     || session.signer_nip     || "",
+  };
+
+  // =========================================================
+  // DATA UNTUK RENDER TEMPLATE
   // =========================================================
   const templateData = {
     ...session.data,
     nomor_surat: session.nomor_surat,
-    nama_penandatangan: session.signer_nama || "",
-    pangkat_penandatangan: session.signer_pangkat || "",
-    nip_penandatangan: session.signer_nip || "",
-    jabatan_penandatangan: session.signer_jabatan || "",
+
+    // Penandatangan — siap dipakai sebagai {{...}} di template
+    nama_penandatangan: signer.nama,
+    jabatan_penandatangan: signer.jabatan,
+    pangkat_penandatangan: signer.pangkat,
+    nip_penandatangan: signer.nip,
   };
 
   const renderedHtml = (typeof renderTemplate === "function")
@@ -95,7 +111,7 @@
   document.getElementById("letter-content").innerHTML = renderedHtml;
 
   // =========================================================
-  // 2. KOP FOTO UTUH (kalau ada)
+  // KOP FOTO UTUH
   // =========================================================
   if (template.kop_foto_url) {
     const kop = document.getElementById("paper-kop");
@@ -104,7 +120,7 @@
   }
 
   // =========================================================
-  // 3. QR TTE
+  // QR TTE
   // =========================================================
   if (template.signature_qr_url) {
     document.querySelectorAll(".official-qr, .ttd-qr").forEach((qr) => {
@@ -114,14 +130,14 @@
   }
 
   // =========================================================
-  // 4. Layout official
+  // Layout official
   // =========================================================
   if (template.key === "dummy_keabsahan_akta_blitar" || template.layout === "official") {
     document.getElementById("paper").classList.add("official-paper");
   }
 
   // =========================================================
-  // 5. SIMPAN ARSIP
+  // SIMPAN ARSIP
   // =========================================================
   const letter = upsertLetter({
     id: session.letter_id,
@@ -130,10 +146,10 @@
     created_by_detail: { jabatan: session.pembuat.jabatan },
     signer_mode: session.signer_mode,
     signer_id: session.signer_id,
-    signer_nama: session.signer_nama,
-    signer_jabatan: session.signer_jabatan,
-    signer_pangkat: session.signer_pangkat || "",
-    signer_nip: session.signer_nip,
+    signer_nama: signer.nama,
+    signer_jabatan: signer.jabatan,
+    signer_pangkat: signer.pangkat,
+    signer_nip: signer.nip,
     nomor_surat: session.nomor_surat,
     data: session.data,
     attachment: session.attachment || null,
@@ -160,10 +176,10 @@
       created_by_detail: { jabatan: session.pembuat.jabatan },
       signer_mode: session.signer_mode,
       signer_id: session.signer_id,
-      signer_nama: session.signer_nama,
-      signer_jabatan: session.signer_jabatan,
-      signer_pangkat: session.signer_pangkat || "",
-      signer_nip: session.signer_nip,
+      signer_nama: signer.nama,
+      signer_jabatan: signer.jabatan,
+      signer_pangkat: signer.pangkat,
+      signer_nip: signer.nip,
       nomor_surat: session.nomor_surat,
       data: session.data,
       attachment: session.attachment || null,
