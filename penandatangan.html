@@ -10,12 +10,12 @@
   .signer-card-wrap .signer-option { flex: 1; }
   .signer-tools { display: flex; flex-direction: column; gap: 4px; justify-content: center; }
   .signer-tools button {
-    width: 34px; height: 30px;
+    width: 36px; height: 32px;
     border: 1px solid var(--line);
     border-radius: 8px;
     background: var(--paper);
     color: var(--muted);
-    font-size: 13px;
+    font-size: 14px;
     cursor: pointer;
     transition: background .15s, color .15s, border-color .15s;
   }
@@ -30,13 +30,54 @@
     font-size: 13px;
     text-align: center;
   }
-  .confirm-modal { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 24px; }
-  .confirm-modal[hidden] { display: none; }
-  .confirm-backdrop { position: absolute; inset: 0; background: rgba(23,35,31,.48); backdrop-filter: blur(2px); }
-  .confirm-panel { position: relative; width: min(100%, 400px); padding: 24px; border-radius: 16px; background: var(--paper); box-shadow: 0 24px 70px rgba(18,43,34,.24); }
-  .confirm-panel h3 { margin: 0 0 8px; font-family: 'Manrope', sans-serif; font-size: 20px; letter-spacing: -.03em; }
-  .confirm-panel p { margin: 0 0 20px; color: var(--muted); font-size: 13px; line-height: 1.5; }
-  .confirm-actions { display: flex; gap: 8px; justify-content: flex-end; }
+
+  /* Modal umum */
+  .signer-modal { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 24px; }
+  .signer-modal[hidden] { display: none; }
+  .signer-modal-backdrop { position: absolute; inset: 0; background: rgba(23,35,31,.48); backdrop-filter: blur(2px); }
+  .signer-modal-panel {
+    position: relative;
+    width: min(100%, 480px);
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    padding: 28px;
+    border-radius: 16px;
+    background: var(--paper);
+    box-shadow: 0 24px 70px rgba(18,43,34,.24);
+  }
+  .signer-modal-panel h2 {
+    margin: 0 0 6px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 22px;
+    letter-spacing: -.03em;
+  }
+  .signer-modal-panel > p {
+    margin: 0 0 20px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .signer-modal-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--muted);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .signer-modal-close:hover { background: var(--mist); color: var(--ink); }
+  .signer-modal-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 22px;
+  }
 </style>
 </head>
 <body>
@@ -75,41 +116,9 @@
     <p class="form-sub">Pilih salah satu pejabat, atau tambah penandatangan baru.</p>
 
     <form id="signer-form">
-      <div id="selected-panel" class="signer-panel">
-        <div class="signer-list" id="signer-list"></div>
-        <div class="signer-list-actions">
-          <button type="button" class="btn btn-ghost" id="btn-add-signer">+ Tambah penandatangan</button>
-        </div>
-      </div>
-
-      <div id="signer-editor" class="signer-panel hidden">
-        <div class="panel-heading">
-          <h2 id="signer-editor-title">Tambah penandatangan</h2>
-          <p>Data ini akan tersimpan dan bisa dipakai pada surat berikutnya.</p>
-        </div>
-        <div class="form-grid">
-          <div class="field full">
-            <label for="editor-nama">Nama penandatangan</label>
-            <input id="editor-nama" type="text" placeholder="Contoh: Agung Triwibowo, SE, MM">
-          </div>
-          <div class="field full">
-            <label for="editor-jabatan">Jabatan</label>
-            <input id="editor-jabatan" type="text" placeholder="Contoh: Kepala Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban">
-          </div>
-          <div class="field full">
-            <label for="editor-pangkat">Pangkat / Golongan</label>
-            <input id="editor-pangkat" type="text" placeholder="Contoh: Pembina Utama Muda">
-          </div>
-          <div class="field full">
-            <label for="editor-nip">NIP</label>
-            <input id="editor-nip" type="text" placeholder="Contoh: 19680219 199303 1 005">
-          </div>
-        </div>
-        <p id="editor-error" class="auth-error" role="alert"></p>
-        <div class="actions">
-          <button type="button" class="btn btn-ghost" id="btn-cancel-editor">Batal</button>
-          <button type="button" class="btn btn-primary" id="btn-save-editor">Simpan</button>
-        </div>
+      <div class="signer-list" id="signer-list"></div>
+      <div class="signer-list-actions">
+        <button type="button" class="btn btn-ghost" id="btn-add-signer">+ Tambah penandatangan</button>
       </div>
 
       <div class="actions">
@@ -120,12 +129,50 @@
   </main>
 </div>
 
-<div id="confirm-modal" class="confirm-modal" hidden>
-  <div class="confirm-backdrop" data-close-confirm></div>
-  <section class="confirm-panel" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title">
-    <h3 id="confirm-title">Hapus penandatangan?</h3>
+<!-- Modal editor -->
+<div id="editor-modal" class="signer-modal" hidden>
+  <div class="signer-modal-backdrop" data-close-editor></div>
+  <section class="signer-modal-panel" role="dialog" aria-modal="true" aria-labelledby="editor-title">
+    <button type="button" class="signer-modal-close" data-close-editor aria-label="Tutup">×</button>
+    <h2 id="editor-title">Tambah penandatangan</h2>
+    <p>Data ini akan tersimpan dan bisa dipakai pada surat berikutnya.</p>
+
+    <div class="form-grid">
+      <div class="field full">
+        <label for="editor-nama">Nama penandatangan</label>
+        <input id="editor-nama" type="text" placeholder="Contoh: Agung Triwibowo, SE, MM">
+      </div>
+      <div class="field full">
+        <label for="editor-jabatan">Jabatan</label>
+        <input id="editor-jabatan" type="text" placeholder="Contoh: Kepala Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban">
+      </div>
+      <div class="field full">
+        <label for="editor-pangkat">Pangkat / Golongan</label>
+        <input id="editor-pangkat" type="text" placeholder="Contoh: Pembina Utama Muda">
+      </div>
+      <div class="field full">
+        <label for="editor-nip">NIP</label>
+        <input id="editor-nip" type="text" placeholder="Contoh: 19680219 199303 1 005">
+      </div>
+    </div>
+
+    <p id="editor-error" class="auth-error" role="alert"></p>
+
+    <div class="signer-modal-actions">
+      <button type="button" class="btn btn-ghost" data-close-editor>Batal</button>
+      <button type="button" class="btn btn-primary" id="btn-save-editor">Simpan</button>
+    </div>
+  </section>
+</div>
+
+<!-- Modal konfirmasi hapus -->
+<div id="confirm-modal" class="signer-modal" hidden>
+  <div class="signer-modal-backdrop" data-close-confirm></div>
+  <section class="signer-modal-panel" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title">
+    <button type="button" class="signer-modal-close" data-close-confirm aria-label="Tutup">×</button>
+    <h2 id="confirm-title">Hapus penandatangan?</h2>
     <p id="confirm-message">Data yang dihapus tidak bisa dikembalikan.</p>
-    <div class="confirm-actions">
+    <div class="signer-modal-actions">
       <button type="button" class="btn btn-ghost" data-close-confirm>Batal</button>
       <button type="button" class="btn btn-primary" id="confirm-yes">Ya, hapus</button>
     </div>
@@ -140,9 +187,8 @@
   }
 
   const signerListEl = document.getElementById("signer-list");
-  const selectedPanel = document.getElementById("selected-panel");
-  const editorPanel = document.getElementById("signer-editor");
-  const editorTitle = document.getElementById("signer-editor-title");
+  const editorModal = document.getElementById("editor-modal");
+  const editorTitle = document.getElementById("editor-title");
   const editorNama = document.getElementById("editor-nama");
   const editorJabatan = document.getElementById("editor-jabatan");
   const editorPangkat = document.getElementById("editor-pangkat");
@@ -153,10 +199,12 @@
   const confirmMessage = document.getElementById("confirm-message");
   const confirmYes = document.getElementById("confirm-yes");
 
+  // editingId: null = mode tambah, string = mode edit
   let editingId = null;
   let selectedId = null;
   let pendingDeleteId = null;
 
+  // ---------- RENDER DAFTAR ----------
   function renderSignerList() {
     const list = getDirut();
     if (!list.length) {
@@ -192,14 +240,85 @@
     });
 
     signerListEl.querySelectorAll("[data-edit]").forEach((btn) => {
-      btn.addEventListener("click", (e) => { e.preventDefault(); openEditor(btn.dataset.edit); });
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openEditor(btn.dataset.edit);
+      });
     });
 
     signerListEl.querySelectorAll("[data-delete]").forEach((btn) => {
-      btn.addEventListener("click", (e) => { e.preventDefault(); openConfirm(btn.dataset.delete); });
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openConfirm(btn.dataset.delete);
+      });
     });
   }
 
+  // ---------- MODAL EDITOR ----------
+  function openEditor(id = null) {
+    editingId = id || null;
+    const isEdit = Boolean(editingId);
+    editorTitle.textContent = isEdit ? "Edit penandatangan" : "Tambah penandatangan";
+    editorError.textContent = "";
+
+    if (isEdit) {
+      const s = getDirut().find((item) => item.id === editingId);
+      editorNama.value = s?.nama || "";
+      editorJabatan.value = s?.jabatan || "";
+      editorPangkat.value = s?.pangkat || "";
+      editorNip.value = s?.nip || "";
+    } else {
+      editorNama.value = "";
+      editorJabatan.value = "";
+      editorPangkat.value = "";
+      editorNip.value = "";
+    }
+
+    editorModal.hidden = false;
+    setTimeout(() => editorNama.focus(), 50);
+  }
+
+  function closeEditor() {
+    editingId = null;
+    editorError.textContent = "";
+    editorModal.hidden = true;
+  }
+
+  function saveEditor() {
+    const nama = editorNama.value.trim();
+    const jabatan = editorJabatan.value.trim();
+    const pangkat = editorPangkat.value.trim();
+    const nip = editorNip.value.trim();
+
+    if (!nama) { editorError.textContent = "Nama penandatangan wajib diisi."; return; }
+    if (!jabatan) { editorError.textContent = "Jabatan wajib diisi."; return; }
+
+    try {
+      const isEdit = Boolean(editingId);
+      const savedList = upsertDirut({
+        id: isEdit ? editingId : undefined,
+        nama, jabatan, pangkat, nip,
+      });
+
+      // Set yang baru diedit/ditambah jadi terpilih
+      if (isEdit) {
+        selectedId = editingId;
+      } else {
+        const newest = savedList[savedList.length - 1];
+        selectedId = newest?.id || null;
+      }
+
+      closeEditor();
+      renderSignerList();
+    } catch (err) {
+      editorError.textContent = "Gagal simpan: " + err.message;
+      console.error(err);
+    }
+  }
+
+  // ---------- MODAL KONFIRMASI ----------
   function openConfirm(id) {
     const target = getDirut().find((s) => s.id === id);
     if (!target) return;
@@ -213,8 +332,23 @@
     confirmModal.hidden = true;
   }
 
+  // ---------- EVENT ----------
+  document.getElementById("btn-add-signer").addEventListener("click", () => openEditor(null));
+  document.getElementById("btn-save-editor").addEventListener("click", saveEditor);
+
+  // Tutup modal lewat backdrop / tombol X / tombol Batal
+  editorModal.querySelectorAll("[data-close-editor]").forEach((el) => {
+    el.addEventListener("click", closeEditor);
+  });
   confirmModal.querySelectorAll("[data-close-confirm]").forEach((el) => {
     el.addEventListener("click", closeConfirm);
+  });
+
+  // ESC menutup modal yang aktif
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    if (!editorModal.hidden) closeEditor();
+    else if (!confirmModal.hidden) closeConfirm();
   });
 
   confirmYes.addEventListener("click", () => {
@@ -231,75 +365,11 @@
     }
   });
 
-  function openEditor(id = null) {
-    editingId = id;
-    const isEdit = Boolean(id);
-    editorTitle.textContent = isEdit ? "Edit penandatangan" : "Tambah penandatangan";
-    editorError.textContent = "";
-
-    if (isEdit) {
-      const s = getDirut().find((item) => item.id === id);
-      editorNama.value = s?.nama || "";
-      editorJabatan.value = s?.jabatan || "";
-      editorPangkat.value = s?.pangkat || "";
-      editorNip.value = s?.nip || "";
-    } else {
-      editorNama.value = "";
-      editorJabatan.value = "";
-      editorPangkat.value = "";
-      editorNip.value = "";
-    }
-
-    selectedPanel.classList.add("hidden");
-    editorPanel.classList.remove("hidden");
-    editorNama.focus();
-  }
-
-  function closeEditor() {
-    editingId = null;
-    editorError.textContent = "";
-    editorPanel.classList.add("hidden");
-    selectedPanel.classList.remove("hidden");
-  }
-
-  function saveEditor() {
-    const nama = editorNama.value.trim();
-    const jabatan = editorJabatan.value.trim();
-    const pangkat = editorPangkat.value.trim();
-    const nip = editorNip.value.trim();
-
-    if (!nama) { editorError.textContent = "Nama penandatangan wajib diisi."; return; }
-    if (!jabatan) { editorError.textContent = "Jabatan wajib diisi."; return; }
-
-    try {
-      const saved = upsertDirut({
-        id: editingId || undefined,
-        nama, jabatan, pangkat, nip,
-      });
-
-      if (editingId) {
-        selectedId = editingId;
-      } else {
-        const newest = saved[saved.length - 1];
-        selectedId = newest?.id || null;
-      }
-
-      closeEditor();
-      renderSignerList();
-    } catch (err) {
-      editorError.textContent = "Gagal simpan: " + err.message;
-      console.error(err);
-    }
-  }
-
-  document.getElementById("btn-add-signer").addEventListener("click", () => openEditor(null));
-  document.getElementById("btn-cancel-editor").addEventListener("click", closeEditor);
-  document.getElementById("btn-save-editor").addEventListener("click", saveEditor);
-
+  // ---------- SUBMIT ----------
   document.getElementById("signer-form").addEventListener("submit", (event) => {
     event.preventDefault();
 
-    if (!editorPanel.classList.contains("hidden")) {
+    if (!editorModal.hidden) {
       editorError.textContent = "Simpan atau batalkan perubahan penandatangan dulu.";
       return;
     }
