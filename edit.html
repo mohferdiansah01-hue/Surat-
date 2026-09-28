@@ -6,25 +6,7 @@
 <title>Editor Template · Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban</title>
 <link rel="stylesheet" href="style.css">
 <style>
-  /* Tombol "Sisipkan" di kartu field */
-  .insert-field-btn {
-    padding: 4px 9px;
-    border: 1px solid rgba(214,239,189,.5);
-    border-radius: 6px;
-    background: rgba(214,239,189,.14);
-    color: var(--lime);
-    font-size: 10px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background .15s, color .15s, border-color .15s;
-  }
-  .insert-field-btn:hover {
-    background: var(--lime);
-    color: var(--green-dark);
-    border-color: var(--lime);
-  }
-
-  /* Textarea di dalam field card (untuk daftar pilihan kategori) */
+  /* Textarea di dalam field card */
   .field-card .ctrl-field textarea {
     min-height: 70px;
     font-family: inherit;
@@ -33,22 +15,142 @@
     resize: vertical;
   }
 
-  /* Wrap QR TTE (thumbnail + tombol hapus) */
-  .qr-wrap {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 6px;
-  }
+  /* Wrap QR TTE */
+  .qr-wrap { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
   .qr-wrap[hidden] { display: none; }
   .qr-wrap .ctrl-thumb { margin-top: 0; }
+
+  /* Tombol di bawah textarea Isi Surat */
+  .isi-toolbar {
+    display: flex;
+    gap: 6px;
+    margin-top: 4px;
+    flex-wrap: wrap;
+  }
+  .isi-toolbar .btn-ctrl-ghost { flex: 0 0 auto; }
+
+  /* Modal pilih banyak data */
+  .pick-modal {
+    position: fixed; inset: 0; z-index: 100;
+    display: grid; place-items: center;
+    padding: 24px;
+  }
+  .pick-modal[hidden] { display: none; }
+  .pick-modal-backdrop {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,.5);
+    backdrop-filter: blur(2px);
+  }
+  .pick-modal-panel {
+    position: relative;
+    display: flex; flex-direction: column;
+    width: min(100%, 520px);
+    max-height: calc(100vh - 48px);
+    padding: 0;
+    border-radius: 14px;
+    background: #fff;
+    color: var(--ink);
+    box-shadow: 0 24px 70px rgba(0,0,0,.35);
+    overflow: hidden;
+  }
+  .pick-modal-header {
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--line);
+  }
+  .pick-modal-header h3 {
+    margin: 0;
+    font-family: 'Manrope', sans-serif;
+    font-size: 16px; letter-spacing: -.02em;
+    color: var(--ink);
+  }
+  .pick-modal-close {
+    width: 30px; height: 30px;
+    border: 0; border-radius: 8px;
+    background: transparent; color: var(--muted);
+    font-size: 18px; cursor: pointer;
+  }
+  .pick-modal-close:hover { background: var(--mist); color: var(--ink); }
+  .pick-modal-hint {
+    margin: 0;
+    padding: 12px 20px 4px;
+    color: var(--muted); font-size: 12px; line-height: 1.5;
+  }
+  .pick-fields-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 12px 12px;
+  }
+  .pick-group { margin-bottom: 14px; }
+  .pick-group-title {
+    margin: 4px 8px 6px;
+    font-size: 10px; font-weight: 800;
+    letter-spacing: .1em; text-transform: uppercase;
+    color: var(--green);
+  }
+  .pick-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .pick-item:hover { background: var(--mist); }
+  .pick-item input[type="checkbox"] {
+    width: 16px; height: 16px;
+    accent-color: var(--green);
+    flex: 0 0 auto;
+  }
+  .pick-item-label {
+    display: flex; flex-direction: column;
+    gap: 2px; min-width: 0;
+  }
+  .pick-item-label strong {
+    font-size: 13px; font-weight: 700; color: var(--ink);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .pick-item-label code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11px;
+    color: var(--green-dark);
+    background: var(--lime);
+    padding: 1px 6px; border-radius: 5px;
+    width: fit-content;
+  }
+  .pick-fields-empty {
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+    color: var(--muted); font-size: 13px;
+  }
+  .pick-modal-actions {
+    display: flex; justify-content: flex-end; gap: 8px;
+    padding: 12px 20px;
+    border-top: 1px solid var(--line);
+    background: var(--mist);
+  }
+  .pick-modal-actions .btn-ctrl-ghost {
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid var(--line);
+  }
+  .pick-modal-actions .btn-ctrl-ghost:hover {
+    background: var(--paper); color: var(--ink);
+  }
+  .pick-modal-actions .btn-ctrl-primary {
+    color: #fff;
+    background: var(--green);
+    flex: 0 0 auto;
+    padding: 9px 18px;
+  }
+  .pick-modal-actions .btn-ctrl-primary:hover { background: var(--green-dark); }
 </style>
 </head>
 <body>
 
 <div class="edit-layout">
 
-  <!-- ============ PANEL KIRI ============ -->
   <aside class="edit-sidebar">
 
     <a href="index.html" class="edit-brand">
@@ -85,7 +187,6 @@
         </select>
       </div>
 
-      <!-- MODE TERSTRUKTUR -->
       <div id="kop-terstruktur-fields">
         <div class="ctrl-field">
           <label>Logo (kiri)</label>
@@ -109,7 +210,6 @@
         </div>
       </div>
 
-      <!-- MODE FOTO UTUH -->
       <div id="kop-foto-fields" style="display:none;">
         <div class="ctrl-field">
           <label>Foto Kop Utuh</label>
@@ -152,7 +252,10 @@
       </header>
       <div class="ctrl-field">
         <label>Isi Surat</label>
-        <textarea id="isi-text" rows="6" placeholder="Ketik isi surat...&#10;&#10;Gunakan tombol → Sisipkan di bagian 06 untuk memasukkan data."></textarea>
+        <textarea id="isi-text" rows="6" placeholder="Ketik isi surat...&#10;&#10;Klik '+ Sisipkan Data' untuk memasukkan {{nama_field}}."></textarea>
+      </div>
+      <div class="isi-toolbar">
+        <button type="button" class="btn-ctrl-ghost" id="btn-insert-field">+ Sisipkan Data</button>
       </div>
       <div class="ctrl-field">
         <label>Perataan</label>
@@ -175,7 +278,7 @@
         <select id="ttd-pejabat">
           <option value="">-- Pilih --</option>
         </select>
-        <p class="ctrl-hint">Daftar diambil dari halaman penandatangan. Kelola di sana untuk menambah / mengedit.</p>
+        <p class="ctrl-hint">Daftar diambil dari halaman penandatangan.</p>
       </div>
       <div class="ctrl-field">
         <label>QR TTE (opsional)</label>
@@ -198,7 +301,7 @@
     <!-- 06 DATA STAF -->
     <section class="ctrl-group">
       <h2 class="ctrl-title"><span class="ctrl-num">06</span> Data yang Perlu Diisi Staf</h2>
-      <p class="ctrl-hint">Tambah field, pilih <strong>Jenis Data</strong>-nya, lalu klik <strong>→ Sisipkan</strong> untuk memasukkan ke Isi Surat.</p>
+      <p class="ctrl-hint">Tambah field, pilih <strong>Jenis Data</strong>-nya. Untuk menyisipkan ke Isi Surat, klik <strong>+ Sisipkan Data</strong> di bagian 04.</p>
       <div id="field-list" class="field-list"></div>
       <div class="add-field-actions">
         <button type="button" class="btn-ctrl-ghost" id="add-text">+ Teks</button>
@@ -256,6 +359,24 @@
     </div>
   </main>
 
+</div>
+
+<!-- ============ MODAL PILIH DATA UNTUK DISISIPKAN ============ -->
+<div id="pick-fields-modal" class="pick-modal" hidden>
+  <div class="pick-modal-backdrop" data-close-pick></div>
+  <section class="pick-modal-panel" role="dialog" aria-modal="true" aria-labelledby="pick-title">
+    <header class="pick-modal-header">
+      <h3 id="pick-title">Sisipkan Data ke Isi Surat</h3>
+      <button type="button" class="pick-modal-close" data-close-pick aria-label="Tutup">×</button>
+    </header>
+    <p class="pick-modal-hint">Centang satu atau lebih. Token akan disisipkan di posisi kursor terakhir di Isi Surat.</p>
+    <div id="pick-fields-list" class="pick-fields-list"></div>
+    <p id="pick-fields-empty" class="pick-fields-empty" hidden>Belum ada data. Tambahkan dulu di bagian 06.</p>
+    <div class="pick-modal-actions">
+      <button type="button" class="btn-ctrl-ghost" data-close-pick>Batal</button>
+      <button type="button" class="btn-ctrl-primary" id="pick-insert-btn">Sisipkan</button>
+    </div>
+  </section>
 </div>
 
 <script src="data.js"></script>
