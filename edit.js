@@ -1,10 +1,11 @@
 (function () {
   /* =========================================================
      EDIT.JS — Builder Template
-     - Mode Kop: "terstruktur" (logo+teks) atau "foto" (scan utuh)
-     - Preview selalu render ulang dari state (anti-nimbun)
-     - Simpan logo_url (terstruktur) dan kop_foto_url (foto) terpisah
-     - Penandatangan diambil dari getDirut() (sinkron dengan penandatangan.html)
+     - Setiap field bisa ganti jenis: Teks / Tanggal / Paragraf / Kategori
+     - Field kategori punya daftar pilihan sendiri
+     - Tombol "Sisipkan" memasukkan {{nama_field}} ke textarea Isi Surat
+     - QR TTE bisa dihapus
+     - Penandatangan sinkron dengan getDirut()
      ========================================================= */
 
   const params = new URLSearchParams(window.location.search);
@@ -28,6 +29,13 @@
     letter: { w: 216, h: 279 }
   };
   const MM_TO_PX = 3.7795;
+
+  const FIELD_TYPES = [
+    { value: "text", label: "Teks Pendek" },
+    { value: "date", label: "Tanggal" },
+    { value: "textarea", label: "Paragraf Panjang" },
+    { value: "category", label: "Kategori (Dropdown Pilihan)" }
+  ];
 
   // =========================================================
   // STATE
@@ -70,7 +78,14 @@
     }
   };
 
-  let fields = existing?.fields?.length ? existing.fields : [];
+  let fields = (existing?.fields?.length ? existing.fields : []).map((f) => ({
+    label: f.label || "",
+    name: f.name || slugify(f.label || ""),
+    type: f.type || "text",
+    required: Boolean(f.required),
+    sample: f.sample || "",
+    options: Array.isArray(f.options) ? [...f.options] : [],
+  }));
 
   const DUMMY = {
     nomor_surat: "B/470.02/1234/409.20.3/2026",
@@ -89,7 +104,6 @@
     byId("template-nama").value = existing?.nama || "";
     byId("template-deskripsi").value = existing?.deskripsi || "";
 
-    // Kop
     byId("kop-mode").value = state.kop.mode;
     toggleKopMode();
     byId("kop-instansi").value = state.kop.instansi;
@@ -118,12 +132,17 @@
     byId("isi-text").value = state.isi.text;
     byId("isi-align").value = state.isi.align;
 
-    // Isi dropdown pejabat dari getDirut()
     fillPejabatOptions();
     byId("ttd-posisi").value = state.ttd.posisi;
+
     if (state.ttd.qrUrl) {
       byId("ttd-qr-prev").src = state.ttd.qrUrl;
-      byId("ttd-qr-prev").hidden = false;
+      const wrap = byId("ttd-qr-wrap");
+      if (wrap) wrap.hidden = false;
+      else byId("ttd-qr-prev").hidden = false;
+    } else {
+      const wrap = byId("ttd-qr-wrap");
+      if (wrap) wrap.hidden = true;
     }
 
     BLOCK_ORDER.forEach((k) => {
@@ -141,7 +160,7 @@
   }
 
   // =========================================================
-  // ISI DROPDOWN PEJABAT DARI getDirut()
+  // ISI DROPDOWN PEJABAT
   // =========================================================
   function fillPejabatOptions() {
     const select = byId("ttd-pejabat");
@@ -150,7 +169,6 @@
     select.innerHTML = '<option value="">-- Pilih --</option>' +
       list.map((s) => `<option value="${escapeHtml(s.id)}">${escapeHtml(s.nama)} — ${escapeHtml(s.jabatan)}</option>`).join("");
 
-    // Kalau pejabatId lama tidak ada di daftar (misal "1", "2"), pakai yang pertama
     const exists = list.some((s) => s.id === state.ttd.pejabatId);
     if (!exists) {
       state.ttd.pejabatId = list[0]?.id || "";
@@ -214,7 +232,6 @@
     });
   });
 
-  // Upload logo (mode terstruktur)
   byId("kop-logo").addEventListener("change", (e) => {
     const f = e.target.files?.[0];
     if (!f) return;
@@ -228,7 +245,6 @@
     r.readAsDataURL(f);
   });
 
-  // Upload foto kop utuh (mode foto)
   byId("kop-foto").addEventListener("change", (e) => {
     const f = e.target.files?.[0];
     if (!f) return;
@@ -242,7 +258,6 @@
     r.readAsDataURL(f);
   });
 
-  // Upload QR TTD
   byId("ttd-qr").addEventListener("change", (e) => {
     const f = e.target.files?.[0];
     if (!f) return;
@@ -250,10 +265,80 @@
     r.onload = () => {
       state.ttd.qrUrl = String(r.result || "");
       byId("ttd-qr-prev").src = state.ttd.qrUrl;
-      byId("ttd-qr-prev").hidden = false;
+      const wrap = byId("ttd-qr-wrap");
+      if (wrap) wrap.hidden = false;
+      else byId("ttd-qr-prev").hidden = false;
       renderPreview();
     };
     r.readAsDataURL(f);
+  });
+
+  const qrHapusBtn = byId("ttd-qr-hapus");
+  if (qrHapusBtn) {
+    qrHapusBtn.addEventListener("click", () => {
+      state.ttd.qrUrl = "";
+      byId("ttd-qr").value = "";
+      byId("ttd-qr-prev").src = "";
+      const wrap = byId("ttd-qr-wrap");
+      if (wrap) wrap.hidden = true;
+      else byId("ttd-qr-prev").hidden = true;
+      renderPreview();
+    });
+  }
+
+  // =========================================================
+  // SISIPKAN FIELD KE ISI SURAT
+  // Simpan posisi kursor terakhir di textarea Isi Surat
+  // =========================================================
+  let lastIsiSelection = { start: null, end: null };
+
+  function rememberIsiSelection() {
+    const ta = byId("isi-text");
+    if (!ta) return;
+    lastIsiSelection.start = ta.selectionStart;
+    lastIsiSelection.end = ta.selectionEnd;
+  }
+
+  function insertFieldIntoIsi(fieldName) {
+    const ta = byId("isi-text");
+    if (!ta) {
+      alert("Textarea Isi Surat tidak ditemukan.");
+      return;
+    }
+
+    const token = `{{${fieldName}}}`;
+    const value = ta.value;
+
+    // Tentukan posisi sisip
+    let start = lastIsiSelection.start;
+    let end = lastIsiSelection.end;
+
+    // Kalau belum ada posisi tersimpan, taruh di akhir
+    if (start === null || end === null) {
+      start = value.length;
+      end = value.length;
+    }
+
+    // Kalau kursor di luar batas (misal textarea habis di-edit program), amankan
+    start = Math.min(Math.max(0, start), value.length);
+    end = Math.min(Math.max(start, end), value.length);
+
+    ta.value = value.slice(0, start) + token + value.slice(end);
+    const pos = start + token.length;
+    ta.focus();
+    ta.setSelectionRange(pos, pos);
+    lastIsiSelection.start = pos;
+    lastIsiSelection.end = pos;
+
+    state.isi.text = ta.value;
+    renderPreview();
+    setStatus(`Field ${token} disisipkan ke Isi Surat.`, false);
+  }
+
+  // Pasang listener untuk mengingat posisi kursor saat user klik/keyboard
+  const isiTextEl = byId("isi-text");
+  ["click", "keyup", "mouseup", "input", "focus"].forEach((evt) => {
+    isiTextEl.addEventListener(evt, rememberIsiSelection);
   });
 
   // =========================================================
@@ -279,11 +364,14 @@
     if (state.tujuan.y1) data.tujuan_1 = state.tujuan.y1;
     if (state.tujuan.y2) data.tujuan_2 = state.tujuan.y2;
     if (state.tujuan.di) data.tujuan_kota = state.tujuan.di;
+
     fields.forEach((f) => {
       if (f.sample && f.sample.trim()) {
         data[f.name] = f.sample;
       } else if (f.type === "date") {
         data[f.name] = "22 September 2026";
+      } else if (f.type === "category") {
+        data[f.name] = Array.isArray(f.options) && f.options.length ? f.options[0] : "— pilih —";
       } else {
         data[f.name] = "_____________________";
       }
@@ -298,14 +386,10 @@
     switch (key) {
       case "kop": {
         const s = state.kop;
-
         if (s.mode === "foto") {
-          if (!s.fotoUrl) {
-            return `<div class="blok-kop-foto"><p class="isi-empty">(Belum upload foto kop)</p></div>`;
-          }
+          if (!s.fotoUrl) return `<div class="blok-kop-foto"><p class="isi-empty">(Belum upload foto kop)</p></div>`;
           return `<div class="blok-kop-foto"><img src="${s.fotoUrl}" alt="Kop Surat"></div>`;
         }
-
         const logoSrc = s.logoUrl || "Lambang_Kabupaten_Tuban.webp";
         return `
           <table class="blok-kop">
@@ -391,26 +475,55 @@
   }
 
   // =========================================================
-  // FIELD LIST
+  // FIELD LIST — dropdown jenis + kategori + tombol Sisipkan
   // =========================================================
   function renderFields() {
-    fieldList.innerHTML = fields.map((f, i) => `
-      <div class="field-card" data-idx="${i}">
-        <div class="field-card-top">
-          <strong>Data ${i + 1}</strong>
-          <button type="button" class="remove-field" data-remove="${i}">× Hapus</button>
+    fieldList.innerHTML = fields.map((f, i) => {
+      const type = f.type || "text";
+      const isCategory = type === "category";
+      const optionsText = Array.isArray(f.options) ? f.options.join("\n") : "";
+      const typeOptions = FIELD_TYPES.map((t) =>
+        `<option value="${t.value}"${t.value === type ? " selected" : ""}>${t.label}</option>`
+      ).join("");
+
+      return `
+        <div class="field-card" data-idx="${i}">
+          <div class="field-card-top">
+            <strong>Data ${i + 1}</strong>
+            <div style="display:flex;gap:6px">
+              <button type="button" class="insert-field-btn" data-insert="${i}" title="Sisipkan ke Isi Surat">→ Sisipkan</button>
+              <button type="button" class="remove-field" data-remove="${i}">× Hapus</button>
+            </div>
+          </div>
+
+          <div class="ctrl-field">
+            <label>Pertanyaan</label>
+            <input data-fk="label" data-fi="${i}" value="${escapeHtml(f.label || "")}" placeholder="Contoh: Nama Pemohon">
+          </div>
+
+          <div class="ctrl-field">
+            <label>Jenis Data</label>
+            <select data-fk="type" data-fi="${i}">${typeOptions}</select>
+          </div>
+
+          ${isCategory ? `
+            <div class="ctrl-field">
+              <label>Daftar Pilihan <span style="opacity:.6;font-weight:400">(satu per baris)</span></label>
+              <textarea data-fk="optionsText" data-fi="${i}" rows="4" placeholder="Contoh:&#10;Kartu Keluarga&#10;KTP Elektronik&#10;Akta Kelahiran">${escapeHtml(optionsText)}</textarea>
+            </div>
+          ` : ""}
+
+          <div class="ctrl-field">
+            <label>Contoh Isi <span style="opacity:.6;font-weight:400">(untuk preview)</span></label>
+            <input data-fk="sample" data-fi="${i}" value="${escapeHtml(f.sample || "")}" placeholder="${isCategory ? "Kosongkan = pakai pilihan pertama" : "Contoh: Eka Farid Sani"}">
+          </div>
+
+          <label class="required-toggle">
+            <input type="checkbox" data-fk="required" data-fi="${i}" ${f.required ? "checked" : ""}> Wajib diisi staf
+          </label>
         </div>
-        <div class="ctrl-field"><label>Pertanyaan</label>
-          <input data-fk="label" data-fi="${i}" value="${escapeHtml(f.label || "")}" placeholder="Contoh: Nama Pemohon">
-        </div>
-        <div class="ctrl-field"><label>Contoh Isi (untuk preview)</label>
-          <input data-fk="sample" data-fi="${i}" value="${escapeHtml(f.sample || "")}" placeholder="Contoh: Eka Farid Sani">
-        </div>
-        <label class="required-toggle">
-          <input type="checkbox" data-fk="required" data-fi="${i}" ${f.required ? "checked" : ""}> Wajib diisi staf
-        </label>
-      </div>
-    `).join("");
+      `;
+    }).join("");
 
     fieldList.querySelectorAll("[data-fk]").forEach((el) => {
       el.addEventListener("input", updateFieldFromEl);
@@ -423,13 +536,38 @@
         renderPreview();
       });
     });
+
+    // Tombol Sisipkan → masukkan {{name}} ke textarea Isi Surat
+    fieldList.querySelectorAll("[data-insert]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const i = Number(btn.dataset.insert);
+        const f = fields[i];
+        if (!f || !f.name) {
+          alert("Isi dulu nama field-nya (kolom Pertanyaan).");
+          return;
+        }
+        insertFieldIntoIsi(f.name);
+      });
+    });
   }
 
   function updateFieldFromEl(e) {
     const i = Number(e.target.dataset.fi);
     const key = e.target.dataset.fk;
     const val = e.target.type === "checkbox" ? e.target.checked : e.target.value;
-    fields[i][key] = val;
+
+    if (key === "optionsText") {
+      fields[i].options = String(val).split("\n").map((s) => s.trim()).filter(Boolean);
+    } else if (key === "type") {
+      fields[i].type = val;
+      if (val === "category" && !Array.isArray(fields[i].options)) {
+        fields[i].options = [];
+      }
+      renderFields();
+    } else {
+      fields[i][key] = val;
+    }
+
     if (key === "label") fields[i].name = slugify(fields[i].label || `field_${i + 1}`);
     renderPreview();
   }
@@ -441,14 +579,18 @@
       name: slugify(`Data ${n}`),
       type: type || "text",
       required: false,
-      sample: ""
+      sample: "",
+      options: [],
     });
     renderFields();
     renderPreview();
   }
+
   byId("add-text").addEventListener("click", () => addField("text"));
   byId("add-date").addEventListener("click", () => addField("date"));
   byId("add-long").addEventListener("click", () => addField("textarea"));
+  const addCat = byId("add-cat");
+  if (addCat) addCat.addEventListener("click", () => addField("category"));
 
   // =========================================================
   // UKURAN & MARGIN
@@ -523,6 +665,7 @@
     const out = {};
     fields.forEach((f) => {
       if (f.sample && f.sample.trim()) out[f.name] = f.sample;
+      else if (f.type === "category" && f.options?.length) out[f.name] = f.options[0];
     });
     if (state.identitas.nomor) out.nomor_surat = state.identitas.nomor;
     return out;
@@ -548,12 +691,23 @@
     }
 
     try {
+      const cleanFields = fields.map((f) => {
+        const out = {
+          name: f.name,
+          label: f.label,
+          type: f.type,
+          required: Boolean(f.required),
+        };
+        if (f.type === "category") out.options = Array.isArray(f.options) ? f.options : [];
+        return out;
+      });
+
       upsertTemplate({
         key,
         nama,
         deskripsi: byId("template-deskripsi").value.trim(),
         template: templateHtml,
-        fields,
+        fields: cleanFields,
         blocks: state,
         logo_url: state.kop.mode === "terstruktur" ? state.kop.logoUrl : "",
         logo: state.kop.mode === "terstruktur" ? state.kop.logoUrl : "",
