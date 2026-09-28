@@ -145,6 +145,13 @@
     padding: 9px 18px;
   }
   .pick-modal-actions .btn-ctrl-primary:hover { background: var(--green-dark); }
+
+  /* Tanggal di atas Nomor — beri jarak 1 baris */
+  .ctrl-field--tanggal {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed rgba(255,255,255,.14);
+  }
 </style>
 </head>
 <body>
@@ -226,6 +233,13 @@
         <h2 class="ctrl-title"><span class="ctrl-num">02</span> Nomor, Sifat, Lampiran, Hal</h2>
         <label class="switch"><input type="checkbox" data-toggle="identitas"><span>Tampilkan</span></label>
       </header>
+
+      <!-- Tanggal dipindah ke atas, dengan pemisah dari field di bawahnya -->
+      <div class="ctrl-field ctrl-field--tanggal">
+        <label>Tanggal (kanan atas)</label>
+        <input id="id-tanggal" type="text" placeholder="Tuban, 22 September 2026">
+      </div>
+
       <div class="ctrl-field"><label>Nomor</label><input id="id-nomor" type="text" placeholder="Kosongkan = {{nomor_surat}}"></div>
       <div class="ctrl-field"><label>Sifat</label><input id="id-sifat" type="text" placeholder="Biasa"></div>
       <div class="ctrl-field"><label>Lampiran</label><input id="id-lampiran" type="text" placeholder="-"></div>
@@ -246,7 +260,6 @@
         </select>
         <input id="id-hal" type="text" placeholder="Ketik hal surat..." style="display:none;">
       </div>
-      <div class="ctrl-field"><label>Tanggal (kanan atas)</label><input id="id-tanggal" type="text" placeholder="Tuban, 22 September 2026"></div>
     </section>
 
     <!-- 03 TUJUAN -->
