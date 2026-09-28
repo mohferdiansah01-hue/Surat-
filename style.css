@@ -1193,7 +1193,7 @@ button, input { font: inherit; }
 .kop-garis.garis-dotted { border-top: 2px dotted #1c2823; }
 
 /* =========================================================
-   02. BLOK IDENTITAS (Nomor/Sifat/Lampiran/Hal)
+   02. BLOK IDENTITAS (Tanggal di atas, lalu Nomor/Sifat/Lampiran/Hal)
    ========================================================= */
 .blok-identitas {
   margin: 10px 0 16px;
@@ -1201,17 +1201,27 @@ button, input { font: inherit; }
   font-size: 11pt;
   line-height: 1.4;
 }
-.blok-identitas table { border-collapse: collapse; width: 100%; }
-.blok-identitas .id-kiri { vertical-align: top; width: 70%; }
-.blok-identitas .id-kiri table { width: auto; }
-.blok-identitas .id-label { width: 90px; vertical-align: top; }
-.blok-identitas .id-colon { width: 15px; vertical-align: top; }
-.blok-identitas .id-kanan {
+
+/* Tanggal kanan atas — terpisah di atas Nomor */
+.blok-identitas .id-tanggal-atas {
   text-align: right;
-  vertical-align: top;
-  white-space: nowrap;
+  margin-bottom: 12px;
+  font-size: 11pt;
+  line-height: 1.4;
 }
 
+.blok-identitas .id-table {
+  border-collapse: collapse;
+}
+.blok-identitas .id-label { width: 90px; vertical-align: top; }
+.blok-identitas .id-colon { width: 15px; vertical-align: top; }
+
+/* Di kertas resmi (official-paper) — sedikit lebih rapi */
+.official-paper .blok-identitas .id-tanggal-atas {
+  margin-bottom: 14px;
+  font-size: 12pt;
+}
+.official-paper .blok-identitas .id-label { width: 90px; }
 /* =========================================================
    03. BLOK TUJUAN (Yth)
    ========================================================= */
