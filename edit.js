@@ -7,6 +7,7 @@
      - Baris "label : nilai" otomatis jadi tabel rapi
      - Hal surat: dropdown + opsi "Lainnya (ketik sendiri)"
      - QR TTE bisa dihapus
+     - Tanggal di kanan atas, terpisah di atas Nomor
      - Penandatangan sinkron dengan getDirut()
      ========================================================= */
 
@@ -144,7 +145,6 @@
     byId("id-sifat").value = state.identitas.sifat;
     byId("id-lampiran").value = state.identitas.lampiran;
 
-    // Init field Hal: sinkron antara dropdown & input
     (function initHalField() {
       const sel = byId("id-hal-select");
       const inp = byId("id-hal");
@@ -517,19 +517,15 @@
         const hal = s.hal || "{{perihal}}";
         const tanggal = s.tanggal || "";
         return `
-          <table class="blok-identitas">
-            <tr>
-              <td class="id-kiri">
-                <table class="id-table">
-                  <tr><td class="id-label">Nomor</td><td class="id-colon">:</td><td>${escapeHtml(nomor)}</td></tr>
-                  <tr><td class="id-label">Sifat</td><td class="id-colon">:</td><td>${escapeHtml(s.sifat || "-")}</td></tr>
-                  <tr><td class="id-label">Lampiran</td><td class="id-colon">:</td><td>${escapeHtml(s.lampiran || "-")}</td></tr>
-                  <tr><td class="id-label">Hal</td><td class="id-colon">:</td><td>${escapeHtml(hal)}</td></tr>
-                </table>
-              </td>
-              <td class="id-kanan">${escapeHtml(tanggal)}</td>
-            </tr>
-          </table>`;
+          <div class="blok-identitas">
+            ${tanggal ? `<div class="id-tanggal-atas">${escapeHtml(tanggal)}</div>` : ""}
+            <table class="id-table">
+              <tr><td class="id-label">Nomor</td><td class="id-colon">:</td><td>${escapeHtml(nomor)}</td></tr>
+              <tr><td class="id-label">Sifat</td><td class="id-colon">:</td><td>${escapeHtml(s.sifat || "-")}</td></tr>
+              <tr><td class="id-label">Lampiran</td><td class="id-colon">:</td><td>${escapeHtml(s.lampiran || "-")}</td></tr>
+              <tr><td class="id-label">Hal</td><td class="id-colon">:</td><td>${escapeHtml(hal)}</td></tr>
+            </table>
+          </div>`;
       }
 
       case "tujuan": {
