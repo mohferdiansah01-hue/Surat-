@@ -229,7 +229,23 @@
       <div class="ctrl-field"><label>Nomor</label><input id="id-nomor" type="text" placeholder="Kosongkan = {{nomor_surat}}"></div>
       <div class="ctrl-field"><label>Sifat</label><input id="id-sifat" type="text" placeholder="Biasa"></div>
       <div class="ctrl-field"><label>Lampiran</label><input id="id-lampiran" type="text" placeholder="-"></div>
-      <div class="ctrl-field"><label>Hal</label><input id="id-hal" type="text" placeholder="Jawaban Keabsahan Akta Kelahiran"></div>
+      <div class="ctrl-field">
+        <label>Hal</label>
+        <select id="id-hal-select">
+          <option value="">-- Pilih Hal --</option>
+          <option value="Jawaban Keabsahan Akta Kelahiran">Jawaban Keabsahan Akta Kelahiran</option>
+          <option value="Jawaban Keabsahan Akta Kematian">Jawaban Keabsahan Akta Kematian</option>
+          <option value="Jawaban Keabsahan Akta Perkawinan">Jawaban Keabsahan Akta Perkawinan</option>
+          <option value="Jawaban Keabsahan Akta Perceraian">Jawaban Keabsahan Akta Perceraian</option>
+          <option value="Permohonan Data Kependudukan">Permohonan Data Kependudukan</option>
+          <option value="Pemberitahuan Perubahan Data">Pemberitahuan Perubahan Data</option>
+          <option value="Permintaan Bantuan Operator SAKTI">Permintaan Bantuan Operator SAKTI</option>
+          <option value="Undangan Sosialisasi">Undangan Sosialisasi</option>
+          <option value="Laporan Bulanan">Laporan Bulanan</option>
+          <option value="__custom__">✎ Lainnya (ketik sendiri)</option>
+        </select>
+        <input id="id-hal" type="text" placeholder="Ketik hal surat..." style="display:none;">
+      </div>
       <div class="ctrl-field"><label>Tanggal (kanan atas)</label><input id="id-tanggal" type="text" placeholder="Tuban, 22 September 2026"></div>
     </section>
 
