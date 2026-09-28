@@ -61,21 +61,36 @@
 
   document.getElementById("template-name").textContent = `${template.nama} · Lengkapi data berikut.`;
   const fieldList = document.getElementById("field-list");
+
   fieldList.innerHTML = `
     <div class="field full">
       <label for="nomor_surat">Nomor surat</label>
-        <input id="nomor_surat" name="nomor_surat" type="text" required>
+      <input id="nomor_surat" name="nomor_surat" type="text" required>
     </div>
-    ${(template.fields || []).map((field) => `
-      <div class="field ${field.type === "textarea" || field.type === "category" ? "full" : ""} ${field.type === "category" ? "category-input" : ""}">
-        <label for="${escapeHtml(field.name)}">${escapeHtml(field.label)}</label>
-          ${field.type === "category"
-            ? `<div class="category-input-grid"><select id="${escapeHtml(field.name)}_category" name="${escapeHtml(field.name)}_category" data-category-field="${escapeHtml(field.name)}"><option value="">Pilih kategori utama</option>${(field.categories || []).map((category) => `<option value="${escapeHtml(category.name)}">${escapeHtml(category.name)}</option>`).join("")}</select></div>`
-            : field.type === "textarea"
-            ? `<textarea id="${escapeHtml(field.name)}" name="${escapeHtml(field.name)}" rows="4"${field.required ? " required" : ""}></textarea>`
-            : `<input id="${escapeHtml(field.name)}" name="${escapeHtml(field.name)}" type="${escapeHtml(field.type || "text")}"${field.required ? " required" : ""}>`}
-      </div>
-    `).join("")}
+    ${(template.fields || []).map((field) => {
+      const isFull = field.type === "textarea" || field.type === "category";
+
+      let inputHtml = "";
+      if (field.type === "category") {
+        const options = Array.isArray(field.options) ? field.options : [];
+        inputHtml = `
+          <select id="${escapeHtml(field.name)}" name="${escapeHtml(field.name)}"${field.required ? " required" : ""}>
+            <option value="">-- Pilih --</option>
+            ${options.map((opt) => `<option value="${escapeHtml(opt)}">${escapeHtml(opt)}</option>`).join("")}
+          </select>`;
+      } else if (field.type === "textarea") {
+        inputHtml = `<textarea id="${escapeHtml(field.name)}" name="${escapeHtml(field.name)}" rows="4"${field.required ? " required" : ""}></textarea>`;
+      } else {
+        inputHtml = `<input id="${escapeHtml(field.name)}" name="${escapeHtml(field.name)}" type="${escapeHtml(field.type || "text")}"${field.required ? " required" : ""}>`;
+      }
+
+      return `
+        <div class="field ${isFull ? "full" : ""}">
+          <label for="${escapeHtml(field.name)}">${escapeHtml(field.label)}</label>
+          ${inputHtml}
+        </div>
+      `;
+    }).join("")}
     <div class="field full">
       <label for="attachment">Surat pendamping</label>
       <input id="attachment" name="attachment" type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
@@ -83,29 +98,32 @@
     </div>
   `;
 
+  // ====== ISI NILAI AWAL ======
   const existingData = session.data || {};
   const sampleData = template.sample_data || {};
-  document.getElementById("nomor_surat").value = session.nomor_surat || sampleData.nomor_surat || "";
+
+  document.getElementById("nomor_surat").value =
+    session.nomor_surat || sampleData.nomor_surat || "";
+
   (template.fields || []).forEach((field) => {
-    if (field.type === "category") {
-      const categoryInput = document.getElementById(`${field.name}_category`);
-      if (categoryInput) categoryInput.value = existingData[`${field.name}_category`] || sampleData[`${field.name}_category`] || "";
-    } else {
-      const input = document.getElementById(field.name);
-      if (input) input.value = existingData[field.name] || sampleData[field.name] || "";
-    }
+    const input = document.getElementById(field.name);
+    if (!input) return;
+    input.value = existingData[field.name] || sampleData[field.name] || "";
   });
+
   const attachmentInput = document.getElementById("attachment");
   const attachmentHelp = document.getElementById("attachment-help");
   if (session.attachment?.name) {
     attachmentHelp.textContent = `Lampiran saat ini: ${session.attachment.name}. Pilih file baru untuk menggantinya.`;
   }
 
+  // ====== SUBMIT ======
   document.getElementById("letter-form").addEventListener("submit", async (event) => {
     event.preventDefault();
     const values = Object.fromEntries(new FormData(event.target).entries());
     const { nomor_surat, ...data } = values;
     delete data.attachment;
+
     const file = attachmentInput.files[0];
     const fileExtension = file?.name.toLowerCase().split(".").pop();
     if (file && !["pdf", "doc", "docx"].includes(fileExtension)) {
@@ -133,12 +151,16 @@
   function readAttachment(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.addEventListener("load", () => resolve({ name: file.name, type: file.type || "application/octet-stream", size: file.size, data_url: reader.result }));
+      reader.addEventListener("load", () => resolve({
+        name: file.name,
+        type: file.type || "application/octet-stream",
+        size: file.size,
+        data_url: reader.result
+      }));
       reader.addEventListener("error", reject);
       reader.readAsDataURL(file);
     });
   }
-
 </script>
 </body>
 </html>
