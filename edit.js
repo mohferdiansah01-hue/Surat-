@@ -3,7 +3,7 @@
      EDIT.JS — Builder Template
      - Setiap field bisa ganti jenis: Teks / Tanggal / Paragraf / Kategori
      - Field kategori punya daftar pilihan sendiri
-     - Tombol "Sisipkan" memasukkan {{nama_field}} ke textarea Isi Surat
+     - Sisipkan data ke Isi Surat lewat modal (multi-pilih per grup)
      - QR TTE bisa dihapus
      - Penandatangan sinkron dengan getDirut()
      ========================================================= */
@@ -287,8 +287,7 @@
   }
 
   // =========================================================
-  // SISIPKAN FIELD KE ISI SURAT
-  // Simpan posisi kursor terakhir di textarea Isi Surat
+  // SISIPKAN DATA KE ISI SURAT (multi-pilih lewat modal)
   // =========================================================
   let lastIsiSelection = { start: null, end: null };
 
@@ -299,47 +298,103 @@
     lastIsiSelection.end = ta.selectionEnd;
   }
 
-  function insertFieldIntoIsi(fieldName) {
+  // Sisipkan teks apapun ke textarea Isi Surat pada posisi kursor terakhir
+  function insertIntoIsi(text) {
     const ta = byId("isi-text");
-    if (!ta) {
-      alert("Textarea Isi Surat tidak ditemukan.");
-      return;
-    }
+    if (!ta) return;
 
-    const token = `{{${fieldName}}}`;
     const value = ta.value;
-
-    // Tentukan posisi sisip
     let start = lastIsiSelection.start;
     let end = lastIsiSelection.end;
 
-    // Kalau belum ada posisi tersimpan, taruh di akhir
     if (start === null || end === null) {
       start = value.length;
       end = value.length;
     }
 
-    // Kalau kursor di luar batas (misal textarea habis di-edit program), amankan
     start = Math.min(Math.max(0, start), value.length);
     end = Math.min(Math.max(start, end), value.length);
 
-    ta.value = value.slice(0, start) + token + value.slice(end);
-    const pos = start + token.length;
+    ta.value = value.slice(0, start) + text + value.slice(end);
+    const pos = start + text.length;
     ta.focus();
     ta.setSelectionRange(pos, pos);
     lastIsiSelection.start = pos;
     lastIsiSelection.end = pos;
-
     state.isi.text = ta.value;
     renderPreview();
-    setStatus(`Field ${token} disisipkan ke Isi Surat.`, false);
   }
 
-  // Pasang listener untuk mengingat posisi kursor saat user klik/keyboard
-  const isiTextEl = byId("isi-text");
-  ["click", "keyup", "mouseup", "input", "focus"].forEach((evt) => {
-    isiTextEl.addEventListener(evt, rememberIsiSelection);
-  });
+  // Isi modal dengan daftar field, dikelompokkan per jenis
+  function renderPickModal() {
+    const listEl = byId("pick-fields-list");
+    const emptyEl = byId("pick-fields-empty");
+    if (!listEl) return;
+
+    const usable = fields
+      .map((f, i) => ({ ...f, index: i }))
+      .filter((f) => f.name && f.label);
+
+    emptyEl.hidden = usable.length > 0;
+
+    if (!usable.length) {
+      listEl.innerHTML = "";
+      return;
+    }
+
+    const groups = {
+      text:     { label: "Teks Pendek",      items: [] },
+      date:     { label: "Tanggal",          items: [] },
+      textarea: { label: "Paragraf Panjang", items: [] },
+      category: { label: "Kategori",         items: [] },
+    };
+
+    usable.forEach((f) => {
+      const g = groups[f.type] || groups.text;
+      g.items.push(f);
+    });
+
+    listEl.innerHTML = Object.values(groups)
+      .filter((g) => g.items.length)
+      .map((g) => `
+        <div class="pick-group">
+          <div class="pick-group-title">${g.label}</div>
+          ${g.items.map((item) => `
+            <label class="pick-item">
+              <input type="checkbox" value="${escapeHtml(item.name)}">
+              <span class="pick-item-label">
+                <strong>${escapeHtml(item.label)}</strong>
+                <code>{{${escapeHtml(item.name)}}}</code>
+              </span>
+            </label>
+          `).join("")}
+        </div>
+      `).join("");
+  }
+
+  function openPickModal() {
+    renderPickModal();
+    byId("pick-fields-modal").hidden = false;
+  }
+
+  function closePickModal() {
+    byId("pick-fields-modal").hidden = true;
+    byId("pick-fields-modal").querySelectorAll('input[type="checkbox"]').forEach((c) => c.checked = false);
+  }
+
+  function applyPickInsert() {
+    const modal = byId("pick-fields-modal");
+    const checked = [...modal.querySelectorAll('input[type="checkbox"]:checked')];
+    if (!checked.length) {
+      alert("Pilih minimal satu data.");
+      return;
+    }
+
+    const tokens = checked.map((cb) => `{{${cb.value}}}`).join(" ");
+    insertIntoIsi(tokens);
+    closePickModal();
+    setStatus("Data disisipkan ke Isi Surat.", false);
+  }
 
   // =========================================================
   // RENDER PREVIEW
@@ -475,7 +530,7 @@
   }
 
   // =========================================================
-  // FIELD LIST — dropdown jenis + kategori + tombol Sisipkan
+  // FIELD LIST
   // =========================================================
   function renderFields() {
     fieldList.innerHTML = fields.map((f, i) => {
@@ -490,10 +545,7 @@
         <div class="field-card" data-idx="${i}">
           <div class="field-card-top">
             <strong>Data ${i + 1}</strong>
-            <div style="display:flex;gap:6px">
-              <button type="button" class="insert-field-btn" data-insert="${i}" title="Sisipkan ke Isi Surat">→ Sisipkan</button>
-              <button type="button" class="remove-field" data-remove="${i}">× Hapus</button>
-            </div>
+            <button type="button" class="remove-field" data-remove="${i}">× Hapus</button>
           </div>
 
           <div class="ctrl-field">
@@ -534,19 +586,6 @@
         fields.splice(Number(btn.dataset.remove), 1);
         renderFields();
         renderPreview();
-      });
-    });
-
-    // Tombol Sisipkan → masukkan {{name}} ke textarea Isi Surat
-    fieldList.querySelectorAll("[data-insert]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const i = Number(btn.dataset.insert);
-        const f = fields[i];
-        if (!f || !f.name) {
-          alert("Isi dulu nama field-nya (kolom Pertanyaan).");
-          return;
-        }
-        insertFieldIntoIsi(f.name);
       });
     });
   }
@@ -591,6 +630,36 @@
   byId("add-long").addEventListener("click", () => addField("textarea"));
   const addCat = byId("add-cat");
   if (addCat) addCat.addEventListener("click", () => addField("category"));
+
+  // =========================================================
+  // LISTENER MODAL SISIPKAN + KURSOR ISI SURAT
+  // =========================================================
+  const isiTextEl = byId("isi-text");
+  if (isiTextEl) {
+    ["click", "keyup", "mouseup", "input", "focus"].forEach((evt) => {
+      isiTextEl.addEventListener(evt, rememberIsiSelection);
+    });
+  }
+
+  const btnInsert = byId("btn-insert-field");
+  if (btnInsert) btnInsert.addEventListener("click", openPickModal);
+
+  const pickModal = byId("pick-fields-modal");
+  if (pickModal) {
+    pickModal.querySelectorAll("[data-close-pick]").forEach((el) => {
+      el.addEventListener("click", closePickModal);
+    });
+  }
+
+  const btnPickInsert = byId("pick-insert-btn");
+  if (btnPickInsert) btnPickInsert.addEventListener("click", applyPickInsert);
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      const modal = byId("pick-fields-modal");
+      if (modal && !modal.hidden) closePickModal();
+    }
+  });
 
   // =========================================================
   // UKURAN & MARGIN
