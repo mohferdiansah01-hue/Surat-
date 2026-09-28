@@ -5,6 +5,7 @@
      - Field kategori punya daftar pilihan sendiri
      - Sisipkan data ke Isi Surat lewat modal (multi-pilih per grup)
      - Baris "label : nilai" otomatis jadi tabel rapi
+     - Hal surat: dropdown + opsi "Lainnya (ketik sendiri)"
      - QR TTE bisa dihapus
      - Penandatangan sinkron dengan getDirut()
      ========================================================= */
@@ -98,6 +99,25 @@
   };
 
   // =========================================================
+  // HAL SURAT — dropdown + custom
+  // =========================================================
+  function updateHalInput() {
+    const sel = byId("id-hal-select");
+    const inp = byId("id-hal");
+    if (!sel || !inp) return;
+    const v = sel.value;
+    if (v === "__custom__") {
+      inp.style.display = "";
+      inp.focus();
+      state.identitas.hal = inp.value;
+    } else {
+      inp.style.display = "none";
+      state.identitas.hal = v || "";
+      inp.value = v || "";
+    }
+  }
+
+  // =========================================================
   // INIT
   // =========================================================
   function init() {
@@ -123,7 +143,24 @@
     byId("id-nomor").value = state.identitas.nomor;
     byId("id-sifat").value = state.identitas.sifat;
     byId("id-lampiran").value = state.identitas.lampiran;
-    byId("id-hal").value = state.identitas.hal;
+
+    // Init field Hal: sinkron antara dropdown & input
+    (function initHalField() {
+      const sel = byId("id-hal-select");
+      const inp = byId("id-hal");
+      const current = state.identitas.hal || "";
+      const hasOption = [...sel.options].some((o) => o.value === current);
+      if (current && !hasOption) {
+        sel.value = "__custom__";
+        inp.value = current;
+        inp.style.display = "";
+      } else {
+        sel.value = current;
+        inp.value = current;
+        inp.style.display = "none";
+      }
+    })();
+
     byId("id-tanggal").value = state.identitas.tanggal;
 
     byId("yth-1").value = state.tujuan.y1;
@@ -216,7 +253,6 @@
   bindInput("id-nomor", "identitas.nomor");
   bindInput("id-sifat", "identitas.sifat");
   bindInput("id-lampiran", "identitas.lampiran");
-  bindInput("id-hal", "identitas.hal");
   bindInput("id-tanggal", "identitas.tanggal");
   bindInput("yth-1", "tujuan.y1");
   bindInput("yth-2", "tujuan.y2");
@@ -225,6 +261,22 @@
   bindInput("isi-align", "isi.align");
   bindInput("ttd-pejabat", "ttd.pejabatId");
   bindInput("ttd-posisi", "ttd.posisi");
+
+  // ===== Hal: dropdown + input custom =====
+  const halSelect = byId("id-hal-select");
+  if (halSelect) {
+    halSelect.addEventListener("change", () => {
+      updateHalInput();
+      renderPreview();
+    });
+  }
+  const halInput = byId("id-hal");
+  if (halInput) {
+    halInput.addEventListener("input", () => {
+      state.identitas.hal = halInput.value;
+      renderPreview();
+    });
+  }
 
   document.querySelectorAll("[data-toggle]").forEach((chk) => {
     chk.addEventListener("change", () => {
@@ -288,7 +340,7 @@
   }
 
   // =========================================================
-  // SISIPKAN DATA KE ISI SURAT (multi-pilih lewat modal)
+  // SISIPKAN DATA KE ISI SURAT
   // =========================================================
   let lastIsiSelection = { start: null, end: null };
 
@@ -518,7 +570,6 @@
           };
 
           lines.forEach((line) => {
-            // Deteksi pola "label : nilai"
             const m = line.match(/^(.+?)\s*:\s*(.+)$/);
             if (m) {
               listBuffer.push({
