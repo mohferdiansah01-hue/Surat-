@@ -803,7 +803,31 @@ button, input { font: inherit; }
   height: 100vh;
   background: var(--mist);
 }
+/* Daftar data berlabel (Nama : ..., NIK : ...) di dalam surat */
+.blok-data-list {
+  display: grid;
+  gap: 2px;
+  margin: 6px 0 12px 24px;
+  font-family: Arial, sans-serif;
+  font-size: 11pt;
+  line-height: 1.5;
+}
+.blok-data-list .data-row {
+  display: grid;
+  grid-template-columns: 160px 12px 1fr;
+  gap: 4px;
+  align-items: baseline;
+}
+.blok-data-list .data-colon { text-align: center; }
+.blok-data-list .data-value { word-break: break-word; }
 
+/* Di kertas resmi, sedikit lebih rapat */
+.official-paper .blok-data-list {
+  margin: 8px 0 14px 30px;
+}
+.official-paper .blok-data-list .data-row {
+  grid-template-columns: 170px 12px 1fr;
+}
 /* ---- Panel kiri ---- */
 .edit-sidebar {
   display: flex; flex-direction: column; gap: 12px;
