@@ -4,6 +4,7 @@
      - Setiap field bisa ganti jenis: Teks / Tanggal / Paragraf / Kategori
      - Field kategori punya daftar pilihan sendiri
      - Sisipkan data ke Isi Surat lewat modal (multi-pilih per grup)
+     - Baris "label : nilai" otomatis jadi tabel rapi
      - QR TTE bisa dihapus
      - Penandatangan sinkron dengan getDirut()
      ========================================================= */
@@ -298,7 +299,6 @@
     lastIsiSelection.end = ta.selectionEnd;
   }
 
-  // Sisipkan teks apapun ke textarea Isi Surat pada posisi kursor terakhir
   function insertIntoIsi(text) {
     const ta = byId("isi-text");
     if (!ta) return;
@@ -325,7 +325,6 @@
     renderPreview();
   }
 
-  // Isi modal dengan daftar field, dikelompokkan per jenis
   function renderPickModal() {
     const listEl = byId("pick-fields-list");
     const emptyEl = byId("pick-fields-empty");
@@ -498,9 +497,44 @@
       case "isi": {
         const s = state.isi;
         if (!s.text.trim()) return `<div class="blok-isi"><p class="isi-empty">(Isi surat belum ditulis)</p></div>`;
-        const paras = s.text.split(/\n\s*\n/).map((p) =>
-          `<p class="isi-${s.align}">${escapeHtml(p.trim()).replace(/\n/g, "<br>")}</p>`
-        ).join("");
+
+        const paras = s.text.split(/\n\s*\n/).map((block) => {
+          const lines = block.split("\n").map((l) => l.trim()).filter(Boolean);
+          if (!lines.length) return "";
+
+          const out = [];
+          let listBuffer = [];
+
+          const flushList = () => {
+            if (!listBuffer.length) return;
+            out.push(
+              `<div class="blok-data-list">${
+                listBuffer.map(({ label, value }) =>
+                  `<div class="data-row"><span class="data-label">${label}</span><span class="data-colon">:</span><span class="data-value">${value}</span></div>`
+                ).join("")
+              }</div>`
+            );
+            listBuffer = [];
+          };
+
+          lines.forEach((line) => {
+            // Deteksi pola "label : nilai"
+            const m = line.match(/^(.+?)\s*:\s*(.+)$/);
+            if (m) {
+              listBuffer.push({
+                label: escapeHtml(m[1].trim()),
+                value: escapeHtml(m[2].trim()),
+              });
+            } else {
+              flushList();
+              out.push(`<p class="isi-${s.align}">${escapeHtml(line)}</p>`);
+            }
+          });
+
+          flushList();
+          return out.join("");
+        }).join("");
+
         return `<div class="blok-isi">${paras}</div>`;
       }
 
