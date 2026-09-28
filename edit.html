@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -6,6 +5,16 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Editor Template · Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban</title>
 <link rel="stylesheet" href="style.css">
+<style>
+  /* Textarea di dalam field card (untuk daftar pilihan kategori) */
+  .field-card .ctrl-field textarea {
+    min-height: 70px;
+    font-family: inherit;
+    font-size: 11px;
+    line-height: 1.5;
+    resize: vertical;
+  }
+</style>
 </head>
 <body>
 
@@ -137,10 +146,8 @@
         <label>Pejabat Penandatangan</label>
         <select id="ttd-pejabat">
           <option value="">-- Pilih --</option>
-          <option value="1">Drs. Supriyanto, M.Si. (Kepala Dinas)</option>
-          <option value="2">Dina Widyaningtyas W., SE., MM (Kabid - A.n.)</option>
-          <option value="3">Drs. Supriyanto, M.Si. (Plt. Kepala Dinas)</option>
         </select>
+        <p class="ctrl-hint">Daftar diambil dari halaman penandatangan. Kelola di sana untuk menambah / mengedit.</p>
       </div>
       <div class="ctrl-field"><label>QR TTE (opsional)</label><input id="ttd-qr" type="file" accept="image/*"><img id="ttd-qr-prev" class="ctrl-thumb" hidden alt=""></div>
       <div class="ctrl-field">
@@ -156,12 +163,13 @@
     <!-- 06 DATA STAF -->
     <section class="ctrl-group">
       <h2 class="ctrl-title"><span class="ctrl-num">06</span> Data yang Perlu Diisi Staf</h2>
-      <p class="ctrl-hint">Field ini muncul sebagai pertanyaan di halaman <strong>Buat Surat</strong>. Isi <em>Contoh Isi</em> agar preview tampak seperti surat jadi.</p>
+      <p class="ctrl-hint">Tambah field, lalu pilih <strong>Jenis Data</strong>-nya. Kategori memunculkan daftar pilihan sendiri.</p>
       <div id="field-list" class="field-list"></div>
       <div class="add-field-actions">
         <button type="button" class="btn-ctrl-ghost" id="add-text">+ Teks</button>
         <button type="button" class="btn-ctrl-ghost" id="add-date">+ Tanggal</button>
         <button type="button" class="btn-ctrl-ghost" id="add-long">+ Paragraf</button>
+        <button type="button" class="btn-ctrl-ghost" id="add-cat">+ Kategori</button>
       </div>
     </section>
 

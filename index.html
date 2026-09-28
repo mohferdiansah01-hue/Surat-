@@ -6,139 +6,870 @@
 <title>Dashboard · Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban</title>
 <link rel="stylesheet" href="style.css">
 <style>
-  .home-shell { max-width: 1080px; margin: 0 auto; padding: 34px 24px 70px; }
-  .home-nav { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 56px; }
-  .home-brand { display: flex; align-items: center; gap: 11px; color: var(--green-dark); font-size: 12px; font-weight: 800; letter-spacing: .09em; }
-  .home-logo { width: 40px; height: 40px; padding: 4px; border: 1px solid var(--line); border-radius: 12px; background: #fff; object-fit: contain; }
-  .home-links { display: flex; align-items: center; gap: 22px; }
-  .home-links a { color: var(--muted); font-size: 13px; font-weight: 700; text-decoration: none; }
-  .home-links a:hover { color: var(--green-dark); }
-  .profile { position: relative; }
-  .profile-button { display: inline-flex; align-items: center; gap: 9px; padding: 5px 9px 5px 5px; border: 1px solid var(--line); border-radius: 999px; background: rgba(255,255,255,.75); color: var(--ink); font: inherit; font-size: 12px; cursor: pointer; }
-  .profile-avatar { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--green-dark); color: white; font-size: 11px; font-weight: 800; }
-  .profile-popover { position: absolute; z-index: 3; top: calc(100% + 10px); right: 0; width: 190px; padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); box-shadow: 0 16px 35px rgba(18,43,34,.13); }
-  .profile-popover[hidden] { display: none; }
-  .profile-name { margin: 0 0 3px; font-size: 13px; font-weight: 800; }
-  .profile-role { margin: 0 0 12px; color: var(--muted); font-size: 11px; }
-  .profile-guide { width: 100%; margin: 0 0 8px; padding: 9px 10px; border: 0; border-radius: 8px; background: var(--mist); color: var(--green-dark); font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; text-align: left; }
-  .profile-guide:hover { background: var(--lime); }
-  .profile-logout { width: 100%; padding: 9px 10px; border: 1px solid var(--line); border-radius: 8px; background: transparent; color: var(--ink); font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; text-align: left; }
-  .profile-logout:hover { background: var(--mist); }
-  .home-intro { max-width: 620px; margin-bottom: 30px; }
-  .home-intro h1 { margin: 8px 0 0; font-size: clamp(34px, 5vw, 58px); letter-spacing: -.055em; line-height: 1.02; }
-  .home-intro p { max-width: 530px; margin: 14px 0 0; color: var(--muted); line-height: 1.65; }
-  .home-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 13px; margin-bottom: 28px; }
-  .home-stat { padding: 16px 18px; border: 1px solid var(--line); border-radius: 12px; background: rgba(255,255,255,.68); }
-  .home-stat span { display: block; color: var(--muted); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
-  .home-stat strong { display: block; margin-top: 7px; font-size: 25px; }
-  .home-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-  .home-card { display: flex; min-height: 190px; flex-direction: column; gap: 12px; padding: 22px; border: 1px solid var(--line); border-radius: 14px; background: var(--paper); color: inherit; text-decoration: none; box-shadow: 0 12px 30px rgba(18,43,34,.05); }
-  .home-card:hover { border-color: var(--green); transform: translateY(-2px); }
-  .home-card-icon { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 11px; background: var(--lime); color: var(--green-dark); font-weight: 800; }
-  .home-card h2 { margin: 0; font-size: 21px; letter-spacing: -.035em; }
-  .home-card p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
-  .home-recent { margin-top: 28px; padding: 21px; border: 1px solid var(--line); border-radius: 14px; background: var(--paper); }
-  .home-recent-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
-  .home-recent-heading h2 { margin: 0; font-size: 18px; }
-  .home-recent-heading a { color: var(--green); font-size: 12px; font-weight: 700; text-decoration: none; }
-  .recent-list { display: grid; gap: 10px; }
-  .recent-item { display: flex; justify-content: space-between; gap: 12px; padding-top: 10px; border-top: 1px solid var(--line); }
-  .recent-item:first-child { padding-top: 0; border-top: 0; }
-  .recent-item strong, .recent-item small { display: block; }
-  .recent-item strong { font-size: 13px; }
-  .recent-item small { margin-top: 3px; color: var(--muted); font-size: 11px; }
-  .recent-status { color: var(--green-dark); font-size: 11px; font-weight: 800; }
-  @media (max-width: 760px) { .home-nav { align-items: flex-start; margin-bottom: 38px; } .home-links { gap: 12px; } .home-links > a { display: none; } .home-grid, .home-stats { grid-template-columns: 1fr; } }
+  /* =========================================================
+     DASHBOARD — hero: images.jpg background, lambang di atasnya
+     ========================================================= */
+
+  .dash{
+    max-width:1240px;
+    margin:0 auto;
+    padding:26px 26px 70px;
+  }
+
+  /* ---------- HEADER ---------- */
+  .dash-top{
+    display:grid;
+    grid-template-columns:1fr auto;
+    align-items:center;
+    gap:18px;
+    margin-bottom:22px;
+  }
+  .dash-brand{
+    display:flex;align-items:center;gap:11px;
+    color:var(--green-dark);
+    font-size:11.5px;font-weight:800;letter-spacing:.14em;
+    text-transform:uppercase;
+  }
+  .dash-logo{
+    width:38px;height:38px;flex:none;
+    border:1px solid var(--line);border-radius:11px;
+    background:#fff url('Lambang_Kabupaten_Tuban.webp') center/28px 28px no-repeat;
+  }
+  .dash-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .icon-btn{
+    width:38px;height:38px;border-radius:50%;
+    display:grid;place-items:center;
+    border:1px solid var(--line);background:#fff;
+    color:var(--muted);cursor:pointer;font-size:14px;
+    transition:.2s;
+  }
+  .icon-btn:hover{color:var(--green-dark);border-color:var(--green)}
+
+  /* ---------- PROFILE ---------- */
+  .profile{position:relative}
+  .profile-button{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:4px 13px 4px 4px;
+    border:1px solid var(--line);border-radius:999px;
+    background:#fff;color:var(--ink);
+    font:inherit;font-size:12px;font-weight:700;
+    cursor:pointer;transition:.2s;
+  }
+  .profile-button:hover{border-color:var(--green)}
+  .profile-avatar{
+    width:26px;height:26px;border-radius:50%;
+    display:grid;place-items:center;
+    background:var(--green-dark);color:#fff;
+    font-size:10.5px;font-weight:800;
+  }
+  .profile-popover{
+    position:absolute;z-index:5;top:calc(100% + 10px);right:0;width:210px;
+    padding:15px;border:1px solid var(--line);border-radius:15px;
+    background:#fff;box-shadow:var(--shadow);
+  }
+  .profile-popover[hidden]{display:none}
+  .profile-name{margin:0 0 3px;font-size:13px;font-weight:800}
+  .profile-role{margin:0 0 13px;color:var(--muted);font-size:11px;line-height:1.5}
+  .profile-guide,.profile-logout{
+    width:100%;padding:9px 11px;border-radius:9px;
+    font:inherit;font-size:12px;font-weight:700;cursor:pointer;
+    text-align:left;transition:.2s;
+  }
+  .profile-guide{margin:0 0 7px;border:0;background:var(--mist);color:var(--green-dark)}
+  .profile-guide:hover{background:var(--lime)}
+  .profile-logout{border:1px solid var(--line);background:transparent;color:var(--ink)}
+  .profile-logout:hover{background:var(--mist)}
+
+  /* ---------- BUTTONS ---------- */
+  .btn{
+    display:inline-flex;align-items:center;gap:9px;
+    padding:12px 22px;border-radius:999px;
+    font-size:13.5px;font-weight:700;font-family:inherit;
+    cursor:pointer;border:1px solid transparent;
+    text-decoration:none;transition:.25s cubic-bezier(.4,0,.2,1);
+  }
+  .btn-primary{
+    background:var(--green);color:#fff;
+    box-shadow:0 14px 28px -14px rgba(23,123,92,.8);
+  }
+  .btn-primary:hover{background:var(--green-dark);transform:translateY(-1px)}
+  .btn-light{
+    background:rgba(255,255,255,.18);color:#fff;
+    border-color:rgba(255,255,255,.32);
+    backdrop-filter:blur(6px);
+  }
+  .btn-light:hover{background:rgba(255,255,255,.28)}
+  .btn-ghost{
+    background:transparent;border-color:var(--line);color:var(--green-dark);
+  }
+  .btn-ghost:hover{border-color:var(--green);background:var(--mist)}
+
+  /* =========================================================
+     HERO — images.jpg background + lambang sebagai elemen relatif
+     ========================================================= */
+  .hero{
+    position:relative;
+    border-radius:26px;
+    padding:30px;
+    min-height:460px;
+    display:grid;
+    grid-template-columns:1.25fr .75fr;
+    gap:24px;
+    color:#f4fff9;
+    overflow:hidden;
+    margin-bottom:16px;
+    isolation:isolate;
+    box-shadow:0 30px 70px -34px rgba(15,101,74,.7);
+
+    /* === BACKGROUND UTAMA === */
+    background:
+      /* overlay gradient hijau supaya teks & KPI tetap terbaca */
+      linear-gradient(100deg,
+        rgba(9,58,41,.94) 0%,
+        rgba(15,101,74,.88) 35%,
+        rgba(15,101,74,.62) 65%,
+        rgba(15,101,74,.32) 100%),
+      radial-gradient(120% 90% at 100% 0%, rgba(214,239,189,.25), transparent 55%),
+      /* foto background utama */
+      url('images.jpg') center/cover no-repeat;
+  }
+
+  /* Cincin dekoratif kiri bawah */
+  .hero::before{
+    content:"";
+    position:absolute;left:-130px;bottom:-160px;
+    width:340px;height:340px;border-radius:50%;
+    border:1px solid rgba(255,255,255,.14);
+    box-shadow:
+      0 0 0 32px rgba(255,255,255,.04),
+      0 0 0 64px rgba(255,255,255,.03);
+    pointer-events:none;
+    z-index:0;
+  }
+  /* Glow hijau muda di kanan tempat lambang */
+  .hero::after{
+    content:"";
+    position:absolute;
+    right:-120px;top:-140px;
+    width:520px;height:520px;
+    border-radius:50%;
+    background:radial-gradient(closest-side, rgba(214,239,189,.35), transparent 70%);
+    pointer-events:none;
+    z-index:0;
+  }
+
+  .hero-left{
+    position:relative;z-index:2;
+    display:flex;flex-direction:column;
+    min-width:0;
+  }
+  .hero-eyebrow{
+    font-size:10px;font-weight:800;letter-spacing:.2em;
+    text-transform:uppercase;
+    color:rgba(244,255,249,.78);
+    margin-bottom:auto;
+  }
+  .hero-headline{
+    font-family:'Manrope',sans-serif;
+    font-size:clamp(30px,3.6vw,44px);
+    line-height:1.04;letter-spacing:-.045em;
+    font-weight:800;margin:20px 0 14px;
+    max-width:420px;
+    text-shadow:0 2px 24px rgba(0,0,0,.35);
+  }
+  .hero-sub{
+    margin:0 0 24px;max-width:420px;
+    color:rgba(244,255,249,.88);
+    font-size:14px;line-height:1.6;
+    text-shadow:0 1px 12px rgba(0,0,0,.3);
+  }
+  .hero-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+
+  /* =========================================================
+     LAMBANG — elemen relatif di atas background
+     ========================================================= */
+  .hero-right{
+    position:relative;z-index:2;
+    display:grid;place-items:center;
+    min-height:280px;
+  }
+  .hero-emblem{
+    position:relative;
+    width:min(280px,90%);
+    aspect-ratio:1/1;
+    display:grid;place-items:center;
+  }
+  /* Cincin konsentris berputar di belakang lambang */
+  .hero-emblem::before,
+  .hero-emblem::after{
+    content:"";
+    position:absolute;inset:0;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,.22);
+    pointer-events:none;
+  }
+  .hero-emblem::before{
+    inset:-22px;
+    border-color:rgba(255,255,255,.16);
+    animation:spin 40s linear infinite;
+  }
+  .hero-emblem::after{
+    inset:-46px;
+    border-style:dashed;
+    border-color:rgba(255,255,255,.12);
+    animation:spin 60s linear infinite reverse;
+  }
+  @keyframes spin{
+    to{transform:rotate(360deg)}
+  }
+  .hero-emblem img{
+    position:relative;z-index:1;
+    width:78%;height:78%;
+    object-fit:contain;
+    filter:drop-shadow(0 26px 40px rgba(6,50,35,.55));
+    animation:float 6s ease-in-out infinite;
+  }
+  @keyframes float{
+    0%,100%{transform:translateY(0)}
+    50%{transform:translateY(-8px)}
+  }
+  /* Lingkaran cahaya di belakang lambang */
+  .hero-emblem-glow{
+    position:absolute;
+    inset:6%;
+    border-radius:50%;
+    background:radial-gradient(closest-side, rgba(214,239,189,.45), transparent 70%);
+    filter:blur(14px);
+    z-index:0;
+    pointer-events:none;
+  }
+
+  /* =========================================================
+     KPI DI DALAM HERO
+     ========================================================= */
+  .hero-kpis{
+    grid-column:1 / -1;
+    position:relative;z-index:2;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    margin-top:auto;
+    align-self:end;
+  }
+  .kpi{
+    padding:14px 16px;
+    border-radius:16px;
+    background:rgba(255,255,255,.14);
+    border:1px solid rgba(255,255,255,.2);
+    backdrop-filter:blur(12px);
+    position:relative;
+  }
+  .kpi.active{
+    background:rgba(214,239,189,.28);
+    border-color:rgba(214,239,189,.48);
+  }
+  .kpi-value{
+    font-family:'Manrope',sans-serif;
+    font-size:22px;font-weight:800;letter-spacing:-.03em;
+    color:#fff;line-height:1;
+  }
+  .kpi-label{
+    display:flex;align-items:center;gap:6px;
+    margin-top:6px;
+    font-size:10.5px;font-weight:700;
+    color:rgba(244,255,249,.82);
+  }
+  .kpi-dot{
+    width:6px;height:6px;border-radius:50%;
+    background:var(--lime);flex:none;
+  }
+  .kpi-arrow{
+    position:absolute;right:10px;bottom:10px;
+    width:26px;height:26px;border-radius:50%;
+    display:grid;place-items:center;
+    background:#fff;color:var(--green-dark);
+    font-size:12px;font-weight:800;
+  }
+
+  /* =========================================================
+     PANEL / CHART / MINI LIST
+     ========================================================= */
+  .mid-grid{
+    display:grid;
+    grid-template-columns:1.35fr .65fr;
+    gap:16px;
+    margin-bottom:16px;
+  }
+  .panel{
+    border-radius:22px;
+    padding:20px 22px;
+    background:#fff;
+    border:1px solid var(--line);
+    box-shadow:0 16px 40px -30px rgba(24,69,51,.4);
+    display:flex;flex-direction:column;
+    min-height:0;
+  }
+  .panel-head{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:12px;margin-bottom:14px;
+  }
+  .panel-head h3{
+    margin:0;font-family:'Manrope',sans-serif;
+    font-size:13.5px;font-weight:800;letter-spacing:-.01em;
+    color:var(--ink);
+  }
+  .panel-badge{
+    padding:5px 10px;border-radius:999px;
+    background:var(--ink);color:#fff;
+    font-size:10.5px;font-weight:800;
+  }
+  .chart{
+    flex:1;min-height:180px;
+    display:flex;flex-direction:column;
+    position:relative;padding-bottom:22px;
+  }
+  .chart svg{width:100%;flex:1;display:block;overflow:visible}
+  .chart-x{
+    position:absolute;left:0;right:0;bottom:0;
+    display:flex;justify-content:space-between;
+    font-size:10px;color:var(--muted);font-weight:700;
+  }
+  .mini-list{display:grid;gap:10px;flex:1}
+  .mini-item{
+    display:flex;align-items:center;gap:12px;
+    padding:10px 0;border-top:1px solid var(--line);min-width:0;
+  }
+  .mini-item:first-child{border-top:0;padding-top:0}
+  .mini-thumb{
+    width:38px;height:38px;border-radius:10px;flex:none;
+    display:grid;place-items:center;
+    background:var(--mist);color:var(--green-dark);
+    font-size:12px;font-weight:800;
+  }
+  .mini-copy{min-width:0;flex:1}
+  .mini-copy strong{
+    display:block;font-size:12.5px;font-weight:700;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .mini-copy small{
+    display:block;margin-top:3px;font-size:10.5px;color:var(--muted);
+  }
+  .pill{
+    display:inline-flex;align-items:center;
+    padding:4px 9px;border-radius:999px;
+    font-size:9.5px;font-weight:800;
+    letter-spacing:.06em;text-transform:uppercase;
+  }
+  .pill-final{background:#e6f4ec;color:var(--green-dark)}
+  .pill-draft{background:#fdf1d6;color:#a86b12}
+  .pill-gagal{background:#fbe6e6;color:#a33d31}
+
+  /* ---------- SECTION HEAD + FEATURES ---------- */
+  .section-head{
+    display:flex;align-items:flex-end;justify-content:space-between;
+    gap:14px;margin:26px 0 14px;flex-wrap:wrap;
+  }
+  .section-head h2{
+    margin:0;font-family:'Manrope',sans-serif;
+    font-size:18px;font-weight:800;letter-spacing:-.03em;
+  }
+  .section-head p{margin:4px 0 0;color:var(--muted);font-size:12.5px}
+
+  .features{display:grid;gap:10px;margin-bottom:16px}
+  .feature{
+    display:grid;grid-template-columns:auto 1fr auto;
+    align-items:center;gap:18px;
+    padding:18px 22px;border:1px solid var(--line);
+    border-radius:18px;background:#fff;
+    text-decoration:none;color:inherit;
+    transition:.25s cubic-bezier(.4,0,.2,1);
+    position:relative;overflow:hidden;
+  }
+  .feature::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+    background:var(--green);transform:scaleY(0);
+    transition:transform .3s cubic-bezier(.4,0,.2,1);
+  }
+  .feature:hover{
+    transform:translateX(4px);border-color:transparent;
+    box-shadow:0 18px 40px -26px rgba(24,69,51,.5);
+  }
+  .feature:hover::before{transform:scaleY(1)}
+  .feature-icon{
+    width:46px;height:46px;flex:none;border-radius:14px;
+    display:grid;place-items:center;
+    background:var(--mist);color:var(--green-dark);
+    font-weight:800;font-size:14px;transition:.25s;
+  }
+  .feature:hover .feature-icon{background:var(--lime);transform:rotate(-4deg)}
+  .feature-copy{min-width:0}
+  .feature-copy h3{
+    margin:0 0 3px;font-family:'Manrope',sans-serif;
+    font-size:15.5px;font-weight:800;letter-spacing:-.02em;
+  }
+  .feature-copy p{margin:0;color:var(--muted);font-size:12.5px;line-height:1.5}
+  .feature-arrow{
+    width:34px;height:34px;flex:none;border-radius:50%;
+    display:grid;place-items:center;
+    color:var(--green-dark);background:var(--mist);
+    font-size:13px;font-weight:800;transition:.25s;
+  }
+  .feature:hover .feature-arrow{
+    background:var(--green-dark);color:#fff;transform:translateX(3px);
+  }
+
+  /* ---------- TABEL ---------- */
+  .table-panel{
+    border-radius:22px;padding:22px 24px 12px;
+    background:#fff;border:1px solid var(--line);
+    box-shadow:0 16px 40px -30px rgba(24,69,51,.4);
+  }
+  .table-head{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:14px;margin-bottom:8px;flex-wrap:wrap;
+  }
+  .table-head h3{
+    margin:0;font-family:'Manrope',sans-serif;
+    font-size:14.5px;font-weight:800;letter-spacing:-.02em;
+  }
+  .table-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .search-input{
+    padding:8px 14px;border-radius:999px;
+    border:1px solid var(--line);background:#fff;
+    font:inherit;font-size:12.5px;color:var(--ink);
+    min-width:180px;outline:0;transition:.2s;
+  }
+  .search-input:focus{border-color:var(--green);box-shadow:0 0 0 4px rgba(23,123,92,.1)}
+  .select{
+    appearance:none;
+    padding:8px 30px 8px 12px;border-radius:999px;
+    border:1px solid var(--line);
+    background:#fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%236f7d77' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>") no-repeat right 12px center;
+    font:inherit;font-size:12px;font-weight:700;
+    color:var(--ink);cursor:pointer;
+  }
+  .table-cols{
+    display:grid;grid-template-columns:2fr .8fr 1fr 1.2fr;
+    gap:14px;padding:10px 8px;
+    font-size:10.5px;font-weight:800;
+    letter-spacing:.12em;text-transform:uppercase;
+    color:var(--muted);border-bottom:1px solid var(--line);
+  }
+  .row{
+    display:grid;grid-template-columns:2fr .8fr 1fr 1.2fr;
+    gap:14px;align-items:center;
+    padding:14px 8px;border-bottom:1px solid var(--line);
+  }
+  .row:last-child{border-bottom:0}
+  .row-title{display:flex;align-items:center;gap:12px;min-width:0}
+  .thumb{
+    width:44px;height:44px;border-radius:10px;flex:none;
+    display:grid;place-items:center;
+    background:var(--mist);color:var(--green-dark);
+    font-size:15px;font-weight:800;
+  }
+  .row-title strong{
+    display:block;font-size:13px;font-weight:700;color:var(--ink);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .row-title small{
+    display:block;margin-top:3px;font-size:10.5px;color:var(--muted);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .row-num{
+    font-family:'Manrope',sans-serif;
+    font-size:13.5px;font-weight:800;letter-spacing:-.02em;
+    color:var(--ink);
+  }
+  .spark{width:100%;height:28px;display:block}
+  .empty-row{
+    padding:32px 12px;text-align:center;color:var(--muted);font-size:13px;
+  }
+  .empty-row strong{color:var(--green-dark);display:block;margin-bottom:6px}
+
+  /* =========================================================
+     RESPONSIVE
+     ========================================================= */
+  @media (max-width:960px){
+    .hero{grid-template-columns:1fr;min-height:0}
+    .hero-right{min-height:220px;order:-1}
+    .hero-emblem{width:min(220px,60%)}
+    .hero-kpis{grid-template-columns:repeat(2,1fr)}
+    .mid-grid{grid-template-columns:1fr}
+  }
+  @media (max-width:640px){
+    .dash{padding:20px 16px 50px}
+    .hero{padding:24px;border-radius:20px;min-height:0}
+    .hero-headline{font-size:28px}
+    .hero-kpis{grid-template-columns:1fr}
+    .feature{grid-template-columns:auto 1fr;padding:16px 18px;gap:14px}
+    .feature-arrow{display:none}
+    .dash-actions{width:100%}
+    .dash-actions .btn-primary{flex:1;justify-content:center}
+    .table-cols,.row{grid-template-columns:1.6fr .8fr}
+    .table-cols span:nth-child(3),.table-cols span:nth-child(4),
+    .row > *:nth-child(3),.row > *:nth-child(4){display:none}
+    .search-input{min-width:140px}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .hero-emblem::before,
+    .hero-emblem::after,
+    .hero-emblem img{animation:none}
+  }
 </style>
 </head>
 <body>
-  <main class="home-shell">
-    <nav class="home-nav" aria-label="Navigasi utama">
-      <a class="home-brand" href="index.html"><img class="home-logo" src="Lambang_Kabupaten_Tuban.webp" alt="Lambang Kabupaten Tuban"> SISTEM SURAT DINAS KABUPATEN TUBAN</a>
-      <div class="home-links">
-        <a href="buat-surat.html">Buat surat</a>
-        <a href="arsip.html">Histori</a>
-        <a href="template.html">Kelola surat</a>
+  <div class="dash">
+
+    <!-- HEADER -->
+    <header class="dash-top">
+      <div class="dash-brand">
+        <span class="dash-logo" aria-hidden="true"></span>
+        Sistem Surat Dinas Kabupaten Tuban
+      </div>
+      <div class="dash-actions">
+        <button class="icon-btn" type="button" aria-label="Notifikasi">✉</button>
+        <button class="icon-btn" type="button" aria-label="Cari">⌕</button>
         <div class="profile">
-          <button id="profile-button" class="profile-button" type="button" aria-expanded="false" aria-controls="profile-popover">
-            <span id="profile-avatar" class="profile-avatar">A</span><span id="profile-label">Profil</span>
+          <button id="profile-button" class="profile-button" type="button"
+                  aria-expanded="false" aria-controls="profile-popover">
+            <span id="profile-avatar" class="profile-avatar">A</span>
+            <span id="profile-label">Profil</span>
           </button>
           <div id="profile-container"></div>
         </div>
+        <a href="buat-surat.html" class="btn btn-primary">Buat surat baru</a>
       </div>
-    </nav>
+    </header>
 
-    <section class="home-intro">
-      <div class="preview-eyebrow">Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban</div>
-      <h1>Semua pekerjaan surat, satu tempat.</h1>
-      <p>Buat surat baru, kelola isi template, dan pantau histori surat yang tersimpan otomatis dari dashboard ini.</p>
+    <!-- HERO: background images.jpg + lambang relatif -->
+    <section class="hero">
+      <div class="hero-left">
+        <span class="hero-eyebrow">Dinas Kependudukan dan Pencatatan Sipil</span>
+        <h1 class="hero-headline" id="greeting">Selamat datang</h1>
+        <p class="hero-sub" id="heroSub">
+          Kelola pembuatan, template, dan arsip surat dari satu tempat.
+          Mulai dari wizard 4 langkah, sisanya otomatis.
+        </p>
+        <div class="hero-actions">
+          <a href="buat-surat.html" class="btn btn-light">Buat surat baru →</a>
+          <a href="arsip.html" class="btn btn-light">Lihat arsip</a>
+        </div>
+      </div>
+
+      <!-- Lambang Tuban sebagai elemen relatif di atas background -->
+      <div class="hero-right">
+        <div class="hero-emblem">
+          <span class="hero-emblem-glow"></span>
+          <img src="Lambang_Kabupaten_Tuban.webp" alt="Lambang Kabupaten Tuban">
+        </div>
+      </div>
+
+      <!-- KPI di dalam hero -->
+      <div class="hero-kpis" aria-label="Ringkasan surat">
+        <div class="kpi">
+          <div class="kpi-value" id="stat-letters">0</div>
+          <div class="kpi-label"><span class="kpi-dot"></span> Total arsip</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-value" id="stat-templates">0</div>
+          <div class="kpi-label"><span class="kpi-dot"></span> Template</div>
+        </div>
+        <div class="kpi active">
+          <div class="kpi-value" id="stat-week-num">0</div>
+          <div class="kpi-label"><span class="kpi-dot"></span> Minggu ini</div>
+          <span class="kpi-arrow">→</span>
+        </div>
+        <div class="kpi">
+          <div class="kpi-value" id="stat-drafts">0</div>
+          <div class="kpi-label"><span class="kpi-dot"></span> Draft</div>
+        </div>
+      </div>
     </section>
 
-    <section class="home-stats" aria-label="Ringkasan surat">
-      <div class="home-stat"><span>Total histori</span><strong id="stat-letters">0</strong></div>
-      <div class="home-stat"><span>Template aktif</span><strong id="stat-templates">0</strong></div>
-      <div class="home-stat"><span>Status sistem</span><strong>Siap</strong></div>
+    <!-- CHART + MINI LIST -->
+    <div class="mid-grid">
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Aktivitas 7 hari terakhir</h3>
+          <span class="panel-badge" id="chartBadge">0</span>
+        </div>
+        <div class="chart">
+          <svg viewBox="0 0 320 140" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="gArea" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0" stop-color="var(--green)" stop-opacity=".22"/>
+                <stop offset="1" stop-color="var(--green)" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path id="areaPath" d="M0,100 L320,100 L320,140 L0,140 Z" fill="url(#gArea)"/>
+            <path id="linePath" d="M0,100 L320,100"
+                  fill="none" stroke="var(--green)" stroke-width="2.2" stroke-linecap="round"/>
+            <path id="linePrev" d="M0,110 L320,110"
+                  fill="none" stroke="var(--muted)" stroke-width="1.6"
+                  stroke-dasharray="3 4" stroke-linecap="round"/>
+          </svg>
+          <div class="chart-x" id="chartX"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Surat terbaru</h3>
+          <a href="arsip.html" style="color:var(--green);font-size:12px;font-weight:700;text-decoration:none">Lihat semua</a>
+        </div>
+        <div class="mini-list" id="miniList"></div>
+      </div>
+    </div>
+
+    <!-- FEATURES -->
+    <div class="section-head">
+      <div>
+        <h2>Menu utama</h2>
+        <p>Pilih yang ingin Anda kerjakan sekarang.</p>
+      </div>
+    </div>
+
+    <section class="features">
+      <a class="feature" href="buat-surat.html">
+        <span class="feature-icon">B</span>
+        <div class="feature-copy">
+          <h3>Buat Surat</h3>
+          <p>Wizard 4 langkah: data pembuat, pilih template, tentukan penandatangan, lalu cetak.</p>
+        </div>
+        <span class="feature-arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="feature" href="template.html">
+        <span class="feature-icon">E</span>
+        <div class="feature-copy">
+          <h3>Kelola Surat</h3>
+          <p>Ubah nama template, HTML surat, dan field tanpa menyentuh kode aplikasi.</p>
+        </div>
+        <span class="feature-arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="feature" href="arsip.html">
+        <span class="feature-icon">A</span>
+        <div class="feature-copy">
+          <h3>Arsip Surat</h3>
+          <p>Riwayat surat tersimpan otomatis di browser. Cari, buka ulang, atau cetak lagi.</p>
+        </div>
+        <span class="feature-arrow" aria-hidden="true">→</span>
+      </a>
     </section>
 
-    <section class="home-grid" aria-label="Menu Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban">
-      <a class="home-card" href="buat-surat.html"><span class="home-card-icon">B</span><h2>Buat Surat</h2><p>Mulai surat baru dari data pembuat sampai preview dan cetak.</p></a>
-      <a class="home-card" href="arsip.html"><span class="home-card-icon">H</span><h2>Histori</h2><p>Lihat surat yang sudah tersimpan otomatis dan riwayat pembuatannya.</p></a>
-      <a class="home-card" href="template.html"><span class="home-card-icon">K</span><h2>Kelola Surat</h2><p>Kelola template, isi surat, dan field yang digunakan dalam wizard.</p></a>
+    <!-- TABEL -->
+    <section class="table-panel">
+      <div class="table-head">
+        <h3>Daftar surat</h3>
+        <div class="table-tools">
+          <input class="search-input" id="search" type="search" placeholder="Cari nomor / template…" aria-label="Cari surat">
+          <select class="select" id="filterStatus" aria-label="Filter status">
+            <option value="">Semua status</option>
+            <option value="final">Final</option>
+            <option value="draft">Draft</option>
+            <option value="gagal">Gagal</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-cols">
+        <span>Surat</span>
+        <span>Tanggal</span>
+        <span>Status</span>
+        <span>Aktivitas</span>
+      </div>
+
+      <div id="rows"></div>
     </section>
 
-    <section class="home-recent">
-      <div class="home-recent-heading"><h2>Surat terbaru</h2><a href="arsip.html">Lihat semua</a></div>
-      <div id="recent-letters" class="recent-list"></div>
-    </section>
-  </main>
+  </div>
+
   <script src="data.js"></script>
   <script>
-    const auth = getAuth();
-    const letters = getLetters();
-    const templates = getTemplates();
+    /* ====== GREETING ====== */
+    const auth = typeof getAuth === "function" ? getAuth() : null;
     const authName = auth?.nama || auth?.username || "Admin Surat";
+    const hour = new Date().getHours();
+    const salam = hour < 11 ? "Selamat pagi"
+               : hour < 15 ? "Selamat siang"
+               : hour < 19 ? "Selamat sore"
+               : "Selamat malam";
+    document.getElementById("greeting").textContent = `${salam}, ${authName}`;
+    document.getElementById("heroSub").textContent =
+      `${new Date().toLocaleDateString("id-ID",{weekday:"long",day:"numeric",month:"long",year:"numeric"})} — kelola pembuatan, template, dan arsip surat dari satu tempat.`;
     document.getElementById("profile-label").textContent = authName;
     document.getElementById("profile-avatar").textContent = authName.charAt(0).toUpperCase();
+
+    /* ====== DATA ====== */
+    const letters  = typeof getLetters  === "function" ? getLetters()  : [];
+    const templates= typeof getTemplates=== "function" ? getTemplates(): [];
+
+    const now = Date.now();
+    const weekAgo = now - 7 * 24 * 60 * 60 * 1000;
+    const thisWeek = letters.filter(l => new Date(l.created_at || l.tanggal || 0).getTime() >= weekAgo);
+    const drafts = letters.filter(l => (l.status || "").toLowerCase() === "draft");
+
     document.getElementById("stat-letters").textContent = letters.length;
     document.getElementById("stat-templates").textContent = templates.length;
-    document.getElementById("recent-letters").innerHTML = letters.length ? letters.slice(0, 3).map((letter) => {
-      const template = templates.find((item) => item.key === letter.template_key) || { nama: "Template" };
-      return `<div class="recent-item"><div><strong>${escapeHtml(letter.nomor_surat || letter.id)}</strong><small>${escapeHtml(template.nama)}</small></div><span class="recent-status">${escapeHtml(letter.status || "final")}</span></div>`;
-    }).join("") : '<p class="dashboard-note">Belum ada surat yang dibuat.</p>';
+    document.getElementById("stat-drafts").textContent = drafts.length;
+    document.getElementById("stat-week-num").textContent = thisWeek.length;
+    document.getElementById("chartBadge").textContent = thisWeek.length;
 
-    async function loadProfile() {
-      const response = await fetch("profile.html");
-      if (!response.ok) throw new Error("Profil tidak dapat dimuat.");
-      document.getElementById("profile-container").innerHTML = await response.text();
+    /* ====== CHART ====== */
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(); d.setDate(d.getDate() - i); d.setHours(0,0,0,0);
+      days.push(d);
+    }
+    const counts = days.map(day => {
+      const start = day.getTime();
+      const end = start + 24 * 60 * 60 * 1000;
+      return letters.filter(l => {
+        const t = new Date(l.created_at || l.tanggal || 0).getTime();
+        return t >= start && t < end;
+      }).length;
+    });
+    const maxCount = Math.max(1, ...counts);
+    const w = 320, h = 140, pad = 20;
+    const step = w / 6;
+    const points = counts.map((c, i) => {
+      const x = i * step;
+      const y = h - pad - (c / maxCount) * (h - pad * 2);
+      return [x, y];
+    });
+    const linePath = points.map((p,i) => (i === 0 ? `M${p[0]},${p[1]}` : `L${p[0]},${p[1]}`)).join(" ");
+    const areaPath = `${linePath} L${w},${h} L0,${h} Z`;
+    document.getElementById("linePath").setAttribute("d", linePath);
+    document.getElementById("areaPath").setAttribute("d", areaPath);
+    const avg = counts.reduce((a,b)=>a+b,0) / counts.length;
+    const yAvg = h - pad - (avg / maxCount) * (h - pad * 2);
+    document.getElementById("linePrev").setAttribute("d", `M0,${yAvg} L${w},${yAvg}`);
 
-      document.getElementById("profile-name").textContent = authName;
-      const profileButton = document.getElementById("profile-button");
-      const profilePopover = document.getElementById("profile-popover");
-      profileButton.addEventListener("click", () => {
-        const isOpen = !profilePopover.hidden;
-        profilePopover.hidden = isOpen;
-        profileButton.setAttribute("aria-expanded", String(!isOpen));
+    document.getElementById("chartX").innerHTML = days.map(d =>
+      `<span>${d.toLocaleDateString("id-ID",{day:"numeric",month:"short"})}</span>`
+    ).join("");
+
+    /* ====== MINI LIST ====== */
+    const miniList = document.getElementById("miniList");
+    if (letters.length) {
+      miniList.innerHTML = letters.slice(0, 4).map(l => {
+        const tpl = templates.find(t => t.key === l.template_key) || { nama: "Template" };
+        const status = (l.status || "final").toLowerCase();
+        const cls = status === "draft" ? "pill-draft"
+                  : status === "gagal" ? "pill-gagal"
+                  : "pill-final";
+        return `
+          <div class="mini-item">
+            <span class="mini-thumb">${(tpl.nama||"S").charAt(0).toUpperCase()}</span>
+            <div class="mini-copy">
+              <strong>${escapeHtml(l.nomor_surat || l.id)}</strong>
+              <small>${escapeHtml(tpl.nama)}</small>
+            </div>
+            <span class="pill ${cls}">${escapeHtml(status)}</span>
+          </div>`;
+      }).join("");
+    } else {
+      miniList.innerHTML = `<p style="color:var(--muted);font-size:12.5px;margin:0">Belum ada surat.</p>`;
+    }
+
+    /* ====== TABEL ====== */
+    const rowsEl = document.getElementById("rows");
+    const searchEl = document.getElementById("search");
+    const filterEl = document.getElementById("filterStatus");
+
+    function renderRows() {
+      const q = searchEl.value.trim().toLowerCase();
+      const f = filterEl.value.toLowerCase();
+      const filtered = letters.filter(l => {
+        const tpl = templates.find(t => t.key === l.template_key) || { nama: "" };
+        const text = `${l.nomor_surat||""} ${l.id||""} ${tpl.nama||""}`.toLowerCase();
+        const status = (l.status || "final").toLowerCase();
+        return (!q || text.includes(q)) && (!f || status === f);
       });
-      document.getElementById("logout-button").addEventListener("click", () => {
+
+      if (!filtered.length) {
+        rowsEl.innerHTML = `<div class="empty-row"><strong>Tidak ada surat yang cocok</strong>Ubah kata kunci atau filter, atau buat surat baru.</div>`;
+        return;
+      }
+
+      rowsEl.innerHTML = filtered.slice(0, 8).map(l => {
+        const tpl = templates.find(t => t.key === l.template_key) || { nama: "Template" };
+        const status = (l.status || "final").toLowerCase();
+        const cls = status === "draft" ? "pill-draft"
+                  : status === "gagal" ? "pill-gagal"
+                  : "pill-final";
+        const tgl = l.created_at || l.tanggal;
+        const dateStr = tgl ? new Date(tgl).toLocaleDateString("id-ID",{day:"numeric",month:"short"}) : "—";
+        const seed = (String(l.id||"x").charCodeAt(0) || 1);
+        const sparkD = Array.from({length:8}).map((_,i)=>{
+          const y = 20 - ((Math.sin(seed + i) + 1) * 6);
+          return `${i===0?`M0,${y}`:`L${(i)*14},${y}`}`;
+        }).join(" ");
+        return `
+          <div class="row">
+            <div class="row-title">
+              <span class="thumb">${(tpl.nama||"S").charAt(0).toUpperCase()}</span>
+              <div>
+                <strong>${escapeHtml(l.nomor_surat || l.id)}</strong>
+                <small>${escapeHtml(tpl.nama)}</small>
+              </div>
+            </div>
+            <div class="row-num">${escapeHtml(dateStr)}</div>
+            <div><span class="pill ${cls}">${escapeHtml(status)}</span></div>
+            <div>
+              <svg class="spark" viewBox="0 0 100 28" preserveAspectRatio="none">
+                <path d="${sparkD}" fill="none" stroke="var(--green)" stroke-width="1.6" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>`;
+      }).join("");
+    }
+    searchEl.addEventListener("input", renderRows);
+    filterEl.addEventListener("change", renderRows);
+    renderRows();
+
+    /* ====== PROFILE ====== */
+    const profileButton = document.getElementById("profile-button");
+    const profileContainer = document.getElementById("profile-container");
+
+    function toggleProfile() {
+      const pop = document.getElementById("profile-popover");
+      if (!pop) return;
+      const isOpen = !pop.hidden;
+      pop.hidden = isOpen;
+      profileButton.setAttribute("aria-expanded", String(!isOpen));
+    }
+    profileButton.addEventListener("click", toggleProfile);
+
+    function bindProfileActions() {
+      document.getElementById("logout-button")?.addEventListener("click", () => {
         clearAuth();
         clearSession();
         location.href = "login.html";
       });
-      document.getElementById("guide-button").addEventListener("click", () => {
+      document.getElementById("guide-button")?.addEventListener("click", () => {
         alert("Panduan penggunaan\n\n1. Pilih Buat Surat untuk membuat surat baru.\n2. Isi data sampai halaman preview.\n3. Surat otomatis masuk ke Histori.\n4. Gunakan Edit Surat untuk mengelola template.\n5. Gunakan tombol Cetak / Simpan PDF dari halaman preview.");
       });
     }
 
+    async function loadProfile() {
+      const response = await fetch("profile.html", { cache: "no-store" });
+      if (!response.ok) throw new Error("Profil tidak dapat dimuat.");
+      profileContainer.innerHTML = await response.text();
+      document.getElementById("profile-name").textContent = authName;
+      bindProfileActions();
+    }
+
     loadProfile().catch(() => {
-      document.getElementById("profile-container").innerHTML = `<div id="profile-popover" class="profile-popover" hidden><p id="profile-name" class="profile-name">${escapeHtml(authName)}</p><p class="profile-role">Pengelola Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban</p><button id="guide-button" class="profile-guide" type="button">Panduan penggunaan</button><button id="logout-button" class="profile-logout" type="button">Keluar</button></div>`;
-      document.getElementById("logout-button").addEventListener("click", () => {
-        clearAuth();
-        clearSession();
-        location.href = "login.html";
-      });
-      document.getElementById("guide-button").addEventListener("click", () => {
-        alert("Panduan penggunaan\n\n1. Pilih Buat Surat untuk membuat surat baru.\n2. Isi data sampai halaman preview.\n3. Surat otomatis masuk ke Histori.\n4. Gunakan Edit Surat untuk mengelola template.\n5. Gunakan tombol Cetak / Simpan PDF dari halaman preview.");
-      });
+      profileContainer.innerHTML = `
+        <div id="profile-popover" class="profile-popover" hidden>
+          <p id="profile-name" class="profile-name">${escapeHtml(authName)}</p>
+          <p class="profile-role">Pengelola Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban</p>
+          <button id="guide-button" class="profile-guide" type="button">Panduan penggunaan</button>
+          <button id="logout-button" class="profile-logout" type="button">Keluar</button>
+        </div>`;
+      bindProfileActions();
     });
   </script>
 </body>
