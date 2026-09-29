@@ -5,22 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Editor Template · Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban</title>
 <link rel="stylesheet" href="style.css">
-<style>
-  /* Textarea di dalam field card (untuk daftar pilihan kategori) */
-  .field-card .ctrl-field textarea {
-    min-height: 70px;
-    font-family: inherit;
-    font-size: 11px;
-    line-height: 1.5;
-    resize: vertical;
-  }
-</style>
 </head>
 <body>
 
 <div class="edit-layout">
 
-  <!-- ============ PANEL KIRI ============ -->
   <aside class="edit-sidebar">
 
     <a href="index.html" class="edit-brand">
@@ -57,7 +46,6 @@
         </select>
       </div>
 
-      <!-- MODE TERSTRUKTUR -->
       <div id="kop-terstruktur-fields">
         <div class="ctrl-field">
           <label>Logo (kiri)</label>
@@ -81,7 +69,6 @@
         </div>
       </div>
 
-      <!-- MODE FOTO UTUH -->
       <div id="kop-foto-fields" style="display:none;">
         <div class="ctrl-field">
           <label>Foto Kop Utuh</label>
@@ -98,11 +85,32 @@
         <h2 class="ctrl-title"><span class="ctrl-num">02</span> Nomor, Sifat, Lampiran, Hal</h2>
         <label class="switch"><input type="checkbox" data-toggle="identitas"><span>Tampilkan</span></label>
       </header>
+
+      <div class="ctrl-field ctrl-field--tanggal">
+        <label>Tanggal (kanan atas)</label>
+        <input id="id-tanggal" type="text" placeholder="Tuban, 22 September 2026">
+      </div>
+
       <div class="ctrl-field"><label>Nomor</label><input id="id-nomor" type="text" placeholder="Kosongkan = {{nomor_surat}}"></div>
       <div class="ctrl-field"><label>Sifat</label><input id="id-sifat" type="text" placeholder="Biasa"></div>
       <div class="ctrl-field"><label>Lampiran</label><input id="id-lampiran" type="text" placeholder="-"></div>
-      <div class="ctrl-field"><label>Hal</label><input id="id-hal" type="text" placeholder="Jawaban Keabsahan Akta Kelahiran"></div>
-      <div class="ctrl-field"><label>Tanggal (kanan atas)</label><input id="id-tanggal" type="text" placeholder="Tuban, 22 September 2026"></div>
+      <div class="ctrl-field">
+        <label>Hal</label>
+        <select id="id-hal-select">
+          <option value="">-- Pilih Hal --</option>
+          <option value="Jawaban Keabsahan Akta Kelahiran">Jawaban Keabsahan Akta Kelahiran</option>
+          <option value="Jawaban Keabsahan Akta Kematian">Jawaban Keabsahan Akta Kematian</option>
+          <option value="Jawaban Keabsahan Akta Perkawinan">Jawaban Keabsahan Akta Perkawinan</option>
+          <option value="Jawaban Keabsahan Akta Perceraian">Jawaban Keabsahan Akta Perceraian</option>
+          <option value="Permohonan Data Kependudukan">Permohonan Data Kependudukan</option>
+          <option value="Pemberitahuan Perubahan Data">Pemberitahuan Perubahan Data</option>
+          <option value="Permintaan Bantuan Operator SAKTI">Permintaan Bantuan Operator SAKTI</option>
+          <option value="Undangan Sosialisasi">Undangan Sosialisasi</option>
+          <option value="Laporan Bulanan">Laporan Bulanan</option>
+          <option value="__custom__">✎ Lainnya (ketik sendiri)</option>
+        </select>
+        <input id="id-hal" type="text" placeholder="Ketik hal surat..." style="display:none;">
+      </div>
     </section>
 
     <!-- 03 TUJUAN -->
@@ -124,7 +132,10 @@
       </header>
       <div class="ctrl-field">
         <label>Isi Surat</label>
-        <textarea id="isi-text" rows="6" placeholder="Ketik isi surat...&#10;&#10;Gunakan {{nama_field}} untuk data yang diisi staf."></textarea>
+        <textarea id="isi-text" rows="6" placeholder="Ketik isi surat...&#10;&#10;Klik '+ Sisipkan Data' untuk memasukkan {{nama_field}}."></textarea>
+      </div>
+      <div class="isi-toolbar">
+        <button type="button" class="btn-ctrl-ghost" id="btn-insert-field">+ Sisipkan Data</button>
       </div>
       <div class="ctrl-field">
         <label>Perataan</label>
@@ -147,9 +158,16 @@
         <select id="ttd-pejabat">
           <option value="">-- Pilih --</option>
         </select>
-        <p class="ctrl-hint">Daftar diambil dari halaman penandatangan. Kelola di sana untuk menambah / mengedit.</p>
+        <p class="ctrl-hint">Daftar diambil dari halaman penandatangan.</p>
       </div>
-      <div class="ctrl-field"><label>QR TTE (opsional)</label><input id="ttd-qr" type="file" accept="image/*"><img id="ttd-qr-prev" class="ctrl-thumb" hidden alt=""></div>
+      <div class="ctrl-field">
+        <label>QR TTE (opsional)</label>
+        <input id="ttd-qr" type="file" accept="image/*">
+        <div id="ttd-qr-wrap" class="qr-wrap" hidden>
+          <img id="ttd-qr-prev" class="ctrl-thumb" alt="">
+          <button type="button" class="btn-ctrl-ghost" id="ttd-qr-hapus" style="flex:0 0 auto;padding:6px 10px;">× Hapus QR</button>
+        </div>
+      </div>
       <div class="ctrl-field">
         <label>Posisi Blok</label>
         <select id="ttd-posisi">
@@ -163,7 +181,7 @@
     <!-- 06 DATA STAF -->
     <section class="ctrl-group">
       <h2 class="ctrl-title"><span class="ctrl-num">06</span> Data yang Perlu Diisi Staf</h2>
-      <p class="ctrl-hint">Tambah field, lalu pilih <strong>Jenis Data</strong>-nya. Kategori memunculkan daftar pilihan sendiri.</p>
+      <p class="ctrl-hint">Tambah field, pilih <strong>Jenis Data</strong>-nya. Untuk menyisipkan ke Isi Surat, klik <strong>+ Sisipkan Data</strong> di bagian 04.</p>
       <div id="field-list" class="field-list"></div>
       <div class="add-field-actions">
         <button type="button" class="btn-ctrl-ghost" id="add-text">+ Teks</button>
@@ -221,6 +239,24 @@
     </div>
   </main>
 
+</div>
+
+<!-- ============ MODAL PILIH DATA UNTUK DISISIPKAN ============ -->
+<div id="pick-fields-modal" class="pick-modal" hidden>
+  <div class="pick-modal-backdrop" data-close-pick></div>
+  <section class="pick-modal-panel" role="dialog" aria-modal="true" aria-labelledby="pick-title">
+    <header class="pick-modal-header">
+      <h3 id="pick-title">Sisipkan Data ke Isi Surat</h3>
+      <button type="button" class="pick-modal-close" data-close-pick aria-label="Tutup">×</button>
+    </header>
+    <p class="pick-modal-hint">Centang satu atau lebih. Token akan disisipkan di posisi kursor terakhir di Isi Surat.</p>
+    <div id="pick-fields-list" class="pick-fields-list"></div>
+    <p id="pick-fields-empty" class="pick-fields-empty" hidden>Belum ada data. Tambahkan dulu di bagian 06.</p>
+    <div class="pick-modal-actions">
+      <button type="button" class="btn-ctrl-ghost" data-close-pick>Batal</button>
+      <button type="button" class="btn-ctrl-primary" id="pick-insert-btn">Sisipkan</button>
+    </div>
+  </section>
 </div>
 
 <script src="data.js"></script>

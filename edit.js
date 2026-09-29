@@ -3,7 +3,11 @@
      EDIT.JS — Builder Template
      - Setiap field bisa ganti jenis: Teks / Tanggal / Paragraf / Kategori
      - Field kategori punya daftar pilihan sendiri
-     - Tombol "Sisipkan" memasukkan {{nama_field}} ke textarea Isi Surat
+     - Sisipkan data ke Isi Surat lewat modal (multi-pilih per grup)
+     - Baris "label : nilai" otomatis jadi tabel rapi
+     - Hal surat: dropdown + opsi "Lainnya (ketik sendiri)"
+     - QR TTE bisa dihapus
+     - Tanggal di kanan atas, terpisah di atas Nomor
      - Penandatangan sinkron dengan getDirut()
      ========================================================= */
 
@@ -96,6 +100,25 @@
   };
 
   // =========================================================
+  // HAL SURAT — dropdown + custom
+  // =========================================================
+  function updateHalInput() {
+    const sel = byId("id-hal-select");
+    const inp = byId("id-hal");
+    if (!sel || !inp) return;
+    const v = sel.value;
+    if (v === "__custom__") {
+      inp.style.display = "";
+      inp.focus();
+      state.identitas.hal = inp.value;
+    } else {
+      inp.style.display = "none";
+      state.identitas.hal = v || "";
+      inp.value = v || "";
+    }
+  }
+
+  // =========================================================
   // INIT
   // =========================================================
   function init() {
@@ -121,7 +144,23 @@
     byId("id-nomor").value = state.identitas.nomor;
     byId("id-sifat").value = state.identitas.sifat;
     byId("id-lampiran").value = state.identitas.lampiran;
-    byId("id-hal").value = state.identitas.hal;
+
+    (function initHalField() {
+      const sel = byId("id-hal-select");
+      const inp = byId("id-hal");
+      const current = state.identitas.hal || "";
+      const hasOption = [...sel.options].some((o) => o.value === current);
+      if (current && !hasOption) {
+        sel.value = "__custom__";
+        inp.value = current;
+        inp.style.display = "";
+      } else {
+        sel.value = current;
+        inp.value = current;
+        inp.style.display = "none";
+      }
+    })();
+
     byId("id-tanggal").value = state.identitas.tanggal;
 
     byId("yth-1").value = state.tujuan.y1;
@@ -133,9 +172,15 @@
 
     fillPejabatOptions();
     byId("ttd-posisi").value = state.ttd.posisi;
+
     if (state.ttd.qrUrl) {
       byId("ttd-qr-prev").src = state.ttd.qrUrl;
-      byId("ttd-qr-prev").hidden = false;
+      const wrap = byId("ttd-qr-wrap");
+      if (wrap) wrap.hidden = false;
+      else byId("ttd-qr-prev").hidden = false;
+    } else {
+      const wrap = byId("ttd-qr-wrap");
+      if (wrap) wrap.hidden = true;
     }
 
     BLOCK_ORDER.forEach((k) => {
@@ -208,7 +253,6 @@
   bindInput("id-nomor", "identitas.nomor");
   bindInput("id-sifat", "identitas.sifat");
   bindInput("id-lampiran", "identitas.lampiran");
-  bindInput("id-hal", "identitas.hal");
   bindInput("id-tanggal", "identitas.tanggal");
   bindInput("yth-1", "tujuan.y1");
   bindInput("yth-2", "tujuan.y2");
@@ -217,6 +261,22 @@
   bindInput("isi-align", "isi.align");
   bindInput("ttd-pejabat", "ttd.pejabatId");
   bindInput("ttd-posisi", "ttd.posisi");
+
+  // ===== Hal: dropdown + input custom =====
+  const halSelect = byId("id-hal-select");
+  if (halSelect) {
+    halSelect.addEventListener("change", () => {
+      updateHalInput();
+      renderPreview();
+    });
+  }
+  const halInput = byId("id-hal");
+  if (halInput) {
+    halInput.addEventListener("input", () => {
+      state.identitas.hal = halInput.value;
+      renderPreview();
+    });
+  }
 
   document.querySelectorAll("[data-toggle]").forEach((chk) => {
     chk.addEventListener("change", () => {
@@ -258,11 +318,134 @@
     r.onload = () => {
       state.ttd.qrUrl = String(r.result || "");
       byId("ttd-qr-prev").src = state.ttd.qrUrl;
-      byId("ttd-qr-prev").hidden = false;
+      const wrap = byId("ttd-qr-wrap");
+      if (wrap) wrap.hidden = false;
+      else byId("ttd-qr-prev").hidden = false;
       renderPreview();
     };
     r.readAsDataURL(f);
   });
+
+  const qrHapusBtn = byId("ttd-qr-hapus");
+  if (qrHapusBtn) {
+    qrHapusBtn.addEventListener("click", () => {
+      state.ttd.qrUrl = "";
+      byId("ttd-qr").value = "";
+      byId("ttd-qr-prev").src = "";
+      const wrap = byId("ttd-qr-wrap");
+      if (wrap) wrap.hidden = true;
+      else byId("ttd-qr-prev").hidden = true;
+      renderPreview();
+    });
+  }
+
+  // =========================================================
+  // SISIPKAN DATA KE ISI SURAT (modal multi-pilih)
+  // =========================================================
+  let lastIsiSelection = { start: null, end: null };
+
+  function rememberIsiSelection() {
+    const ta = byId("isi-text");
+    if (!ta) return;
+    lastIsiSelection.start = ta.selectionStart;
+    lastIsiSelection.end = ta.selectionEnd;
+  }
+
+  function insertIntoIsi(text) {
+    const ta = byId("isi-text");
+    if (!ta) return;
+
+    const value = ta.value;
+    let start = lastIsiSelection.start;
+    let end = lastIsiSelection.end;
+
+    if (start === null || end === null) {
+      start = value.length;
+      end = value.length;
+    }
+
+    start = Math.min(Math.max(0, start), value.length);
+    end = Math.min(Math.max(start, end), value.length);
+
+    ta.value = value.slice(0, start) + text + value.slice(end);
+    const pos = start + text.length;
+    ta.focus();
+    ta.setSelectionRange(pos, pos);
+    lastIsiSelection.start = pos;
+    lastIsiSelection.end = pos;
+    state.isi.text = ta.value;
+    renderPreview();
+  }
+
+  function renderPickModal() {
+    const listEl = byId("pick-fields-list");
+    const emptyEl = byId("pick-fields-empty");
+    if (!listEl) return;
+
+    const usable = fields
+      .map((f, i) => ({ ...f, index: i }))
+      .filter((f) => f.name && f.label);
+
+    emptyEl.hidden = usable.length > 0;
+
+    if (!usable.length) {
+      listEl.innerHTML = "";
+      return;
+    }
+
+    const groups = {
+      text:     { label: "Teks Pendek",      items: [] },
+      date:     { label: "Tanggal",          items: [] },
+      textarea: { label: "Paragraf Panjang", items: [] },
+      category: { label: "Kategori",         items: [] },
+    };
+
+    usable.forEach((f) => {
+      const g = groups[f.type] || groups.text;
+      g.items.push(f);
+    });
+
+    listEl.innerHTML = Object.values(groups)
+      .filter((g) => g.items.length)
+      .map((g) => `
+        <div class="pick-group">
+          <div class="pick-group-title">${g.label}</div>
+          ${g.items.map((item) => `
+            <label class="pick-item">
+              <input type="checkbox" value="${escapeHtml(item.name)}">
+              <span class="pick-item-label">
+                <strong>${escapeHtml(item.label)}</strong>
+                <code>{{${escapeHtml(item.name)}}}</code>
+              </span>
+            </label>
+          `).join("")}
+        </div>
+      `).join("");
+  }
+
+  function openPickModal() {
+    renderPickModal();
+    byId("pick-fields-modal").hidden = false;
+  }
+
+  function closePickModal() {
+    byId("pick-fields-modal").hidden = true;
+    byId("pick-fields-modal").querySelectorAll('input[type="checkbox"]').forEach((c) => c.checked = false);
+  }
+
+  function applyPickInsert() {
+    const modal = byId("pick-fields-modal");
+    const checked = [...modal.querySelectorAll('input[type="checkbox"]:checked')];
+    if (!checked.length) {
+      alert("Pilih minimal satu data.");
+      return;
+    }
+
+    const tokens = checked.map((cb) => `{{${cb.value}}}`).join(" ");
+    insertIntoIsi(tokens);
+    closePickModal();
+    setStatus("Data disisipkan ke Isi Surat.", false);
+  }
 
   // =========================================================
   // RENDER PREVIEW
@@ -334,19 +517,15 @@
         const hal = s.hal || "{{perihal}}";
         const tanggal = s.tanggal || "";
         return `
-          <table class="blok-identitas">
-            <tr>
-              <td class="id-kiri">
-                <table class="id-table">
-                  <tr><td class="id-label">Nomor</td><td class="id-colon">:</td><td>${escapeHtml(nomor)}</td></tr>
-                  <tr><td class="id-label">Sifat</td><td class="id-colon">:</td><td>${escapeHtml(s.sifat || "-")}</td></tr>
-                  <tr><td class="id-label">Lampiran</td><td class="id-colon">:</td><td>${escapeHtml(s.lampiran || "-")}</td></tr>
-                  <tr><td class="id-label">Hal</td><td class="id-colon">:</td><td>${escapeHtml(hal)}</td></tr>
-                </table>
-              </td>
-              <td class="id-kanan">${escapeHtml(tanggal)}</td>
-            </tr>
-          </table>`;
+          <div class="blok-identitas">
+            ${tanggal ? `<div class="id-tanggal-atas">${escapeHtml(tanggal)}</div>` : ""}
+            <table class="id-table">
+              <tr><td class="id-label">Nomor</td><td class="id-colon">:</td><td>${escapeHtml(nomor)}</td></tr>
+              <tr><td class="id-label">Sifat</td><td class="id-colon">:</td><td>${escapeHtml(s.sifat || "-")}</td></tr>
+              <tr><td class="id-label">Lampiran</td><td class="id-colon">:</td><td>${escapeHtml(s.lampiran || "-")}</td></tr>
+              <tr><td class="id-label">Hal</td><td class="id-colon">:</td><td>${escapeHtml(hal)}</td></tr>
+            </table>
+          </div>`;
       }
 
       case "tujuan": {
@@ -366,9 +545,43 @@
       case "isi": {
         const s = state.isi;
         if (!s.text.trim()) return `<div class="blok-isi"><p class="isi-empty">(Isi surat belum ditulis)</p></div>`;
-        const paras = s.text.split(/\n\s*\n/).map((p) =>
-          `<p class="isi-${s.align}">${escapeHtml(p.trim()).replace(/\n/g, "<br>")}</p>`
-        ).join("");
+
+        const paras = s.text.split(/\n\s*\n/).map((block) => {
+          const lines = block.split("\n").map((l) => l.trim()).filter(Boolean);
+          if (!lines.length) return "";
+
+          const out = [];
+          let listBuffer = [];
+
+          const flushList = () => {
+            if (!listBuffer.length) return;
+            out.push(
+              `<div class="blok-data-list">${
+                listBuffer.map(({ label, value }) =>
+                  `<div class="data-row"><span class="data-label">${label}</span><span class="data-colon">:</span><span class="data-value">${value}</span></div>`
+                ).join("")
+              }</div>`
+            );
+            listBuffer = [];
+          };
+
+          lines.forEach((line) => {
+            const m = line.match(/^(.+?)\s*:\s*(.+)$/);
+            if (m) {
+              listBuffer.push({
+                label: escapeHtml(m[1].trim()),
+                value: escapeHtml(m[2].trim()),
+              });
+            } else {
+              flushList();
+              out.push(`<p class="isi-${s.align}">${escapeHtml(line)}</p>`);
+            }
+          });
+
+          flushList();
+          return out.join("");
+        }).join("");
+
         return `<div class="blok-isi">${paras}</div>`;
       }
 
@@ -398,7 +611,7 @@
   }
 
   // =========================================================
-  // FIELD LIST — dropdown jenis + kategori + tombol Sisipkan
+  // FIELD LIST — dropdown jenis + kategori
   // =========================================================
   function renderFields() {
     fieldList.innerHTML = fields.map((f, i) => {
@@ -413,10 +626,7 @@
         <div class="field-card" data-idx="${i}">
           <div class="field-card-top">
             <strong>Data ${i + 1}</strong>
-            <div style="display:flex;gap:6px">
-              <button type="button" class="insert-field-btn" data-insert="${i}" title="Sisipkan ke isi surat">→ Sisipkan</button>
-              <button type="button" class="remove-field" data-remove="${i}">× Hapus</button>
-            </div>
+            <button type="button" class="remove-field" data-remove="${i}">× Hapus</button>
           </div>
 
           <div class="ctrl-field">
@@ -456,26 +666,6 @@
       btn.addEventListener("click", () => {
         fields.splice(Number(btn.dataset.remove), 1);
         renderFields();
-        renderPreview();
-      });
-    });
-    // Tombol Sisipkan → masukkan {{name}} ke cursor di textarea isi surat
-    fieldList.querySelectorAll("[data-insert]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const i = Number(btn.dataset.insert);
-        const f = fields[i];
-        if (!f || !f.name) {
-          alert("Isi dulu nama field-nya.");
-          return;
-        }
-        const token = `{{${f.name}}}`;
-        const ta = byId("isi-text");
-        const start = ta.selectionStart ?? ta.value.length;
-        const end = ta.selectionEnd ?? ta.value.length;
-        ta.value = ta.value.slice(0, start) + token + ta.value.slice(end);
-        ta.selectionStart = ta.selectionEnd = start + token.length;
-        ta.focus();
-        state.isi.text = ta.value;
         renderPreview();
       });
     });
@@ -519,7 +709,38 @@
   byId("add-text").addEventListener("click", () => addField("text"));
   byId("add-date").addEventListener("click", () => addField("date"));
   byId("add-long").addEventListener("click", () => addField("textarea"));
-  byId("add-cat").addEventListener("click", () => addField("category"));
+  const addCat = byId("add-cat");
+  if (addCat) addCat.addEventListener("click", () => addField("category"));
+
+  // =========================================================
+  // LISTENER MODAL SISIPKAN + KURSOR ISI SURAT
+  // =========================================================
+  const isiTextEl = byId("isi-text");
+  if (isiTextEl) {
+    ["click", "keyup", "mouseup", "input", "focus"].forEach((evt) => {
+      isiTextEl.addEventListener(evt, rememberIsiSelection);
+    });
+  }
+
+  const btnInsert = byId("btn-insert-field");
+  if (btnInsert) btnInsert.addEventListener("click", openPickModal);
+
+  const pickModal = byId("pick-fields-modal");
+  if (pickModal) {
+    pickModal.querySelectorAll("[data-close-pick]").forEach((el) => {
+      el.addEventListener("click", closePickModal);
+    });
+  }
+
+  const btnPickInsert = byId("pick-insert-btn");
+  if (btnPickInsert) btnPickInsert.addEventListener("click", applyPickInsert);
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      const modal = byId("pick-fields-modal");
+      if (modal && !modal.hidden) closePickModal();
+    }
+  });
 
   // =========================================================
   // UKURAN & MARGIN

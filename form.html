@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Isi Data Surat · Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban</title>
 <link rel="stylesheet" href="style.css">
+<style>
+  .select-custom-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .select-custom-wrap input[type="text"] { display: none; }
+  .select-custom-wrap.is-custom input[type="text"] { display: block; }
+</style>
 </head>
 <body>
 <div class="split">
@@ -38,7 +47,56 @@
     <p class="form-sub" id="template-name">Data akan dirender ke dalam template surat.</p>
 
     <form id="letter-form">
-      <div class="form-grid" id="field-list"></div>
+      <div class="form-grid" id="field-list">
+        <!-- Nomor Surat -->
+        <div class="field full">
+          <label for="nomor_surat">Nomor surat</label>
+          <input id="nomor_surat" name="nomor_surat" type="text" required>
+        </div>
+
+        <!-- Hal (dropdown + custom) -->
+        <div class="field full">
+          <label for="hal_select">Hal</label>
+          <div class="select-custom-wrap" id="hal-wrap">
+            <select id="hal_select" name="hal_select">
+              <option value="">-- Pilih Hal --</option>
+              <option value="Jawaban Keabsahan Akta Kelahiran">Jawaban Keabsahan Akta Kelahiran</option>
+              <option value="Jawaban Keabsahan Akta Kematian">Jawaban Keabsahan Akta Kematian</option>
+              <option value="Jawaban Keabsahan Akta Perkawinan">Jawaban Keabsahan Akta Perkawinan</option>
+              <option value="Jawaban Keabsahan Akta Perceraian">Jawaban Keabsahan Akta Perceraian</option>
+              <option value="Permohonan Data Kependudukan">Permohonan Data Kependudukan</option>
+              <option value="Pemberitahuan Perubahan Data">Pemberitahuan Perubahan Data</option>
+              <option value="Permintaan Bantuan Operator SAKTI">Permintaan Bantuan Operator SAKTI</option>
+              <option value="Undangan Sosialisasi">Undangan Sosialisasi</option>
+              <option value="Laporan Bulanan">Laporan Bulanan</option>
+              <option value="__custom__">✎ Lainnya (ketik sendiri)</option>
+            </select>
+            <input id="hal_custom" name="hal_custom" type="text" placeholder="Ketik hal surat...">
+          </div>
+        </div>
+
+        <!-- Sifat -->
+        <div class="field full">
+          <label for="sifat">Sifat</label>
+          <select id="sifat" name="sifat">
+            <option value="Biasa">Biasa</option>
+            <option value="Penting">Penting</option>
+            <option value="Segera">Segera</option>
+            <option value="Sangat Segera">Sangat Segera</option>
+            <option value="Rahasia">Rahasia</option>
+          </select>
+        </div>
+
+        <!-- Lampiran -->
+        <div class="field full">
+          <label for="lampiran">Lampiran</label>
+          <input id="lampiran" name="lampiran" type="text" placeholder="Contoh: - atau 1 (satu) berkas">
+        </div>
+
+        <!-- Field dinamis dari template -->
+        <div class="full" id="dynamic-fields" style="display:contents"></div>
+      </div>
+
       <div class="actions">
         <a class="btn btn-ghost" href="penandatangan.html">← Kembali</a>
         <button type="submit" class="btn btn-primary">Lihat Preview <span style="opacity:.7">→</span></button>
@@ -60,53 +118,129 @@
   }
 
   document.getElementById("template-name").textContent = `${template.nama} · Lengkapi data berikut.`;
-  const fieldList = document.getElementById("field-list");
-  fieldList.innerHTML = `
-    <div class="field full">
-      <label for="nomor_surat">Nomor surat</label>
-        <input id="nomor_surat" name="nomor_surat" type="text" required>
-    </div>
-    ${(template.fields || []).map((field) => `
-      <div class="field ${field.type === "textarea" || field.type === "category" ? "full" : ""} ${field.type === "category" ? "category-input" : ""}">
-        <label for="${escapeHtml(field.name)}">${escapeHtml(field.label)}</label>
-          ${field.type === "category"
-            ? `<div class="category-input-grid"><select id="${escapeHtml(field.name)}_category" name="${escapeHtml(field.name)}_category" data-category-field="${escapeHtml(field.name)}"><option value="">Pilih kategori utama</option>${(field.categories || []).map((category) => `<option value="${escapeHtml(category.name)}">${escapeHtml(category.name)}</option>`).join("")}</select></div>`
-            : field.type === "textarea"
-            ? `<textarea id="${escapeHtml(field.name)}" name="${escapeHtml(field.name)}" rows="4"${field.required ? " required" : ""}></textarea>`
-            : `<input id="${escapeHtml(field.name)}" name="${escapeHtml(field.name)}" type="${escapeHtml(field.type || "text")}"${field.required ? " required" : ""}>`}
-      </div>
-    `).join("")}
-    <div class="field full">
-      <label for="attachment">Surat pendamping</label>
-      <input id="attachment" name="attachment" type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
-      <small id="attachment-help" class="form-sub">Opsional. Format PDF, DOC, atau DOCX, maksimal 3 MB.</small>
-    </div>
-  `;
 
-  const existingData = session.data || {};
-  const sampleData = template.sample_data || {};
-  document.getElementById("nomor_surat").value = session.nomor_surat || sampleData.nomor_surat || "";
-  (template.fields || []).forEach((field) => {
+  // ============== FIELD DINAMIS ==============
+  const dynamicFields = document.getElementById("dynamic-fields");
+
+  dynamicFields.innerHTML = (template.fields || []).map((field) => {
+    const isFull = field.type === "textarea" || field.type === "category";
+    let inputHtml = "";
+
     if (field.type === "category") {
-      const categoryInput = document.getElementById(`${field.name}_category`);
-      if (categoryInput) categoryInput.value = existingData[`${field.name}_category`] || sampleData[`${field.name}_category`] || "";
+      const options = Array.isArray(field.options) ? field.options : [];
+      inputHtml = `
+        <select id="${escapeHtml(field.name)}" name="${escapeHtml(field.name)}"${field.required ? " required" : ""}>
+          <option value="">-- Pilih --</option>
+          ${options.map((opt) => `<option value="${escapeHtml(opt)}">${escapeHtml(opt)}</option>`).join("")}
+        </select>`;
+    } else if (field.type === "textarea") {
+      inputHtml = `<textarea id="${escapeHtml(field.name)}" name="${escapeHtml(field.name)}" rows="4"${field.required ? " required" : ""}></textarea>`;
     } else {
-      const input = document.getElementById(field.name);
-      if (input) input.value = existingData[field.name] || sampleData[field.name] || "";
+      inputHtml = `<input id="${escapeHtml(field.name)}" name="${escapeHtml(field.name)}" type="${escapeHtml(field.type || "text")}"${field.required ? " required" : ""}>`;
+    }
+
+    return `
+      <div class="field ${isFull ? "full" : ""}">
+        <label for="${escapeHtml(field.name)}">${escapeHtml(field.label)}</label>
+        ${inputHtml}
+      </div>
+    `;
+  }).join("");
+
+  // ============== DROPDOWN HAL: TOGGLE CUSTOM ==============
+  const halSelect = document.getElementById("hal_select");
+  const halCustom = document.getElementById("hal_custom");
+  const halWrap = document.getElementById("hal-wrap");
+
+  halSelect.addEventListener("change", () => {
+    const isCustom = halSelect.value === "__custom__";
+    halWrap.classList.toggle("is-custom", isCustom);
+    if (isCustom) {
+      halCustom.focus();
+    } else {
+      halCustom.value = "";
     }
   });
+
+  // ============== ISI NILAI AWAL ==============
+  const existingData = session.data || {};
+  const sampleData = template.sample_data || {};
+
+  document.getElementById("nomor_surat").value =
+    session.nomor_surat || sampleData.nomor_surat || "";
+
+  // Hal: coba ambil dari session.data.perihal
+  const perihalValue = existingData.perihal || sampleData.perihal || "";
+  const halOptions = [...halSelect.options].map((o) => o.value);
+  if (perihalValue && halOptions.includes(perihalValue)) {
+    halSelect.value = perihalValue;
+  } else if (perihalValue) {
+    halSelect.value = "__custom__";
+    halWrap.classList.add("is-custom");
+    halCustom.value = perihalValue;
+  }
+
+  // Sifat
+  const sifatValue = existingData.sifat_surat || sampleData.sifat_surat || "Biasa";
+  const sifatSelect = document.getElementById("sifat");
+  if ([...sifatSelect.options].some((o) => o.value === sifatValue)) {
+    sifatSelect.value = sifatValue;
+  } else {
+    const opt = document.createElement("option");
+    opt.value = sifatValue;
+    opt.textContent = sifatValue;
+    opt.selected = true;
+    sifatSelect.appendChild(opt);
+  }
+
+  // Lampiran
+  document.getElementById("lampiran").value =
+    existingData.lampiran || sampleData.lampiran || "-";
+
+  // Field dinamis
+  (template.fields || []).forEach((field) => {
+    const input = document.getElementById(field.name);
+    if (!input) return;
+    input.value = existingData[field.name] || sampleData[field.name] || "";
+  });
+
+  // Lampiran file
   const attachmentInput = document.getElementById("attachment");
   const attachmentHelp = document.getElementById("attachment-help");
-  if (session.attachment?.name) {
+  if (attachmentInput && session.attachment?.name && attachmentHelp) {
     attachmentHelp.textContent = `Lampiran saat ini: ${session.attachment.name}. Pilih file baru untuk menggantinya.`;
   }
 
+  // ============== SUBMIT ==============
   document.getElementById("letter-form").addEventListener("submit", async (event) => {
     event.preventDefault();
-    const values = Object.fromEntries(new FormData(event.target).entries());
-    const { nomor_surat, ...data } = values;
+    const formData = new FormData(event.target);
+    const values = Object.fromEntries(formData.entries());
+
+    // Ambil nilai hal final
+    const halFinal = values.hal_select === "__custom__"
+      ? (values.hal_custom || "").trim()
+      : values.hal_select || "";
+
+    // Susun data untuk template
+    const data = { ...values };
+
+    // Buang field teknis
+    delete data.hal_select;
+    delete data.hal_custom;
+    delete data.nomor_surat;
+    delete data.sifat;
+    delete data.lampiran;
     delete data.attachment;
-    const file = attachmentInput.files[0];
+
+    // Masukkan nilai yang sudah diformat
+    data.perihal = halFinal;
+    data.sifat_surat = values.sifat;
+    data.lampiran = values.lampiran;
+    data.nomor_surat = values.nomor_surat;
+
+    // Attachment file
+    const file = attachmentInput?.files?.[0];
     const fileExtension = file?.name.toLowerCase().split(".").pop();
     if (file && !["pdf", "doc", "docx"].includes(fileExtension)) {
       attachmentHelp.textContent = "Format tidak didukung. Pilih file PDF, DOC, atau DOCX.";
@@ -120,10 +254,15 @@
     }
 
     const attachment = file ? await readAttachment(file) : session.attachment || null;
+
     try {
-      patchSession({ nomor_surat, data, attachment });
+      patchSession({
+        nomor_surat: values.nomor_surat,
+        data,
+        attachment,
+      });
     } catch (error) {
-      attachmentHelp.textContent = "File terlalu besar untuk disimpan di browser. Gunakan file yang lebih kecil.";
+      attachmentHelp.textContent = "File terlalu besar untuk disimpan di browser.";
       attachmentHelp.style.color = "#b42318";
       return;
     }
@@ -133,12 +272,16 @@
   function readAttachment(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.addEventListener("load", () => resolve({ name: file.name, type: file.type || "application/octet-stream", size: file.size, data_url: reader.result }));
+      reader.addEventListener("load", () => resolve({
+        name: file.name,
+        type: file.type || "application/octet-stream",
+        size: file.size,
+        data_url: reader.result
+      }));
       reader.addEventListener("error", reject);
       reader.readAsDataURL(file);
     });
   }
-
 </script>
 </body>
 </html>

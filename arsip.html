@@ -6,161 +6,630 @@
 <title>Arsip Surat · Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban</title>
 <link rel="stylesheet" href="style.css">
 <style>
-  .archive-shell {
-    max-width: 980px;
-    margin: 0 auto;
-    padding: 40px 24px 80px;
+  /* === Filter bar (sejajar) === */
+  .archive-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+    max-width: 100%;
   }
-  .archive-list {
+  .archive-search {
+    flex: 1 1 220px;
+    min-width: 200px;
+    padding: 12px 15px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #fbfdfc;
+    color: var(--ink);
+    font-size: 13px;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s, background .2s;
+  }
+  .archive-search:focus {
+    border-color: var(--green);
+    background: var(--paper);
+    box-shadow: 0 0 0 4px rgba(23,123,92,.11);
+  }
+  .archive-filter {
+    flex: 0 0 auto;
+    padding: 12px 34px 12px 15px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #fbfdfc url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%236f7d77' stroke-width='1.6' fill='none' stroke-linecap='round'/></svg>") no-repeat right 14px center;
+    color: var(--ink);
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s, background-color .2s;
+  }
+  .archive-filter:focus {
+    border-color: var(--green);
+    background-color: var(--paper);
+    box-shadow: 0 0 0 4px rgba(23,123,92,.11);
+  }
+  .archive-filter.is-active {
+    border-color: var(--green);
+    background-color: #f1f8f3;
+    color: var(--green-dark);
+    font-weight: 700;
+  }
+
+  .archive-count {
+    flex: 1 1 100%;
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  /* === Grid kartu jenis surat === */
+  .category-grid {
     display: grid;
-    gap: 16px;
-    margin-top: 24px;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
+    max-width: 720px;
+    margin-bottom: 30px;
   }
-  .archive-toolbar { display: flex; align-items: center; gap: 12px; margin-top: 24px; }
-  .archive-search { width: min(100%, 460px); padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); color: var(--ink); outline: none; }
-  .archive-search:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(23,123,92,.12); }
-  .archive-count { margin: 0; color: var(--muted); font-size: 12px; }
-  .archive-empty { padding: 20px 22px; border: 1px dashed var(--line); border-radius: 14px; color: var(--muted); background: var(--paper); }
-  .archive-item {
+  .category-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     padding: 20px 22px;
     border: 1px solid var(--line);
-    border-radius: 14px;
+    border-radius: 16px;
     background: var(--paper);
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    color: inherit;
+    box-shadow: 0 12px 30px rgba(18,43,34,.05);
+    transition: border-color .2s, box-shadow .2s, transform .15s;
   }
-  .archive-item h3 {
-    margin: 0 0 8px;
+  .category-card:hover {
+    border-color: var(--green);
+    transform: translateY(-2px);
+    box-shadow: 0 18px 40px rgba(18,43,34,.09);
+  }
+  .category-card-icon {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 11px;
+    background: var(--lime);
+    color: var(--green-dark);
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: .04em;
+  }
+  .category-card-title {
+    margin: 0;
+    font-family: 'Manrope', sans-serif;
+    font-size: 15px;
+    line-height: 1.35;
+    letter-spacing: -.02em;
+    color: var(--ink);
+  }
+  .category-card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+  }
+  .category-card-count {
+    font-family: 'Manrope', sans-serif;
     font-size: 22px;
+    font-weight: 800;
+    color: var(--green-dark);
     letter-spacing: -.03em;
   }
-  .archive-meta {
+  .category-card-count small {
+    display: inline;
+    margin-left: 4px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
     color: var(--muted);
-    line-height: 1.6;
-    font-size: 14px;
+    letter-spacing: 0;
+    text-transform: uppercase;
   }
-  .archive-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
-  .archive-actions .btn { min-height: 36px; padding: 8px 12px; font-size: 12px; }
+  .category-card-arrow {
+    color: var(--muted);
+    font-size: 18px;
+    transition: color .15s, transform .15s;
+  }
+  .category-card:hover .category-card-arrow {
+    color: var(--green);
+    transform: translateX(3px);
+  }
+
+  .archive-empty {
+    padding: 40px 24px;
+    border: 1px dashed var(--line);
+    border-radius: 16px;
+    color: var(--muted);
+    background: var(--paper);
+    text-align: center;
+    font-size: 14px;
+    max-width: 720px;
+  }
+
+  /* === Modal daftar surat per kategori === */
+  .letters-modal { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 24px; }
+  .letters-modal[hidden] { display: none; }
+  .letters-modal-backdrop { position: absolute; inset: 0; background: rgba(23,35,31,.55); backdrop-filter: blur(3px); }
+  .letters-modal-panel {
+    position: relative;
+    display: flex; flex-direction: column;
+    width: min(100%, 720px);
+    max-height: calc(100vh - 48px);
+    border-radius: 16px;
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: 0 24px 70px rgba(0,0,0,.35);
+    overflow: hidden;
+  }
+  .letters-modal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--line);
+  }
+  .letters-modal-header h3 {
+    margin: 0;
+    font-family: 'Manrope', sans-serif;
+    font-size: 18px; letter-spacing: -.03em;
+    color: var(--ink);
+  }
+  .letters-modal-header small {
+    display: block; margin-top: 4px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px; font-weight: 700;
+    color: var(--muted);
+    letter-spacing: .04em; text-transform: uppercase;
+  }
+  .letters-modal-close {
+    width: 34px; height: 34px;
+    border: 0; border-radius: 8px;
+    background: transparent; color: var(--muted);
+    font-size: 20px; cursor: pointer;
+  }
+  .letters-modal-close:hover { background: var(--mist); color: var(--ink); }
+
+  .letters-modal-body {
+    flex: 1; overflow-y: auto;
+    padding: 16px 24px 24px;
+    display: grid; gap: 12px;
+  }
+  .letter-row {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 16px 18px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--paper);
+    transition: border-color .15s, background .15s;
+  }
+  .letter-row:hover { border-color: #a9cbbb; background: #fbfdfc; }
+  .letter-row-body { flex: 1; min-width: 0; }
+  .letter-row-title {
+    margin: 0 0 6px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 15px; font-weight: 700;
+    letter-spacing: -.02em;
+    color: var(--ink);
+  }
+  .letter-row-meta {
+    display: grid; gap: 3px;
+    color: var(--muted); font-size: 12px; line-height: 1.5;
+  }
+  .letter-row-meta strong { color: var(--ink); font-weight: 700; }
+
+  .letter-row-actions {
+    display: flex; align-items: center; gap: 6px;
+    flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end;
+  }
+  .letter-row-actions .btn {
+    min-height: 32px; padding: 6px 12px; font-size: 12px;
+  }
+
+  .letters-modal-empty {
+    margin: 0; padding: 30px;
+    text-align: center; color: var(--muted); font-size: 14px;
+  }
+
+  @media (max-width: 640px) {
+    .archive-toolbar { flex-direction: column; align-items: stretch; }
+    .archive-filter { width: 100%; }
+    .letters-modal { padding: 0; }
+    .letters-modal-panel {
+      width: 100%; height: 100vh; max-height: 100vh; border-radius: 0;
+    }
+    .letter-row { flex-direction: column; }
+    .letter-row-actions { justify-content: flex-start; }
+  }
 </style>
 </head>
 <body>
-  <div class="archive-shell">
-    <nav class="category-nav" aria-label="Kategori Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban" style="margin-bottom:24px;">
+<div class="split">
+  <aside class="split-left">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">S</span> DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL KABUPATEN TUBAN
+    </a>
+
+    <div class="split-left-content">
+      <h1>Riwayat<br>surat</h1>
+      <p class="sub">Surat dikelompokkan per jenis. Gunakan filter dan pencarian untuk menemukan surat lebih cepat.</p>
+    </div>
+
+    <div class="quote-card">
+      <div class="q-title">Arsip terpusat</div>
+      <div class="q-body">Setiap surat tersimpan lengkap dengan nomor, jenis, penandatangan, dan lampirannya.</div>
+    </div>
+  </aside>
+
+  <main class="split-right">
+    <nav class="category-nav" aria-label="Kategori Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban">
       <a class="category-link" href="buat-surat.html">Buat Surat</a>
       <a class="category-link" href="template.html">Kelola Surat</a>
       <span class="category-link active" aria-current="page">Histori</span>
     </nav>
-    <div class="dashboard-top" style="margin-bottom:0;">
-      <div>
-        <div class="preview-eyebrow">Arsip</div>
-        <h1 class="preview-title" style="text-align:left; margin-top:8px;">Riwayat Surat</h1>
-      </div>
-      <a href="index.html" class="btn btn-ghost">← Dashboard</a>
-    </div>
 
+    <h1 class="form-title">Histori Surat</h1>
+    <p class="form-sub">Filter atau cari surat, lalu klik kartu jenis untuk melihat daftarnya.</p>
+
+    <!-- === Filter bar sejajar === -->
     <div class="archive-toolbar">
-      <label for="archive-search" class="sr-only">Cari histori surat</label>
-      <input id="archive-search" class="archive-search" type="search" placeholder="Cari nomor, jenis, pembuat, penandatangan..." autocomplete="off">
+      <input id="archive-search" class="archive-search" type="search" placeholder="Cari nomor, jenis, pembuat..." autocomplete="off">
+
+      <select id="filter-jenis" class="archive-filter" title="Filter jenis surat">
+        <option value="">Semua jenis</option>
+      </select>
+
+      <select id="filter-tanggal" class="archive-filter" title="Filter tanggal">
+        <option value="all">Semua tanggal</option>
+        <option value="today">Hari ini</option>
+        <option value="7days">7 hari terakhir</option>
+        <option value="30days">30 hari terakhir</option>
+      </select>
+
+      <select id="filter-sort" class="archive-filter" title="Urutkan">
+        <option value="terbanyak">Terbanyak</option>
+        <option value="tersedikit">Tersedikit</option>
+        <option value="az">Nama A → Z</option>
+        <option value="za">Nama Z → A</option>
+        <option value="terbaru">Terbaru</option>
+        <option value="terlama">Terlama</option>
+      </select>
+
       <p id="archive-count" class="archive-count"></p>
     </div>
-    <div id="archive-list" class="archive-list"></div>
-  </div>
 
-  <script src="data.js"></script>
-  <script>
-    const list = document.getElementById("archive-list");
-    let letters = getLetters();
-    const templates = getTemplates();
-    const searchInput = document.getElementById("archive-search");
-    const count = document.getElementById("archive-count");
+    <div id="category-grid" class="category-grid"></div>
 
-    if (!letters.length) {
-      list.innerHTML = '<div class="archive-empty">Belum ada surat. Surat yang dibuat akan otomatis masuk ke sini.</div>';
-    } else {
-      renderLetters(letters);
-    }
+    <div class="actions" style="max-width: 720px;">
+      <a class="btn btn-ghost" href="index.html">← Dashboard</a>
+      <button type="button" class="btn btn-ghost" id="reset-filter">↺ Reset filter</button>
+    </div>
+  </main>
+</div>
 
-    function renderLetters(items) {
-      count.textContent = `${items.length} surat`;
-      if (!items.length) {
-        list.innerHTML = '<div class="archive-empty">Surat yang dicari tidak ditemukan.</div>';
-        return;
-      }
-      list.innerHTML = items.map((letter) => {
-        const template = templates.find((item) => item.key === letter.template_key) || { nama: "Template" };
-        return `
-          <article class="archive-item">
-            <h3>${escapeHtml(letter.nomor_surat || letter.id)}</h3>
-            <div class="archive-meta">
-              <div><strong>Jenis:</strong> ${escapeHtml(template.nama)}</div>
-              <div><strong>Penandatangan:</strong> ${escapeHtml(letter.signer_nama || "-")}</div>
-              <div><strong>Pembuat:</strong> ${escapeHtml(letter.created_by || "-")}</div>
-              <div><strong>Status:</strong> ${escapeHtml(letter.status || "final")}</div>
-              ${letter.attachment?.name ? `<div><strong>Lampiran:</strong> ${escapeHtml(letter.attachment.name)}</div>` : ""}
-            </div>
-            <div class="archive-actions">
-              <button class="btn btn-ghost" type="button" data-letter-view="${escapeHtml(letter.id)}">Lihat</button>
-              <button class="btn btn-ghost" type="button" data-letter-edit="${escapeHtml(letter.id)}">Edit</button>
-              ${letter.attachment?.data_url ? `<a class="btn btn-ghost" href="${escapeHtml(letter.attachment.data_url)}" download="${escapeHtml(letter.attachment.name || "lampiran")}">Lampiran</a>` : ""}
-              <button class="btn btn-primary" type="button" data-letter-delete="${escapeHtml(letter.id)}">Hapus</button>
-            </div>
-          </article>
-        `;
-      }).join("");
-      bindActions();
-    }
+<!-- ============ MODAL DAFTAR SURAT ============ -->
+<div id="letters-modal" class="letters-modal" hidden>
+  <div class="letters-modal-backdrop" data-close-modal></div>
+  <section class="letters-modal-panel" role="dialog" aria-modal="true" aria-labelledby="letters-modal-title">
+    <header class="letters-modal-header">
+      <div>
+        <h3 id="letters-modal-title">Daftar Surat</h3>
+        <small id="letters-modal-subtitle"></small>
+      </div>
+      <button type="button" class="letters-modal-close" data-close-modal aria-label="Tutup">×</button>
+    </header>
+    <div id="letters-modal-body" class="letters-modal-body"></div>
+  </section>
+</div>
 
-    function selectLetter(letterId) {
-      return letters.find((letter) => letter.id === letterId);
-    }
+<script src="data.js"></script>
+<script>
+  const letters = getLetters();
+  const templates = getTemplates();
 
-    function putLetterInSession(letter) {
-      if (!letter) return false;
-      patchSession({
-        letter_id: letter.id,
-        pembuat: { nama: letter.created_by || "", jabatan: letter.created_by_detail?.jabatan || "" },
-        template_key: letter.template_key,
-        signer_mode: letter.signer_mode,
-        signer_id: letter.signer_id,
-        signer_nama: letter.signer_nama,
-        signer_jabatan: letter.signer_jabatan,
-        signer_nip: letter.signer_nip,
-        nomor_surat: letter.nomor_surat,
-        data: letter.data || {},
-        attachment: letter.attachment || null,
-      });
-      return true;
-    }
+  const gridEl = document.getElementById("category-grid");
+  const countEl = document.getElementById("archive-count");
+  const searchInput = document.getElementById("archive-search");
+  const jenisSelect = document.getElementById("filter-jenis");
+  const tanggalSelect = document.getElementById("filter-tanggal");
+  const sortSelect = document.getElementById("filter-sort");
+  const resetBtn = document.getElementById("reset-filter");
 
-    function bindActions() {
-      document.querySelectorAll("[data-letter-view]").forEach((button) => {
-        button.addEventListener("click", () => {
-          if (putLetterInSession(selectLetter(button.dataset.letterView))) location.href = "preview.html";
-        });
-      });
-      document.querySelectorAll("[data-letter-edit]").forEach((button) => {
-        button.addEventListener("click", () => {
-          if (putLetterInSession(selectLetter(button.dataset.letterEdit))) location.href = "form.html";
-        });
-      });
-      document.querySelectorAll("[data-letter-delete]").forEach((button) => {
-        button.addEventListener("click", () => {
-          const letter = selectLetter(button.dataset.letterDelete);
-          if (!letter || !window.confirm(`Hapus surat ${letter.nomor_surat || letter.id} dari histori?`)) return;
-          deleteLetter(letter.id);
-          letters = letters.filter((item) => item.id !== letter.id);
-          renderLetters(letters);
-        });
-      });
-    }
+  const modal = document.getElementById("letters-modal");
+  const modalTitle = document.getElementById("letters-modal-title");
+  const modalSubtitle = document.getElementById("letters-modal-subtitle");
+  const modalBody = document.getElementById("letters-modal-body");
 
-    searchInput.addEventListener("input", () => {
-      const query = searchInput.value.trim().toLowerCase();
-      const filtered = letters.filter((letter) => {
-        const template = templates.find((item) => item.key === letter.template_key);
-        return [letter.nomor_surat, letter.id, letter.created_by, letter.signer_nama, template?.nama]
-          .some((value) => String(value || "").toLowerCase().includes(query));
-      });
-      renderLetters(filtered);
+  let currentTemplateKey = null;
+
+  const DAY_MS = 24 * 60 * 60 * 1000;
+
+  // ============ ISI DROPDOWN JENIS ============
+  jenisSelect.innerHTML = '<option value="">Semua jenis</option>' +
+    templates.map((t) => `<option value="${escapeHtml(t.key)}">${escapeHtml(t.nama)}</option>`).join("");
+
+  // ============ FILTER STATE ============
+  function getFilterState() {
+    return {
+      q: searchInput.value.trim().toLowerCase(),
+      jenis: jenisSelect.value,
+      tanggal: tanggalSelect.value,
+      sort: sortSelect.value,
+    };
+  }
+
+  // Tandai dropdown yang aktif
+  function markActiveFilters() {
+    [jenisSelect, tanggalSelect].forEach((sel) => {
+      sel.classList.toggle("is-active", sel.value !== "" && sel.value !== "all");
     });
-  </script>
+    searchInput.classList.toggle("is-active", searchInput.value.trim() !== "");
+  }
+
+  // Cek apakah letter lolos filter tanggal
+  function passesDate(letter, tanggal) {
+    if (tanggal === "all") return true;
+    const ts = new Date(letter.created_at || letter.updated_at || 0).getTime();
+    if (!ts) return true;
+    const now = Date.now();
+    const cutoff = tanggal === "today" ? now - DAY_MS
+                 : tanggal === "7days" ? now - 7 * DAY_MS
+                 : tanggal === "30days" ? now - 30 * DAY_MS
+                 : 0;
+    return ts >= cutoff;
+  }
+
+  // Cek apakah letter cocok dengan query di dalam field-nya
+  function letterMatchesQuery(letter, q) {
+    if (!q) return true;
+    const tpl = templates.find((t) => t.key === letter.template_key);
+    const hay = [
+      letter.nomor_surat, letter.id, letter.created_by, letter.signer_nama,
+      letter.signer_jabatan, tpl?.nama
+    ].map((v) => String(v || "").toLowerCase()).join(" ");
+    return hay.includes(q);
+  }
+
+  // ============ PROSES FILTER & SORT ============
+  function buildFilteredCategories() {
+    const { q, jenis, tanggal, sort } = getFilterState();
+
+    const result = templates
+      // Filter jenis: kalau tidak "semua", hanya template terpilih
+      .filter((t) => !jenis || t.key === jenis)
+      .map((t) => {
+        const all = letters.filter((l) => l.template_key === t.key);
+        const nameMatches = !q || t.nama.toLowerCase().includes(q);
+
+        // Letters yang lolos filter tanggal & (search-in-letter-field jika nama tidak match)
+        const filtered = all.filter((l) => {
+          if (!passesDate(l, tanggal)) return false;
+          if (q && !nameMatches) {
+            if (!letterMatchesQuery(l, q)) return false;
+          }
+          return true;
+        });
+
+        // Tampilkan kategori jika: nama match query, ATAU ada letter yang lolos
+        const show = nameMatches || filtered.length > 0;
+        if (!show) return null;
+
+        // Kalau nama match, tampilkan semua letter (yang lolos tanggal saja)
+        const displayLetters = nameMatches
+          ? all.filter((l) => passesDate(l, tanggal))
+          : filtered;
+
+        return { template: t, letters: displayLetters, count: displayLetters.length };
+      })
+      .filter(Boolean);
+
+    // Sort
+    result.sort((a, b) => {
+      if (sort === "terbanyak") return b.count - a.count;
+      if (sort === "tersedikit") return a.count - b.count;
+      if (sort === "az") return a.template.nama.localeCompare(b.template.nama, "id");
+      if (sort === "za") return b.template.nama.localeCompare(a.template.nama, "id");
+      if (sort === "terbaru") {
+        const aTs = Math.max(0, ...a.letters.map((l) => new Date(l.created_at || 0).getTime()));
+        const bTs = Math.max(0, ...b.letters.map((l) => new Date(l.created_at || 0).getTime()));
+        return bTs - aTs;
+      }
+      if (sort === "terlama") {
+        const aTs = a.letters.length ? Math.min(...a.letters.map((l) => new Date(l.created_at || 0).getTime())) : Infinity;
+        const bTs = b.letters.length ? Math.min(...b.letters.map((l) => new Date(l.created_at || 0).getTime())) : Infinity;
+        return aTs - bTs;
+      }
+      return 0;
+    });
+
+    return result;
+  }
+
+  // ============ RENDER GRID ============
+  function renderCategories() {
+    const list = buildFilteredCategories();
+    const totalLetters = list.reduce((sum, c) => sum + c.count, 0);
+
+    countEl.textContent = `${list.length} jenis · ${totalLetters} surat`;
+
+    if (!list.length) {
+      gridEl.innerHTML = '<div class="archive-empty">Tidak ada kategori yang cocok dengan filter.</div>';
+      return;
+    }
+
+    gridEl.innerHTML = list.map(({ template, count }) => {
+      const initials = getInitials(template.nama);
+      return `
+        <button type="button" class="category-card" data-open-category="${escapeHtml(template.key)}">
+          <div class="category-card-icon">${escapeHtml(initials)}</div>
+          <h3 class="category-card-title">${escapeHtml(template.nama)}</h3>
+          <div class="category-card-meta">
+            <span class="category-card-count">${count}<small>surat</small></span>
+            <span class="category-card-arrow">→</span>
+          </div>
+        </button>
+      `;
+    }).join("");
+
+    gridEl.querySelectorAll("[data-open-category]").forEach((btn) => {
+      btn.addEventListener("click", () => openModal(btn.dataset.openCategory));
+    });
+  }
+
+  function getInitials(name) {
+    return String(name || "?")
+      .split(/\s+/).filter(Boolean).slice(0, 2)
+      .map((w) => w[0]).join("").toUpperCase();
+  }
+
+  // ============ MODAL ============
+  function openModal(templateKey) {
+    const template = templates.find((t) => t.key === templateKey);
+    if (!template) return;
+    currentTemplateKey = templateKey;
+
+    const list = buildFilteredCategories().find((c) => c.template.key === templateKey);
+    const items = list?.letters || [];
+
+    modalTitle.textContent = template.nama;
+    modalSubtitle.textContent = `${items.length} surat`;
+
+    renderModalBody(items);
+    modal.hidden = false;
+  }
+
+  function closeModal() {
+    modal.hidden = true;
+    currentTemplateKey = null;
+  }
+
+  function renderModalBody(items) {
+    if (!items.length) {
+      modalBody.innerHTML = '<p class="letters-modal-empty">Belum ada surat yang cocok dengan filter di kategori ini.</p>';
+      return;
+    }
+
+    modalBody.innerHTML = items.map((letter) => `
+      <article class="letter-row">
+        <div class="letter-row-body">
+          <h4 class="letter-row-title">${escapeHtml(letter.nomor_surat || letter.id)}</h4>
+          <div class="letter-row-meta">
+            <div><strong>Penandatangan:</strong> ${escapeHtml(letter.signer_nama || "-")}</div>
+            <div><strong>Pembuat:</strong> ${escapeHtml(letter.created_by || "-")}</div>
+            <div><strong>Status:</strong> ${escapeHtml(letter.status || "final")}</div>
+            <div><strong>Dibuat:</strong> ${formatDate(letter.created_at)}</div>
+            ${letter.attachment?.name ? `<div><strong>Lampiran:</strong> ${escapeHtml(letter.attachment.name)}</div>` : ""}
+          </div>
+        </div>
+        <div class="letter-row-actions">
+          <button type="button" class="btn btn-ghost" data-letter-view="${escapeHtml(letter.id)}">Lihat</button>
+          <button type="button" class="btn btn-ghost" data-letter-edit="${escapeHtml(letter.id)}">Edit</button>
+          ${letter.attachment?.data_url ? `<a class="btn btn-ghost" href="${escapeHtml(letter.attachment.data_url)}" download="${escapeHtml(letter.attachment.name || "lampiran")}">Lampiran</a>` : ""}
+          <button type="button" class="btn btn-primary" data-letter-delete="${escapeHtml(letter.id)}">Hapus</button>
+        </div>
+      </article>
+    `).join("");
+
+    bindModalActions();
+  }
+
+  function formatDate(iso) {
+    if (!iso) return "-";
+    const d = new Date(iso);
+    if (isNaN(d)) return "-";
+    return d.toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" });
+  }
+
+  function bindModalActions() {
+    modalBody.querySelectorAll("[data-letter-view]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        if (putLetterInSession(findLetter(btn.dataset.letterView))) location.href = "preview.html";
+      });
+    });
+    modalBody.querySelectorAll("[data-letter-edit]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        if (putLetterInSession(findLetter(btn.dataset.letterEdit))) location.href = "form.html";
+      });
+    });
+    modalBody.querySelectorAll("[data-letter-delete]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const letter = findLetter(btn.dataset.letterDelete);
+        if (!letter) return;
+        if (!window.confirm(`Hapus surat ${letter.nomor_surat || letter.id}?`)) return;
+        deleteLetter(letter.id);
+        const idx = letters.findIndex((l) => l.id === letter.id);
+        if (idx >= 0) letters.splice(idx, 1);
+        // Re-render modal + grid
+        const list = buildFilteredCategories().find((c) => c.template.key === currentTemplateKey);
+        const items = list?.letters || [];
+        modalSubtitle.textContent = `${items.length} surat`;
+        renderModalBody(items);
+        renderCategories();
+      });
+    });
+  }
+
+  function findLetter(id) {
+    return letters.find((l) => l.id === id);
+  }
+
+  function putLetterInSession(letter) {
+    if (!letter) return false;
+    patchSession({
+      letter_id: letter.id,
+      pembuat: { nama: letter.created_by || "", jabatan: letter.created_by_detail?.jabatan || "" },
+      template_key: letter.template_key,
+      signer_mode: letter.signer_mode,
+      signer_id: letter.signer_id,
+      signer_nama: letter.signer_nama,
+      signer_jabatan: letter.signer_jabatan,
+      signer_nip: letter.signer_nip,
+      nomor_surat: letter.nomor_surat,
+      data: letter.data || {},
+      attachment: letter.attachment || null,
+    });
+    return true;
+  }
+
+  // ============ EVENTS ============
+  searchInput.addEventListener("input", () => { markActiveFilters(); renderCategories(); });
+  jenisSelect.addEventListener("change", () => { markActiveFilters(); renderCategories(); });
+  tanggalSelect.addEventListener("change", () => { markActiveFilters(); renderCategories(); });
+  sortSelect.addEventListener("change", renderCategories);
+
+  resetBtn.addEventListener("click", () => {
+    searchInput.value = "";
+    jenisSelect.value = "";
+    tanggalSelect.value = "all";
+    sortSelect.value = "terbanyak";
+    markActiveFilters();
+    renderCategories();
+  });
+
+  modal.querySelectorAll("[data-close-modal]").forEach((el) => {
+    el.addEventListener("click", closeModal);
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !modal.hidden) closeModal();
+  });
+
+  // Init
+  renderCategories();
+</script>
 </body>
 </html>

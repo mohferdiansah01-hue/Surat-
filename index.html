@@ -105,7 +105,7 @@
   .btn-ghost:hover{border-color:var(--green);background:var(--mist)}
 
   /* =========================================================
-     HERO — images.jpg background + lambang sebagai elemen relatif
+     HERO
      ========================================================= */
   .hero{
     position:relative;
@@ -120,21 +120,15 @@
     margin-bottom:16px;
     isolation:isolate;
     box-shadow:0 30px 70px -34px rgba(15,101,74,.7);
-
-    /* === BACKGROUND UTAMA === */
     background:
-      /* overlay gradient hijau supaya teks & KPI tetap terbaca */
       linear-gradient(100deg,
         rgba(9,58,41,.94) 0%,
         rgba(15,101,74,.88) 35%,
         rgba(15,101,74,.62) 65%,
         rgba(15,101,74,.32) 100%),
       radial-gradient(120% 90% at 100% 0%, rgba(214,239,189,.25), transparent 55%),
-      /* foto background utama */
       url('images.jpg') center/cover no-repeat;
   }
-
-  /* Cincin dekoratif kiri bawah */
   .hero::before{
     content:"";
     position:absolute;left:-130px;bottom:-160px;
@@ -146,7 +140,6 @@
     pointer-events:none;
     z-index:0;
   }
-  /* Glow hijau muda di kanan tempat lambang */
   .hero::after{
     content:"";
     position:absolute;
@@ -157,7 +150,6 @@
     pointer-events:none;
     z-index:0;
   }
-
   .hero-left{
     position:relative;z-index:2;
     display:flex;flex-direction:column;
@@ -185,9 +177,6 @@
   }
   .hero-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 
-  /* =========================================================
-     LAMBANG — elemen relatif di atas background
-     ========================================================= */
   .hero-right{
     position:relative;z-index:2;
     display:grid;place-items:center;
@@ -199,7 +188,6 @@
     aspect-ratio:1/1;
     display:grid;place-items:center;
   }
-  /* Cincin konsentris berputar di belakang lambang */
   .hero-emblem::before,
   .hero-emblem::after{
     content:"";
@@ -233,7 +221,6 @@
     0%,100%{transform:translateY(0)}
     50%{transform:translateY(-8px)}
   }
-  /* Lingkaran cahaya di belakang lambang */
   .hero-emblem-glow{
     position:absolute;
     inset:6%;
@@ -244,9 +231,6 @@
     pointer-events:none;
   }
 
-  /* =========================================================
-     KPI DI DALAM HERO
-     ========================================================= */
   .hero-kpis{
     grid-column:1 / -1;
     position:relative;z-index:2;
@@ -543,7 +527,7 @@
       </div>
     </header>
 
-    <!-- HERO: background images.jpg + lambang relatif -->
+    <!-- HERO -->
     <section class="hero">
       <div class="hero-left">
         <span class="hero-eyebrow">Dinas Kependudukan dan Pencatatan Sipil</span>
@@ -558,7 +542,6 @@
         </div>
       </div>
 
-      <!-- Lambang Tuban sebagai elemen relatif di atas background -->
       <div class="hero-right">
         <div class="hero-emblem">
           <span class="hero-emblem-glow"></span>
@@ -566,7 +549,6 @@
         </div>
       </div>
 
-      <!-- KPI di dalam hero -->
       <div class="hero-kpis" aria-label="Ringkasan surat">
         <div class="kpi">
           <div class="kpi-value" id="stat-letters">0</div>
