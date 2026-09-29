@@ -7,36 +7,62 @@
 <link rel="stylesheet" href="style.css">
 <style>
   /* =========================================================
-     DASHBOARD — hero: images.jpg background, lambang di atasnya
+     DASHBOARD — layout referensi (sidebar + main), palet hijau
      ========================================================= */
-
-  .dash{
-    max-width:1240px;
-    margin:0 auto;
-    padding:26px 26px 70px;
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:#f3f7f4;
+    color:var(--ink);
+    font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+    -webkit-font-smoothing:antialiased;
   }
 
-  /* ---------- HEADER ---------- */
-  .dash-top{
-    display:grid;
-    grid-template-columns:1fr auto;
-    align-items:center;
-    gap:18px;
-    margin-bottom:22px;
+  /* ---------- TOPBAR ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:60;
+    display:flex;align-items:center;gap:18px;
+    padding:12px 26px;
+    background:rgba(255,255,255,.86);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    border-bottom:1px solid var(--line);
   }
-  .dash-brand{
-    display:flex;align-items:center;gap:11px;
+  .topbar-brand{
+    display:flex;align-items:center;gap:10px;
     color:var(--green-dark);
-    font-size:11.5px;font-weight:800;letter-spacing:.14em;
-    text-transform:uppercase;
+    font-size:11.5px;font-weight:800;letter-spacing:.12em;
+    text-transform:uppercase;white-space:nowrap;
   }
-  .dash-logo{
-    width:38px;height:38px;flex:none;
-    border:1px solid var(--line);border-radius:11px;
-    background:#fff url('Lambang_Kabupaten_Tuban.webp') center/28px 28px no-repeat;
+  .topbar-logo{
+    width:36px;height:36px;flex:none;border-radius:11px;
+    border:1px solid var(--line);background:#fff url('Lambang_Kabupaten_Tuban.webp') center/26px 26px no-repeat;
   }
-  .dash-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .top-search{
+    flex:1;max-width:340px;
+    display:flex;align-items:center;gap:9px;
+    padding:9px 16px;border-radius:999px;
+    background:#eef4f0;border:1px solid transparent;
+    color:var(--muted);font-size:13px;
+    transition:.2s;
+  }
+  .top-search:focus-within{background:#fff;border-color:var(--green);box-shadow:0 0 0 4px rgba(23,123,92,.1)}
+  .top-search input{
+    flex:1;border:0;background:transparent;outline:0;
+    font:inherit;color:var(--ink);min-width:0;
+  }
+  .top-nav{display:flex;gap:2px;margin:0 auto}
+  .top-nav a{
+    padding:8px 16px;border-radius:999px;
+    font-size:13px;font-weight:700;color:var(--muted);
+    text-decoration:none;transition:.2s;
+  }
+  .top-nav a:hover{color:var(--green-dark);background:var(--mist)}
+  .top-nav a.active{background:var(--green);color:#fff;box-shadow:0 10px 20px -12px rgba(23,123,92,.9)}
+  .top-actions{display:flex;align-items:center;gap:10px}
+
   .icon-btn{
+    position:relative;
     width:38px;height:38px;border-radius:50%;
     display:grid;place-items:center;
     border:1px solid var(--line);background:#fff;
@@ -44,12 +70,17 @@
     transition:.2s;
   }
   .icon-btn:hover{color:var(--green-dark);border-color:var(--green)}
+  .icon-btn .dot{
+    position:absolute;top:6px;right:6px;
+    width:8px;height:8px;border-radius:50%;
+    background:#e74c3c;border:2px solid #fff;
+  }
 
-  /* ---------- PROFILE ---------- */
+  /* profile */
   .profile{position:relative}
   .profile-button{
     display:inline-flex;align-items:center;gap:8px;
-    padding:4px 13px 4px 4px;
+    padding:4px 14px 4px 4px;
     border:1px solid var(--line);border-radius:999px;
     background:#fff;color:var(--ink);
     font:inherit;font-size:12px;font-weight:700;
@@ -57,13 +88,13 @@
   }
   .profile-button:hover{border-color:var(--green)}
   .profile-avatar{
-    width:26px;height:26px;border-radius:50%;
+    width:28px;height:28px;border-radius:50%;
     display:grid;place-items:center;
     background:var(--green-dark);color:#fff;
-    font-size:10.5px;font-weight:800;
+    font-size:11px;font-weight:800;
   }
   .profile-popover{
-    position:absolute;z-index:5;top:calc(100% + 10px);right:0;width:210px;
+    position:absolute;z-index:70;top:calc(100% + 10px);right:0;width:220px;
     padding:15px;border:1px solid var(--line);border-radius:15px;
     background:#fff;box-shadow:var(--shadow);
   }
@@ -83,8 +114,8 @@
   /* ---------- BUTTONS ---------- */
   .btn{
     display:inline-flex;align-items:center;gap:9px;
-    padding:12px 22px;border-radius:999px;
-    font-size:13.5px;font-weight:700;font-family:inherit;
+    padding:11px 20px;border-radius:999px;
+    font-size:13px;font-weight:700;font-family:inherit;
     cursor:pointer;border:1px solid transparent;
     text-decoration:none;transition:.25s cubic-bezier(.4,0,.2,1);
   }
@@ -100,198 +131,288 @@
   }
   .btn-light:hover{background:rgba(255,255,255,.28)}
   .btn-ghost{
-    background:transparent;border-color:var(--line);color:var(--green-dark);
+    background:#fff;border-color:var(--line);color:var(--green-dark);
   }
   .btn-ghost:hover{border-color:var(--green);background:var(--mist)}
+  .btn-sm{padding:8px 14px;font-size:12px}
 
   /* =========================================================
-     HERO
+     LAYOUT
      ========================================================= */
+  .dash{
+    max-width:1340px;margin:0 auto;
+    padding:22px 26px 70px;
+    display:grid;
+    grid-template-columns:290px 1fr;
+    gap:18px;
+    align-items:start;
+  }
+
+  /* ---------- SIDEBAR KIRI ---------- */
+  .side-col{display:flex;flex-direction:column;gap:16px;position:sticky;top:78px}
+  .side-card{
+    background:#fff;border:1px solid var(--line);
+    border-radius:22px;padding:18px;
+    box-shadow:0 16px 40px -30px rgba(24,69,51,.35);
+  }
+  .side-head{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:10px;margin-bottom:14px;
+  }
+  .side-head h3{
+    margin:0;font-family:'Manrope',sans-serif;
+    font-size:13px;font-weight:800;letter-spacing:-.01em;
+  }
+  .side-head a{
+    font-size:11px;font-weight:800;color:var(--green);
+    text-decoration:none;letter-spacing:.02em;
+  }
+  .side-head a:hover{color:var(--green-dark)}
+
+  /* kartu template bergaya "featured" */
+  .tpl-feature{
+    position:relative;display:block;
+    border-radius:16px;overflow:hidden;
+    height:118px;padding:14px;
+    color:#fff;text-decoration:none;
+    margin-bottom:10px;
+    background:linear-gradient(150deg,var(--green-dark) 0%,var(--green) 100%);
+    transition:.3s cubic-bezier(.4,0,.2,1);
+    isolation:isolate;
+  }
+  .tpl-feature::after{
+    content:"";position:absolute;right:-40px;bottom:-50px;
+    width:140px;height:140px;border-radius:50%;
+    background:radial-gradient(closest-side, rgba(214,239,189,.45), transparent 70%);
+    z-index:0;
+  }
+  .tpl-feature:hover{transform:translateY(-2px);box-shadow:0 20px 34px -20px rgba(15,101,74,.7)}
+  .tpl-feature strong{
+    position:relative;z-index:1;
+    display:block;font-size:13.5px;font-weight:800;line-height:1.3;
+    margin-top:auto;
+  }
+  .tpl-feature small{
+    position:relative;z-index:1;
+    display:block;font-size:10.5px;opacity:.85;margin-top:4px;
+  }
+  .tpl-feature .badge{
+    position:relative;z-index:1;
+    display:inline-block;margin-bottom:auto;
+    padding:4px 9px;border-radius:999px;
+    background:rgba(255,255,255,.22);backdrop-filter:blur(6px);
+    font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+  }
+  .tpl-feature .play{
+    position:absolute;right:12px;bottom:12px;z-index:1;
+    width:30px;height:30px;border-radius:50%;
+    background:#fff;color:var(--green-dark);
+    display:grid;place-items:center;font-size:11px;font-weight:800;
+  }
+  .tpl-feature .inner{position:relative;z-index:1;display:flex;flex-direction:column;height:100%}
+
+  /* list aktivitas mini */
+  .mini-list{display:grid;gap:2px}
+  .mini-item{
+    display:flex;align-items:center;gap:12px;
+    padding:10px 0;border-top:1px solid var(--line);min-width:0;
+  }
+  .mini-item:first-child{border-top:0;padding-top:2px}
+  .mini-thumb{
+    width:36px;height:36px;border-radius:10px;flex:none;
+    display:grid;place-items:center;
+    background:var(--mist);color:var(--green-dark);
+    font-size:12px;font-weight:800;
+  }
+  .mini-copy{min-width:0;flex:1}
+  .mini-copy strong{
+    display:block;font-size:12.5px;font-weight:700;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .mini-copy small{
+    display:block;margin-top:2px;font-size:10.5px;color:var(--muted);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+
+  .pill{
+    display:inline-flex;align-items:center;
+    padding:4px 9px;border-radius:999px;
+    font-size:9.5px;font-weight:800;
+    letter-spacing:.06em;text-transform:uppercase;
+  }
+  .pill-final{background:#e6f4ec;color:var(--green-dark)}
+  .pill-draft{background:#fdf1d6;color:#a86b12}
+  .pill-gagal{background:#fbe6e6;color:#a33d31}
+
+  /* ---------- MAIN COLUMN ---------- */
+  .main-col{display:flex;flex-direction:column;gap:16px;min-width:0}
+
+  /* HERO */
   .hero{
     position:relative;
     border-radius:26px;
     padding:30px;
-    min-height:460px;
+    min-height:330px;
     display:grid;
-    grid-template-columns:1.25fr .75fr;
+    grid-template-columns:1.35fr .65fr;
     gap:24px;
     color:#f4fff9;
     overflow:hidden;
-    margin-bottom:16px;
     isolation:isolate;
     box-shadow:0 30px 70px -34px rgba(15,101,74,.7);
     background:
       linear-gradient(100deg,
         rgba(9,58,41,.94) 0%,
-        rgba(15,101,74,.88) 35%,
-        rgba(15,101,74,.62) 65%,
-        rgba(15,101,74,.32) 100%),
+        rgba(15,101,74,.86) 40%,
+        rgba(15,101,74,.45) 100%),
       radial-gradient(120% 90% at 100% 0%, rgba(214,239,189,.25), transparent 55%),
       url('images.jpg') center/cover no-repeat;
   }
   .hero::before{
-    content:"";
-    position:absolute;left:-130px;bottom:-160px;
+    content:"";position:absolute;left:-130px;bottom:-160px;
     width:340px;height:340px;border-radius:50%;
     border:1px solid rgba(255,255,255,.14);
     box-shadow:
       0 0 0 32px rgba(255,255,255,.04),
       0 0 0 64px rgba(255,255,255,.03);
-    pointer-events:none;
-    z-index:0;
+    pointer-events:none;z-index:0;
   }
   .hero::after{
-    content:"";
-    position:absolute;
-    right:-120px;top:-140px;
-    width:520px;height:520px;
-    border-radius:50%;
+    content:"";position:absolute;right:-120px;top:-140px;
+    width:520px;height:520px;border-radius:50%;
     background:radial-gradient(closest-side, rgba(214,239,189,.35), transparent 70%);
-    pointer-events:none;
-    z-index:0;
+    pointer-events:none;z-index:0;
   }
   .hero-left{
     position:relative;z-index:2;
-    display:flex;flex-direction:column;
-    min-width:0;
+    display:flex;flex-direction:column;min-width:0;
   }
   .hero-eyebrow{
     font-size:10px;font-weight:800;letter-spacing:.2em;
     text-transform:uppercase;
     color:rgba(244,255,249,.78);
-    margin-bottom:auto;
   }
   .hero-headline{
     font-family:'Manrope',sans-serif;
-    font-size:clamp(30px,3.6vw,44px);
-    line-height:1.04;letter-spacing:-.045em;
-    font-weight:800;margin:20px 0 14px;
-    max-width:420px;
+    font-size:clamp(28px,3.4vw,42px);
+    line-height:1.05;letter-spacing:-.04em;
+    font-weight:800;margin:16px 0 12px;
+    max-width:440px;
     text-shadow:0 2px 24px rgba(0,0,0,.35);
   }
   .hero-sub{
-    margin:0 0 24px;max-width:420px;
+    margin:0 0 22px;max-width:440px;
     color:rgba(244,255,249,.88);
-    font-size:14px;line-height:1.6;
+    font-size:13.5px;line-height:1.6;
     text-shadow:0 1px 12px rgba(0,0,0,.3);
   }
-  .hero-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .hero-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:auto}
 
   .hero-right{
     position:relative;z-index:2;
-    display:grid;place-items:center;
-    min-height:280px;
+    display:grid;place-items:center;min-height:240px;
   }
   .hero-emblem{
     position:relative;
-    width:min(280px,90%);
+    width:min(240px,90%);
     aspect-ratio:1/1;
     display:grid;place-items:center;
   }
   .hero-emblem::before,
   .hero-emblem::after{
-    content:"";
-    position:absolute;inset:0;
+    content:"";position:absolute;inset:0;
     border-radius:50%;
     border:1px solid rgba(255,255,255,.22);
     pointer-events:none;
   }
   .hero-emblem::before{
-    inset:-22px;
-    border-color:rgba(255,255,255,.16);
+    inset:-22px;border-color:rgba(255,255,255,.16);
     animation:spin 40s linear infinite;
   }
   .hero-emblem::after{
-    inset:-46px;
-    border-style:dashed;
-    border-color:rgba(255,255,255,.12);
+    inset:-46px;border-style:dashed;border-color:rgba(255,255,255,.12);
     animation:spin 60s linear infinite reverse;
   }
-  @keyframes spin{
-    to{transform:rotate(360deg)}
-  }
+  @keyframes spin{to{transform:rotate(360deg)}}
   .hero-emblem img{
     position:relative;z-index:1;
-    width:78%;height:78%;
-    object-fit:contain;
+    width:78%;height:78%;object-fit:contain;
     filter:drop-shadow(0 26px 40px rgba(6,50,35,.55));
     animation:float 6s ease-in-out infinite;
   }
-  @keyframes float{
-    0%,100%{transform:translateY(0)}
-    50%{transform:translateY(-8px)}
-  }
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
   .hero-emblem-glow{
-    position:absolute;
-    inset:6%;
-    border-radius:50%;
+    position:absolute;inset:6%;border-radius:50%;
     background:radial-gradient(closest-side, rgba(214,239,189,.45), transparent 70%);
-    filter:blur(14px);
-    z-index:0;
-    pointer-events:none;
+    filter:blur(14px);z-index:0;pointer-events:none;
   }
 
-  .hero-kpis{
-    grid-column:1 / -1;
-    position:relative;z-index:2;
+  /* KPI ROW — 4 kartu berwarna seperti kartu siswa di referensi */
+  .kpi-row{
     display:grid;
     grid-template-columns:repeat(4,1fr);
-    gap:10px;
-    margin-top:auto;
-    align-self:end;
+    gap:14px;
   }
-  .kpi{
-    padding:14px 16px;
-    border-radius:16px;
-    background:rgba(255,255,255,.14);
-    border:1px solid rgba(255,255,255,.2);
-    backdrop-filter:blur(12px);
-    position:relative;
+  .kpi-card{
+    position:relative;overflow:hidden;
+    border-radius:20px;padding:18px;
+    color:#fff;isolation:isolate;
+    min-height:132px;
+    display:flex;flex-direction:column;justify-content:space-between;
+    box-shadow:0 20px 40px -28px rgba(15,101,74,.6);
+    transition:.3s cubic-bezier(.4,0,.2,1);
+    border:0;
   }
-  .kpi.active{
-    background:rgba(214,239,189,.28);
-    border-color:rgba(214,239,189,.48);
+  .kpi-card:hover{transform:translateY(-3px)}
+  .kpi-card::after{
+    content:"";position:absolute;right:-30px;bottom:-40px;
+    width:120px;height:120px;border-radius:50%;
+    background:radial-gradient(closest-side, rgba(255,255,255,.22), transparent 70%);
+    z-index:0;
   }
-  .kpi-value{
-    font-family:'Manrope',sans-serif;
-    font-size:22px;font-weight:800;letter-spacing:-.03em;
-    color:#fff;line-height:1;
+  .kpi-card-1{background:linear-gradient(150deg,#0f654a 0%,#177b5c 100%)}
+  .kpi-card-2{background:linear-gradient(150deg,#1a8a66 0%,#2aa47a 100%)}
+  .kpi-card-3{background:linear-gradient(150deg,#3ea884 0%,#5cc39a 100%)}
+  .kpi-card-4{background:linear-gradient(150deg,#2c7d9a 0%,#3f97b5 100%)}
+  .kpi-top{
+    position:relative;z-index:1;
+    display:flex;align-items:center;justify-content:space-between;
   }
-  .kpi-label{
-    display:flex;align-items:center;gap:6px;
-    margin-top:6px;
-    font-size:10.5px;font-weight:700;
-    color:rgba(244,255,249,.82);
-  }
-  .kpi-dot{
-    width:6px;height:6px;border-radius:50%;
-    background:var(--lime);flex:none;
+  .kpi-icon{
+    width:34px;height:34px;border-radius:11px;
+    display:grid;place-items:center;
+    background:rgba(255,255,255,.22);backdrop-filter:blur(6px);
+    font-size:14px;font-weight:800;
   }
   .kpi-arrow{
-    position:absolute;right:10px;bottom:10px;
-    width:26px;height:26px;border-radius:50%;
+    width:28px;height:28px;border-radius:50%;
     display:grid;place-items:center;
-    background:#fff;color:var(--green-dark);
+    background:rgba(255,255,255,.22);backdrop-filter:blur(6px);
     font-size:12px;font-weight:800;
   }
+  .kpi-value{
+    position:relative;z-index:1;
+    font-family:'Manrope',sans-serif;
+    font-size:30px;font-weight:800;letter-spacing:-.03em;
+    line-height:1;margin-top:14px;
+  }
+  .kpi-label{
+    position:relative;z-index:1;
+    font-size:11px;font-weight:700;
+    margin-top:6px;color:rgba(255,255,255,.85);
+  }
 
-  /* =========================================================
-     PANEL / CHART / MINI LIST
-     ========================================================= */
+  /* MID GRID — chart + recent */
   .mid-grid{
     display:grid;
-    grid-template-columns:1.35fr .65fr;
+    grid-template-columns:1.4fr .6fr;
     gap:16px;
-    margin-bottom:16px;
   }
   .panel{
-    border-radius:22px;
-    padding:20px 22px;
-    background:#fff;
-    border:1px solid var(--line);
+    border-radius:22px;padding:20px 22px;
+    background:#fff;border:1px solid var(--line);
     box-shadow:0 16px 40px -30px rgba(24,69,51,.4);
-    display:flex;flex-direction:column;
-    min-height:0;
+    display:flex;flex-direction:column;min-height:0;
   }
   .panel-head{
     display:flex;align-items:center;justify-content:space-between;
@@ -301,6 +422,9 @@
     margin:0;font-family:'Manrope',sans-serif;
     font-size:13.5px;font-weight:800;letter-spacing:-.01em;
     color:var(--ink);
+  }
+  .panel-head a{
+    font-size:12px;font-weight:700;color:var(--green);text-decoration:none;
   }
   .panel-badge{
     padding:5px 10px;border-radius:999px;
@@ -318,55 +442,29 @@
     display:flex;justify-content:space-between;
     font-size:10px;color:var(--muted);font-weight:700;
   }
-  .mini-list{display:grid;gap:10px;flex:1}
-  .mini-item{
-    display:flex;align-items:center;gap:12px;
-    padding:10px 0;border-top:1px solid var(--line);min-width:0;
-  }
-  .mini-item:first-child{border-top:0;padding-top:0}
-  .mini-thumb{
-    width:38px;height:38px;border-radius:10px;flex:none;
-    display:grid;place-items:center;
-    background:var(--mist);color:var(--green-dark);
-    font-size:12px;font-weight:800;
-  }
-  .mini-copy{min-width:0;flex:1}
-  .mini-copy strong{
-    display:block;font-size:12.5px;font-weight:700;
-    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  }
-  .mini-copy small{
-    display:block;margin-top:3px;font-size:10.5px;color:var(--muted);
-  }
-  .pill{
-    display:inline-flex;align-items:center;
-    padding:4px 9px;border-radius:999px;
-    font-size:9.5px;font-weight:800;
-    letter-spacing:.06em;text-transform:uppercase;
-  }
-  .pill-final{background:#e6f4ec;color:var(--green-dark)}
-  .pill-draft{background:#fdf1d6;color:#a86b12}
-  .pill-gagal{background:#fbe6e6;color:#a33d31}
 
-  /* ---------- SECTION HEAD + FEATURES ---------- */
+  /* FEATURES — 3 kartu menu */
   .section-head{
     display:flex;align-items:flex-end;justify-content:space-between;
-    gap:14px;margin:26px 0 14px;flex-wrap:wrap;
+    gap:14px;margin:6px 0 0;flex-wrap:wrap;
   }
   .section-head h2{
     margin:0;font-family:'Manrope',sans-serif;
-    font-size:18px;font-weight:800;letter-spacing:-.03em;
+    font-size:17px;font-weight:800;letter-spacing:-.03em;
   }
   .section-head p{margin:4px 0 0;color:var(--muted);font-size:12.5px}
 
-  .features{display:grid;gap:10px;margin-bottom:16px}
+  .features{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:14px;
+  }
   .feature{
-    display:grid;grid-template-columns:auto 1fr auto;
-    align-items:center;gap:18px;
-    padding:18px 22px;border:1px solid var(--line);
-    border-radius:18px;background:#fff;
+    display:flex;flex-direction:column;gap:14px;
+    padding:20px;border:1px solid var(--line);
+    border-radius:20px;background:#fff;
     text-decoration:none;color:inherit;
-    transition:.25s cubic-bezier(.4,0,.2,1);
+    transition:.3s cubic-bezier(.4,0,.2,1);
     position:relative;overflow:hidden;
   }
   .feature::before{
@@ -375,10 +473,13 @@
     transition:transform .3s cubic-bezier(.4,0,.2,1);
   }
   .feature:hover{
-    transform:translateX(4px);border-color:transparent;
-    box-shadow:0 18px 40px -26px rgba(24,69,51,.5);
+    transform:translateY(-3px);border-color:transparent;
+    box-shadow:0 22px 44px -28px rgba(24,69,51,.55);
   }
   .feature:hover::before{transform:scaleY(1)}
+  .feature-top{
+    display:flex;align-items:center;justify-content:space-between;
+  }
   .feature-icon{
     width:46px;height:46px;flex:none;border-radius:14px;
     display:grid;place-items:center;
@@ -386,23 +487,22 @@
     font-weight:800;font-size:14px;transition:.25s;
   }
   .feature:hover .feature-icon{background:var(--lime);transform:rotate(-4deg)}
-  .feature-copy{min-width:0}
-  .feature-copy h3{
-    margin:0 0 3px;font-family:'Manrope',sans-serif;
-    font-size:15.5px;font-weight:800;letter-spacing:-.02em;
-  }
-  .feature-copy p{margin:0;color:var(--muted);font-size:12.5px;line-height:1.5}
   .feature-arrow{
-    width:34px;height:34px;flex:none;border-radius:50%;
+    width:30px;height:30px;border-radius:50%;
     display:grid;place-items:center;
     color:var(--green-dark);background:var(--mist);
-    font-size:13px;font-weight:800;transition:.25s;
+    font-size:12px;font-weight:800;transition:.25s;
   }
   .feature:hover .feature-arrow{
     background:var(--green-dark);color:#fff;transform:translateX(3px);
   }
+  .feature-copy h3{
+    margin:0 0 4px;font-family:'Manrope',sans-serif;
+    font-size:15px;font-weight:800;letter-spacing:-.02em;
+  }
+  .feature-copy p{margin:0;color:var(--muted);font-size:12.5px;line-height:1.5}
 
-  /* ---------- TABEL ---------- */
+  /* TABLE PANEL */
   .table-panel{
     border-radius:22px;padding:22px 24px 12px;
     background:#fff;border:1px solid var(--line);
@@ -474,22 +574,28 @@
   /* =========================================================
      RESPONSIVE
      ========================================================= */
+  @media (max-width:1080px){
+    .dash{grid-template-columns:1fr}
+    .side-col{position:static;flex-direction:row;flex-wrap:wrap}
+    .side-col .side-card{flex:1;min-width:260px}
+  }
   @media (max-width:960px){
     .hero{grid-template-columns:1fr;min-height:0}
-    .hero-right{min-height:220px;order:-1}
-    .hero-emblem{width:min(220px,60%)}
-    .hero-kpis{grid-template-columns:repeat(2,1fr)}
+    .hero-right{min-height:200px;order:-1}
+    .hero-emblem{width:min(200px,60%)}
     .mid-grid{grid-template-columns:1fr}
+    .kpi-row{grid-template-columns:repeat(2,1fr)}
+    .features{grid-template-columns:1fr}
+    .top-nav{display:none}
   }
   @media (max-width:640px){
-    .dash{padding:20px 16px 50px}
-    .hero{padding:24px;border-radius:20px;min-height:0}
-    .hero-headline{font-size:28px}
-    .hero-kpis{grid-template-columns:1fr}
-    .feature{grid-template-columns:auto 1fr;padding:16px 18px;gap:14px}
-    .feature-arrow{display:none}
-    .dash-actions{width:100%}
-    .dash-actions .btn-primary{flex:1;justify-content:center}
+    .topbar{padding:10px 16px;gap:10px}
+    .topbar-brand span{display:none}
+    .top-search{max-width:none}
+    .dash{padding:16px 16px 50px}
+    .hero{padding:24px;border-radius:20px}
+    .hero-headline{font-size:26px}
+    .kpi-row{grid-template-columns:1fr}
     .table-cols,.row{grid-template-columns:1.6fr .8fr}
     .table-cols span:nth-child(3),.table-cols span:nth-child(4),
     .row > *:nth-child(3),.row > *:nth-child(4){display:none}
@@ -504,171 +610,273 @@
 </style>
 </head>
 <body>
+
+  <!-- ================= TOPBAR ================= -->
+  <header class="topbar">
+    <div class="topbar-brand">
+      <span class="topbar-logo" aria-hidden="true"></span>
+      <span>Sistem Surat Dinas</span>
+    </div>
+
+    <label class="top-search" for="globalSearch">
+      <span aria-hidden="true">⌕</span>
+      <input id="globalSearch" type="search" placeholder="Cari surat, template…" aria-label="Pencarian global">
+    </label>
+
+    <nav class="top-nav" aria-label="Navigasi utama">
+      <a href="dashboard.html" class="active">Dashboard</a>
+      <a href="arsip.html">Arsip</a>
+      <a href="template.html">Template</a>
+      <a href="buat-surat.html">Buat Surat</a>
+    </nav>
+
+    <div class="top-actions">
+      <button class="icon-btn" type="button" aria-label="Notifikasi">
+        <span aria-hidden="true">🔔</span>
+        <span class="dot" aria-hidden="true"></span>
+      </button>
+      <div class="profile">
+        <button id="profile-button" class="profile-button" type="button"
+                aria-expanded="false" aria-controls="profile-popover">
+          <span id="profile-avatar" class="profile-avatar">A</span>
+          <span id="profile-label">Profil</span>
+        </button>
+        <div id="profile-container"></div>
+      </div>
+      <a href="buat-surat.html" class="btn btn-primary btn-sm">+ Surat baru</a>
+    </div>
+  </header>
+
+  <!-- ================= LAYOUT ================= -->
   <div class="dash">
 
-    <!-- HEADER -->
-    <header class="dash-top">
-      <div class="dash-brand">
-        <span class="dash-logo" aria-hidden="true"></span>
-        Sistem Surat Dinas Kabupaten Tuban
-      </div>
-      <div class="dash-actions">
-        <button class="icon-btn" type="button" aria-label="Notifikasi">✉</button>
-        <button class="icon-btn" type="button" aria-label="Cari">⌕</button>
-        <div class="profile">
-          <button id="profile-button" class="profile-button" type="button"
-                  aria-expanded="false" aria-controls="profile-popover">
-            <span id="profile-avatar" class="profile-avatar">A</span>
-            <span id="profile-label">Profil</span>
-          </button>
-          <div id="profile-container"></div>
-        </div>
-        <a href="buat-surat.html" class="btn btn-primary">Buat surat baru</a>
-      </div>
-    </header>
+    <!-- ============ SIDEBAR KIRI ============ -->
+    <aside class="side-col">
 
-    <!-- HERO -->
-    <section class="hero">
-      <div class="hero-left">
-        <span class="hero-eyebrow">Dinas Kependudukan dan Pencatatan Sipil</span>
-        <h1 class="hero-headline" id="greeting">Selamat datang</h1>
-        <p class="hero-sub" id="heroSub">
-          Kelola pembuatan, template, dan arsip surat dari satu tempat.
-          Mulai dari wizard 4 langkah, sisanya otomatis.
-        </p>
-        <div class="hero-actions">
-          <a href="buat-surat.html" class="btn btn-light">Buat surat baru →</a>
-          <a href="arsip.html" class="btn btn-light">Lihat arsip</a>
+      <div class="side-card">
+        <div class="side-head">
+          <h3>Template Populer</h3>
+          <a href="template.html">Kelola</a>
         </div>
+
+        <a class="tpl-feature" href="buat-surat.html">
+          <span class="badge">Sering dipakai</span>
+          <span class="play" aria-hidden="true">→</span>
+          <div class="inner">
+            <strong>Surat Keterangan Domisili</strong>
+            <small>Wizard 4 langkah · otomatis</small>
+          </div>
+        </a>
+
+        <a class="tpl-feature" href="buat-surat.html"
+           style="background:linear-gradient(150deg,#2c7d9a 0%,#3f97b5 100%)">
+          <span class="badge">Baru</span>
+          <span class="play" aria-hidden="true">→</span>
+          <div class="inner">
+            <strong>Surat Pengantar KTP</strong>
+            <small>Template diperbarui minggu ini</small>
+          </div>
+        </a>
       </div>
 
-      <div class="hero-right">
-        <div class="hero-emblem">
-          <span class="hero-emblem-glow"></span>
-          <img src="Lambang_Kabupaten_Tuban.webp" alt="Lambang Kabupaten Tuban">
-        </div>
-      </div>
-
-      <div class="hero-kpis" aria-label="Ringkasan surat">
-        <div class="kpi">
-          <div class="kpi-value" id="stat-letters">0</div>
-          <div class="kpi-label"><span class="kpi-dot"></span> Total arsip</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-value" id="stat-templates">0</div>
-          <div class="kpi-label"><span class="kpi-dot"></span> Template</div>
-        </div>
-        <div class="kpi active">
-          <div class="kpi-value" id="stat-week-num">0</div>
-          <div class="kpi-label"><span class="kpi-dot"></span> Minggu ini</div>
-          <span class="kpi-arrow">→</span>
-        </div>
-        <div class="kpi">
-          <div class="kpi-value" id="stat-drafts">0</div>
-          <div class="kpi-label"><span class="kpi-dot"></span> Draft</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CHART + MINI LIST -->
-    <div class="mid-grid">
-      <div class="panel">
-        <div class="panel-head">
-          <h3>Aktivitas 7 hari terakhir</h3>
-          <span class="panel-badge" id="chartBadge">0</span>
-        </div>
-        <div class="chart">
-          <svg viewBox="0 0 320 140" preserveAspectRatio="none" aria-hidden="true">
-            <defs>
-              <linearGradient id="gArea" x1="0" x2="0" y1="0" y2="1">
-                <stop offset="0" stop-color="var(--green)" stop-opacity=".22"/>
-                <stop offset="1" stop-color="var(--green)" stop-opacity="0"/>
-              </linearGradient>
-            </defs>
-            <path id="areaPath" d="M0,100 L320,100 L320,140 L0,140 Z" fill="url(#gArea)"/>
-            <path id="linePath" d="M0,100 L320,100"
-                  fill="none" stroke="var(--green)" stroke-width="2.2" stroke-linecap="round"/>
-            <path id="linePrev" d="M0,110 L320,110"
-                  fill="none" stroke="var(--muted)" stroke-width="1.6"
-                  stroke-dasharray="3 4" stroke-linecap="round"/>
-          </svg>
-          <div class="chart-x" id="chartX"></div>
-        </div>
-      </div>
-
-      <div class="panel">
-        <div class="panel-head">
-          <h3>Surat terbaru</h3>
-          <a href="arsip.html" style="color:var(--green);font-size:12px;font-weight:700;text-decoration:none">Lihat semua</a>
+      <div class="side-card">
+        <div class="side-head">
+          <h3>Aktivitas Terbaru</h3>
+          <a href="arsip.html">Semua</a>
         </div>
         <div class="mini-list" id="miniList"></div>
       </div>
-    </div>
 
-    <!-- FEATURES -->
-    <div class="section-head">
-      <div>
-        <h2>Menu utama</h2>
-        <p>Pilih yang ingin Anda kerjakan sekarang.</p>
+    </aside>
+
+    <!-- ============ MAIN ============ -->
+    <main class="main-col">
+
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero-left">
+          <span class="hero-eyebrow">Dinas Kependudukan dan Pencatatan Sipil</span>
+          <h1 class="hero-headline" id="greeting">Selamat datang</h1>
+          <p class="hero-sub" id="heroSub">
+            Kelola pembuatan, template, dan arsip surat dari satu tempat.
+            Mulai dari wizard 4 langkah, sisanya otomatis.
+          </p>
+          <div class="hero-actions">
+            <a href="buat-surat.html" class="btn btn-light">Buat surat baru →</a>
+            <a href="arsip.html" class="btn btn-light">Lihat arsip</a>
+          </div>
+        </div>
+
+        <div class="hero-right">
+          <div class="hero-emblem">
+            <span class="hero-emblem-glow"></span>
+            <img src="Lambang_Kabupaten_Tuban.webp" alt="Lambang Kabupaten Tuban">
+          </div>
+        </div>
+      </section>
+
+      <!-- KPI ROW -->
+      <section class="kpi-row" aria-label="Ringkasan surat">
+        <article class="kpi-card kpi-card-1">
+          <div class="kpi-top">
+            <span class="kpi-icon" aria-hidden="true">∑</span>
+            <span class="kpi-arrow" aria-hidden="true">↗</span>
+          </div>
+          <div>
+            <div class="kpi-value" id="stat-letters">0</div>
+            <div class="kpi-label">Total arsip surat</div>
+          </div>
+        </article>
+
+        <article class="kpi-card kpi-card-2">
+          <div class="kpi-top">
+            <span class="kpi-icon" aria-hidden="true">⌘</span>
+            <span class="kpi-arrow" aria-hidden="true">↗</span>
+          </div>
+          <div>
+            <div class="kpi-value" id="stat-templates">0</div>
+            <div class="kpi-label">Template aktif</div>
+          </div>
+        </article>
+
+        <article class="kpi-card kpi-card-3">
+          <div class="kpi-top">
+            <span class="kpi-icon" aria-hidden="true">◷</span>
+            <span class="kpi-arrow" aria-hidden="true">↗</span>
+          </div>
+          <div>
+            <div class="kpi-value" id="stat-week-num">0</div>
+            <div class="kpi-label">Dibuat minggu ini</div>
+          </div>
+        </article>
+
+        <article class="kpi-card kpi-card-4">
+          <div class="kpi-top">
+            <span class="kpi-icon" aria-hidden="true">✎</span>
+            <span class="kpi-arrow" aria-hidden="true">↗</span>
+          </div>
+          <div>
+            <div class="kpi-value" id="stat-drafts">0</div>
+            <div class="kpi-label">Draft belum selesai</div>
+          </div>
+        </article>
+      </section>
+
+      <!-- CHART + RECENT -->
+      <div class="mid-grid">
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Aktivitas 7 hari terakhir</h3>
+            <span class="panel-badge" id="chartBadge">0</span>
+          </div>
+          <div class="chart">
+            <svg viewBox="0 0 320 140" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="gArea" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0" stop-color="var(--green)" stop-opacity=".22"/>
+                  <stop offset="1" stop-color="var(--green)" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <path id="areaPath" d="M0,100 L320,100 L320,140 L0,140 Z" fill="url(#gArea)"/>
+              <path id="linePath" d="M0,100 L320,100"
+                    fill="none" stroke="var(--green)" stroke-width="2.2" stroke-linecap="round"/>
+              <path id="linePrev" d="M0,110 L320,110"
+                    fill="none" stroke="var(--muted)" stroke-width="1.6"
+                    stroke-dasharray="3 4" stroke-linecap="round"/>
+            </svg>
+            <div class="chart-x" id="chartX"></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Status arsip</h3>
+            <a href="arsip.html">Detail</a>
+          </div>
+          <div class="mini-list" id="miniListRight"></div>
+        </div>
       </div>
-    </div>
 
-    <section class="features">
-      <a class="feature" href="buat-surat.html">
-        <span class="feature-icon">B</span>
-        <div class="feature-copy">
-          <h3>Buat Surat</h3>
-          <p>Wizard 4 langkah: data pembuat, pilih template, tentukan penandatangan, lalu cetak.</p>
-        </div>
-        <span class="feature-arrow" aria-hidden="true">→</span>
-      </a>
-      <a class="feature" href="template.html">
-        <span class="feature-icon">E</span>
-        <div class="feature-copy">
-          <h3>Kelola Surat</h3>
-          <p>Ubah nama template, HTML surat, dan field tanpa menyentuh kode aplikasi.</p>
-        </div>
-        <span class="feature-arrow" aria-hidden="true">→</span>
-      </a>
-      <a class="feature" href="arsip.html">
-        <span class="feature-icon">A</span>
-        <div class="feature-copy">
-          <h3>Arsip Surat</h3>
-          <p>Riwayat surat tersimpan otomatis di browser. Cari, buka ulang, atau cetak lagi.</p>
-        </div>
-        <span class="feature-arrow" aria-hidden="true">→</span>
-      </a>
-    </section>
-
-    <!-- TABEL -->
-    <section class="table-panel">
-      <div class="table-head">
-        <h3>Daftar surat</h3>
-        <div class="table-tools">
-          <input class="search-input" id="search" type="search" placeholder="Cari nomor / template…" aria-label="Cari surat">
-          <select class="select" id="filterStatus" aria-label="Filter status">
-            <option value="">Semua status</option>
-            <option value="final">Final</option>
-            <option value="draft">Draft</option>
-            <option value="gagal">Gagal</option>
-          </select>
+      <!-- FEATURES -->
+      <div class="section-head">
+        <div>
+          <h2>Menu utama</h2>
+          <p>Pilih yang ingin Anda kerjakan sekarang.</p>
         </div>
       </div>
 
-      <div class="table-cols">
-        <span>Surat</span>
-        <span>Tanggal</span>
-        <span>Status</span>
-        <span>Aktivitas</span>
-      </div>
+      <section class="features">
+        <a class="feature" href="buat-surat.html">
+          <div class="feature-top">
+            <span class="feature-icon">B</span>
+            <span class="feature-arrow" aria-hidden="true">→</span>
+          </div>
+          <div class="feature-copy">
+            <h3>Buat Surat</h3>
+            <p>Wizard 4 langkah: data pembuat, pilih template, tentukan penandatangan, lalu cetak.</p>
+          </div>
+        </a>
 
-      <div id="rows"></div>
-    </section>
+        <a class="feature" href="template.html">
+          <div class="feature-top">
+            <span class="feature-icon">E</span>
+            <span class="feature-arrow" aria-hidden="true">→</span>
+          </div>
+          <div class="feature-copy">
+            <h3>Kelola Surat</h3>
+            <p>Ubah nama template, HTML surat, dan field tanpa menyentuh kode aplikasi.</p>
+          </div>
+        </a>
 
+        <a class="feature" href="arsip.html">
+          <div class="feature-top">
+            <span class="feature-icon">A</span>
+            <span class="feature-arrow" aria-hidden="true">→</span>
+          </div>
+          <div class="feature-copy">
+            <h3>Arsip Surat</h3>
+            <p>Riwayat surat tersimpan otomatis di browser. Cari, buka ulang, atau cetak lagi.</p>
+          </div>
+        </a>
+      </section>
+
+      <!-- TABLE -->
+      <section class="table-panel">
+        <div class="table-head">
+          <h3>Daftar surat</h3>
+          <div class="table-tools">
+            <input class="search-input" id="search" type="search" placeholder="Cari nomor / template…" aria-label="Cari surat">
+            <select class="select" id="filterStatus" aria-label="Filter status">
+              <option value="">Semua status</option>
+              <option value="final">Final</option>
+              <option value="draft">Draft</option>
+              <option value="gagal">Gagal</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-cols">
+          <span>Surat</span>
+          <span>Tanggal</span>
+          <span>Status</span>
+          <span>Aktivitas</span>
+        </div>
+
+        <div id="rows"></div>
+      </section>
+
+    </main>
   </div>
 
   <script src="data.js"></script>
   <script>
+    /* ====== HELPERS ====== */
+    function escapeHtml(s){
+      return String(s ?? "").replace(/[&<>"']/g, c => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+      }[c]));
+    }
+
     /* ====== GREETING ====== */
     const auth = typeof getAuth === "function" ? getAuth() : null;
     const authName = auth?.nama || auth?.username || "Admin Surat";
@@ -684,19 +892,19 @@
     document.getElementById("profile-avatar").textContent = authName.charAt(0).toUpperCase();
 
     /* ====== DATA ====== */
-    const letters  = typeof getLetters  === "function" ? getLetters()  : [];
-    const templates= typeof getTemplates=== "function" ? getTemplates(): [];
+    const letters   = typeof getLetters   === "function" ? getLetters()   : [];
+    const templates = typeof getTemplates === "function" ? getTemplates() : [];
 
     const now = Date.now();
     const weekAgo = now - 7 * 24 * 60 * 60 * 1000;
     const thisWeek = letters.filter(l => new Date(l.created_at || l.tanggal || 0).getTime() >= weekAgo);
     const drafts = letters.filter(l => (l.status || "").toLowerCase() === "draft");
 
-    document.getElementById("stat-letters").textContent = letters.length;
+    document.getElementById("stat-letters").textContent   = letters.length;
     document.getElementById("stat-templates").textContent = templates.length;
-    document.getElementById("stat-drafts").textContent = drafts.length;
-    document.getElementById("stat-week-num").textContent = thisWeek.length;
-    document.getElementById("chartBadge").textContent = thisWeek.length;
+    document.getElementById("stat-drafts").textContent    = drafts.length;
+    document.getElementById("stat-week-num").textContent  = thisWeek.length;
+    document.getElementById("chartBadge").textContent     = thisWeek.length;
 
     /* ====== CHART ====== */
     const days = [];
@@ -732,7 +940,7 @@
       `<span>${d.toLocaleDateString("id-ID",{day:"numeric",month:"short"})}</span>`
     ).join("");
 
-    /* ====== MINI LIST ====== */
+    /* ====== MINI LIST (sidebar kiri) ====== */
     const miniList = document.getElementById("miniList");
     if (letters.length) {
       miniList.innerHTML = letters.slice(0, 4).map(l => {
@@ -743,7 +951,7 @@
                   : "pill-final";
         return `
           <div class="mini-item">
-            <span class="mini-thumb">${(tpl.nama||"S").charAt(0).toUpperCase()}</span>
+            <span class="mini-thumb">${escapeHtml((tpl.nama||"S").charAt(0).toUpperCase())}</span>
             <div class="mini-copy">
               <strong>${escapeHtml(l.nomor_surat || l.id)}</strong>
               <small>${escapeHtml(tpl.nama)}</small>
@@ -755,8 +963,31 @@
       miniList.innerHTML = `<p style="color:var(--muted);font-size:12.5px;margin:0">Belum ada surat.</p>`;
     }
 
+    /* ====== MINI LIST (panel kanan — ringkasan status) ====== */
+    const miniRight = document.getElementById("miniListRight");
+    (function(){
+      const finalCount = letters.filter(l => (l.status||"final").toLowerCase() === "final").length;
+      const draftCount = drafts.length;
+      const gagalCount = letters.filter(l => (l.status||"").toLowerCase() === "gagal").length;
+      const rows = [
+        { label: "Final",  value: finalCount, cls: "pill-final", initial: "F" },
+        { label: "Draft",  value: draftCount, cls: "pill-draft", initial: "D" },
+        { label: "Gagal",  value: gagalCount, cls: "pill-gagal", initial: "G" },
+      ];
+      miniRight.innerHTML = rows.map(r => `
+        <div class="mini-item">
+          <span class="mini-thumb">${r.initial}</span>
+          <div class="mini-copy">
+            <strong>${r.label}</strong>
+            <small>${r.value} surat</small>
+          </div>
+          <span class="pill ${r.cls}">${r.value}</span>
+        </div>
+      `).join("");
+    })();
+
     /* ====== TABEL ====== */
-    const rowsEl = document.getElementById("rows");
+    const rowsEl   = document.getElementById("rows");
     const searchEl = document.getElementById("search");
     const filterEl = document.getElementById("filterStatus");
 
@@ -791,7 +1022,7 @@
         return `
           <div class="row">
             <div class="row-title">
-              <span class="thumb">${(tpl.nama||"S").charAt(0).toUpperCase()}</span>
+              <span class="thumb">${escapeHtml((tpl.nama||"S").charAt(0).toUpperCase())}</span>
               <div>
                 <strong>${escapeHtml(l.nomor_surat || l.id)}</strong>
                 <small>${escapeHtml(tpl.nama)}</small>
@@ -812,7 +1043,7 @@
     renderRows();
 
     /* ====== PROFILE ====== */
-    const profileButton = document.getElementById("profile-button");
+    const profileButton    = document.getElementById("profile-button");
     const profileContainer = document.getElementById("profile-container");
 
     function toggleProfile() {
@@ -822,12 +1053,23 @@
       pop.hidden = isOpen;
       profileButton.setAttribute("aria-expanded", String(!isOpen));
     }
-    profileButton.addEventListener("click", toggleProfile);
+    profileButton.addEventListener("click", (e) => {
+      e.stopPropagation();
+      toggleProfile();
+    });
+    document.addEventListener("click", (e) => {
+      const pop = document.getElementById("profile-popover");
+      if (!pop || pop.hidden) return;
+      if (!pop.contains(e.target) && !profileButton.contains(e.target)) {
+        pop.hidden = true;
+        profileButton.setAttribute("aria-expanded", "false");
+      }
+    });
 
     function bindProfileActions() {
       document.getElementById("logout-button")?.addEventListener("click", () => {
-        clearAuth();
-        clearSession();
+        if (typeof clearAuth === "function") clearAuth();
+        if (typeof clearSession === "function") clearSession();
         location.href = "login.html";
       });
       document.getElementById("guide-button")?.addEventListener("click", () => {
