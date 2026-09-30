@@ -6,328 +6,448 @@
 <title>Dashboard · Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban</title>
 <link rel="stylesheet" href="style.css">
 <style>
-  /* =========================================================
-<<<<<<< HEAD
-     DASHBOARD — layout referensi (sidebar + main), palet hijau
-     ========================================================= */
-  *{box-sizing:border-box}
-  html,body{margin:0;padding:0}
-  body{
-    background:#f3f7f4;
-    color:var(--ink);
-    font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
-    -webkit-font-smoothing:antialiased;
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: #f3f7f4;
+    color: var(--ink);
+    font-family: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
   }
 
   /* ---------- TOPBAR ---------- */
-  .topbar{
-    position:sticky;top:0;z-index:60;
-    display:flex;align-items:center;gap:18px;
-    padding:12px 26px;
-    background:rgba(255,255,255,.86);
-    backdrop-filter:blur(18px);
-    -webkit-backdrop-filter:blur(18px);
-    border-bottom:1px solid var(--line);
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 12px 26px;
+    background: rgba(255,255,255,.86);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--line);
   }
-  .topbar-brand{
-    display:flex;align-items:center;gap:10px;
-    color:var(--green-dark);
-    font-size:11.5px;font-weight:800;letter-spacing:.12em;
-    text-transform:uppercase;white-space:nowrap;
-  }
-  .topbar-logo{
-    width:36px;height:36px;flex:none;border-radius:11px;
-    border:1px solid var(--line);background:#fff url('Lambang_Kabupaten_Tuban.webp') center/26px 26px no-repeat;
-  }
-  .top-search{
-    flex:1;max-width:340px;
-    display:flex;align-items:center;gap:9px;
-    padding:9px 16px;border-radius:999px;
-    background:#eef4f0;border:1px solid transparent;
-    color:var(--muted);font-size:13px;
-    transition:.2s;
-  }
-  .top-search:focus-within{background:#fff;border-color:var(--green);box-shadow:0 0 0 4px rgba(23,123,92,.1)}
-  .top-search input{
-    flex:1;border:0;background:transparent;outline:0;
-    font:inherit;color:var(--ink);min-width:0;
-  }
-  .top-nav{display:flex;gap:2px;margin:0 auto}
-  .top-nav a{
-    padding:8px 16px;border-radius:999px;
-    font-size:13px;font-weight:700;color:var(--muted);
-    text-decoration:none;transition:.2s;
-  }
-  .top-nav a:hover{color:var(--green-dark);background:var(--mist)}
-  .top-nav a.active{background:var(--green);color:#fff;box-shadow:0 10px 20px -12px rgba(23,123,92,.9)}
-  .top-actions{display:flex;align-items:center;gap:10px}
-
-  .icon-btn{
-    position:relative;
-    width:38px;height:38px;border-radius:50%;
-    display:grid;place-items:center;
-    border:1px solid var(--line);background:#fff;
-    color:var(--muted);cursor:pointer;font-size:14px;
-    transition:.2s;
-  }
-  .icon-btn:hover{color:var(--green-dark);border-color:var(--green)}
-  .icon-btn .dot{
-    position:absolute;top:6px;right:6px;
-    width:8px;height:8px;border-radius:50%;
-    background:#e74c3c;border:2px solid #fff;
-  }
-
-  /* profile */
-  .profile{position:relative}
-  .profile-button{
-    display:inline-flex;align-items:center;gap:8px;
-    padding:4px 14px 4px 4px;
-    border:1px solid var(--line);border-radius:999px;
-    background:#fff;color:var(--ink);
-    font:inherit;font-size:12px;font-weight:700;
-    cursor:pointer;transition:.2s;
-  }
-  .profile-button:hover{border-color:var(--green)}
-  .profile-avatar{
-    width:28px;height:28px;border-radius:50%;
-    display:grid;place-items:center;
-    background:var(--green-dark);color:#fff;
-    font-size:11px;font-weight:800;
-  }
-  .profile-popover{
-    position:absolute;z-index:70;top:calc(100% + 10px);right:0;width:220px;
-    padding:15px;border:1px solid var(--line);border-radius:15px;
-    background:#fff;box-shadow:var(--shadow);
-=======
-     DASHBOARD
-     ========================================================= */
-  .dash { max-width: 1240px; margin: 0 auto; padding: 26px 26px 70px; }
-
-  /* ---------- HEADER ---------- */
-  .dash-top { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 18px; margin-bottom: 22px; }
-  .dash-brand {
-    display: flex; align-items: center; gap: 11px;
+  .topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     color: var(--green-dark);
-    font-size: 11.5px; font-weight: 800; letter-spacing: .14em;
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: .12em;
     text-transform: uppercase;
+    white-space: nowrap;
   }
-  .dash-logo {
-    width: 38px; height: 38px; flex: none; padding: 5px;
-    border: 1px solid var(--line); border-radius: 11px;
+  .topbar-logo {
+    width: 36px;
+    height: 36px;
+    flex: none;
+    padding: 4px;
+    border: 1px solid var(--line);
+    border-radius: 11px;
     background: #fff url('Lambang_Kabupaten_Tuban.webp') center/contain no-repeat;
   }
-  .dash-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .top-nav {
+    display: flex;
+    gap: 2px;
+    margin: 0 auto;
+  }
+  .top-nav a {
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    text-decoration: none;
+    transition: .2s;
+  }
+  .top-nav a:hover { color: var(--green-dark); background: var(--mist); }
+  .top-nav a.active {
+    background: var(--green);
+    color: #fff;
+    box-shadow: 0 10px 20px -12px rgba(23,123,92,.9);
+  }
+  .top-actions { display: flex; align-items: center; gap: 10px; }
 
-  /* ---------- PROFILE ---------- */
   .profile { position: relative; }
   .profile-button {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 4px 13px 4px 4px;
-    border: 1px solid var(--line); border-radius: 999px;
-    background: #fff; color: var(--ink);
-    font: inherit; font-size: 12px; font-weight: 700;
-    cursor: pointer; transition: .2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 14px 4px 4px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--ink);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .2s;
   }
   .profile-button:hover { border-color: var(--green); }
   .profile-avatar {
-    width: 26px; height: 26px; border-radius: 50%;
-    display: grid; place-items: center;
-    background: var(--green-dark); color: #fff;
-    font-size: 10.5px; font-weight: 800;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--green-dark);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
   }
   .profile-popover {
-    position: absolute; z-index: 5; top: calc(100% + 10px); right: 0;
-    width: 210px; padding: 15px;
-    border: 1px solid var(--line); border-radius: 15px;
-    background: #fff; box-shadow: var(--shadow);
->>>>>>> 41a8156 (hero: hapus CTA duplikat, perbesar headline, pisah tanggal)
+    position: absolute;
+    z-index: 70;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 220px;
+    padding: 15px;
+    border: 1px solid var(--line);
+    border-radius: 15px;
+    background: #fff;
+    box-shadow: var(--shadow);
   }
   .profile-popover[hidden] { display: none; }
   .profile-name { margin: 0 0 3px; font-size: 13px; font-weight: 800; }
   .profile-role { margin: 0 0 13px; color: var(--muted); font-size: 11px; line-height: 1.5; }
   .profile-guide, .profile-logout {
-    width: 100%; padding: 9px 11px; border-radius: 9px;
-    font: inherit; font-size: 12px; font-weight: 700;
-    cursor: pointer; text-align: left; transition: .2s;
+    width: 100%;
+    padding: 9px 11px;
+    border-radius: 9px;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: left;
+    transition: .2s;
   }
   .profile-guide { margin: 0 0 7px; border: 0; background: var(--mist); color: var(--green-dark); }
   .profile-guide:hover { background: var(--lime); }
   .profile-logout { border: 1px solid var(--line); background: transparent; color: var(--ink); }
   .profile-logout:hover { background: var(--mist); }
 
-<<<<<<< HEAD
-  /* ---------- BUTTONS ---------- */
-  .btn{
-    display:inline-flex;align-items:center;gap:9px;
-    padding:11px 20px;border-radius:999px;
-    font-size:13px;font-weight:700;font-family:inherit;
-    cursor:pointer;border:1px solid transparent;
-    text-decoration:none;transition:.25s cubic-bezier(.4,0,.2,1);
-=======
-  /* ---------- TOMBOL ---------- */
-  .btn {
-    display: inline-flex; align-items: center; gap: 9px;
-    padding: 11px 20px; border-radius: 10px;
-    font-size: 13.5px; font-weight: 700; font-family: inherit;
-    cursor: pointer; border: 1px solid transparent;
-    text-decoration: none; transition: .22s cubic-bezier(.4, 0, .2, 1);
->>>>>>> 41a8156 (hero: hapus CTA duplikat, perbesar headline, pisah tanggal)
-  }
   .btn-primary {
-    background: var(--green); color: #fff;
-    box-shadow: 0 10px 22px -10px rgba(23,123,92,.7);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 18px;
+    border-radius: 999px;
+    font-size: 12.5px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    border: 0;
+    background: var(--green);
+    color: #fff;
+    text-decoration: none;
+    box-shadow: 0 14px 28px -14px rgba(23,123,92,.8);
+    transition: .25s cubic-bezier(.4,0,.2,1);
   }
-<<<<<<< HEAD
-  .btn-primary:hover{background:var(--green-dark);transform:translateY(-1px)}
-  .btn-light{
-    background:rgba(255,255,255,.18);color:#fff;
-    border-color:rgba(255,255,255,.32);
-    backdrop-filter:blur(6px);
-  }
-  .btn-light:hover{background:rgba(255,255,255,.28)}
-  .btn-ghost{
-    background:#fff;border-color:var(--line);color:var(--green-dark);
-  }
-  .btn-ghost:hover{border-color:var(--green);background:var(--mist)}
-  .btn-sm{padding:8px 14px;font-size:12px}
-=======
   .btn-primary:hover { background: var(--green-dark); transform: translateY(-1px); }
->>>>>>> 41a8156 (hero: hapus CTA duplikat, perbesar headline, pisah tanggal)
 
-  /* =========================================================
-     LAYOUT
-     ========================================================= */
-<<<<<<< HEAD
-  .dash{
-    max-width:1340px;margin:0 auto;
-    padding:22px 26px 70px;
-    display:grid;
-    grid-template-columns:290px 1fr;
-    gap:18px;
-    align-items:start;
+  /* ---------- LAYOUT ---------- */
+  .dash {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 22px 26px 70px;
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 18px;
+    align-items: start;
   }
 
-  /* ---------- SIDEBAR KIRI ---------- */
-  .side-col{display:flex;flex-direction:column;gap:16px;position:sticky;top:78px}
-  .side-card{
-    background:#fff;border:1px solid var(--line);
-    border-radius:22px;padding:18px;
-    box-shadow:0 16px 40px -30px rgba(24,69,51,.35);
+  /* ---------- SIDEBAR ---------- */
+  .side-col {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    position: sticky;
+    top: 78px;
   }
-  .side-head{
-    display:flex;align-items:center;justify-content:space-between;
-    gap:10px;margin-bottom:14px;
+  .side-card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: 0 16px 40px -30px rgba(24,69,51,.35);
   }
-  .side-head h3{
-    margin:0;font-family:'Manrope',sans-serif;
-    font-size:13px;font-weight:800;letter-spacing:-.01em;
+  .side-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 14px;
   }
-  .side-head a{
-    font-size:11px;font-weight:800;color:var(--green);
-    text-decoration:none;letter-spacing:.02em;
+  .side-head h3 {
+    margin: 0;
+    font-family: 'Manrope', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--ink);
   }
-  .side-head a:hover{color:var(--green-dark)}
+  .side-head a {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--green);
+    text-decoration: none;
+  }
+  .side-head a:hover { color: var(--green-dark); }
 
-  /* kartu template bergaya "featured" */
-  .tpl-feature{
-    position:relative;display:block;
-    border-radius:16px;overflow:hidden;
-    height:118px;padding:14px;
-    color:#fff;text-decoration:none;
-    margin-bottom:10px;
-    background:linear-gradient(150deg,var(--green-dark) 0%,var(--green) 100%);
-    transition:.3s cubic-bezier(.4,0,.2,1);
-    isolation:isolate;
+  .activity-list { display: grid; gap: 2px; }
+  .activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 0;
+    border-top: 1px solid var(--line);
+    min-width: 0;
   }
-  .tpl-feature::after{
-    content:"";position:absolute;right:-40px;bottom:-50px;
-    width:140px;height:140px;border-radius:50%;
-    background:radial-gradient(closest-side, rgba(214,239,189,.45), transparent 70%);
-    z-index:0;
+  .activity-item:first-child { border-top: 0; padding-top: 2px; }
+  .activity-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    flex: none;
+    display: grid;
+    place-items: center;
+    background: var(--lime);
+    color: var(--green-dark);
+    font-size: 13px;
+    font-weight: 800;
   }
-  .tpl-feature:hover{transform:translateY(-2px);box-shadow:0 20px 34px -20px rgba(15,101,74,.7)}
-  .tpl-feature strong{
-    position:relative;z-index:1;
-    display:block;font-size:13.5px;font-weight:800;line-height:1.3;
-    margin-top:auto;
+  .activity-copy { min-width: 0; flex: 1; }
+  .activity-copy strong {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
-  .tpl-feature small{
-    position:relative;z-index:1;
-    display:block;font-size:10.5px;opacity:.85;margin-top:4px;
+  .activity-copy small {
+    display: block;
+    margin-top: 2px;
+    font-size: 10.5px;
+    color: var(--muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
-  .tpl-feature .badge{
-    position:relative;z-index:1;
-    display:inline-block;margin-bottom:auto;
-    padding:4px 9px;border-radius:999px;
-    background:rgba(255,255,255,.22);backdrop-filter:blur(6px);
-    font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+  .activity-time {
+    font-size: 10.5px;
+    color: var(--muted);
+    font-weight: 700;
+    white-space: nowrap;
+    flex: none;
+    margin-top: 3px;
   }
-  .tpl-feature .play{
-    position:absolute;right:12px;bottom:12px;z-index:1;
-    width:30px;height:30px;border-radius:50%;
-    background:#fff;color:var(--green-dark);
-    display:grid;place-items:center;font-size:11px;font-weight:800;
+  .activity-more {
+    display: inline-flex;
+    margin-top: 12px;
+    font-size: 11.5px;
+    font-weight: 800;
+    color: var(--green);
+    text-decoration: none;
   }
-  .tpl-feature .inner{position:relative;z-index:1;display:flex;flex-direction:column;height:100%}
+  .activity-more:hover { color: var(--green-dark); }
 
-  /* list aktivitas mini */
-  .mini-list{display:grid;gap:2px}
-  .mini-item{
-    display:flex;align-items:center;gap:12px;
-    padding:10px 0;border-top:1px solid var(--line);min-width:0;
+  .cal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
   }
-  .mini-item:first-child{border-top:0;padding-top:2px}
-  .mini-thumb{
-    width:36px;height:36px;border-radius:10px;flex:none;
-    display:grid;place-items:center;
-    background:var(--mist);color:var(--green-dark);
-    font-size:12px;font-weight:800;
+  .cal-month {
+    font-family: 'Manrope', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--ink);
   }
-  .mini-copy{min-width:0;flex:1}
-  .mini-copy strong{
-    display:block;font-size:12.5px;font-weight:700;
-    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  .cal-nav { display: flex; gap: 2px; }
+  .cal-nav button {
+    width: 24px;
+    height: 24px;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    background: #fff;
+    color: var(--muted);
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: .18s;
   }
-  .mini-copy small{
-    display:block;margin-top:2px;font-size:10.5px;color:var(--muted);
-    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  .cal-nav button:hover {
+    color: var(--green-dark);
+    border-color: var(--green);
+    background: var(--mist);
+  }
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 3px;
+  }
+  .cal-dow {
+    padding: 4px 0 6px;
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--muted);
+    text-align: center;
+  }
+  .cal-day {
+    position: relative;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1/1;
+    border-radius: 8px;
+    color: var(--ink);
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .cal-day.is-out { color: #c4cec8; }
+  .cal-day.is-today {
+    background: var(--green-dark);
+    color: #fff;
+    font-weight: 800;
+  }
+  .cal-day.has-data { color: var(--green-dark); }
+  .cal-day.has-data::after {
+    content: "";
+    position: absolute;
+    bottom: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--green);
+  }
+  .cal-day.is-today.has-data::after { background: #fff; }
+  .cal-legend {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--line);
+    font-size: 10.5px;
+    color: var(--muted);
+    font-weight: 700;
+  }
+  .cal-legend-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    flex: none;
   }
 
-  .pill{
-    display:inline-flex;align-items:center;
-    padding:4px 9px;border-radius:999px;
-    font-size:9.5px;font-weight:800;
-    letter-spacing:.06em;text-transform:uppercase;
+  .topj-list { display: grid; gap: 10px; }
+  .topj-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 4px 8px;
+    align-items: baseline;
   }
-  .pill-final{background:#e6f4ec;color:var(--green-dark)}
-  .pill-draft{background:#fdf1d6;color:#a86b12}
-  .pill-gagal{background:#fbe6e6;color:#a33d31}
+  .topj-name {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--ink);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .topj-count {
+    font-family: 'Manrope', sans-serif;
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--green-dark);
+  }
+  .topj-bar {
+    grid-column: 1 / -1;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--mist);
+    overflow: hidden;
+  }
+  .topj-bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--green-dark), var(--green));
+    transition: width .7s cubic-bezier(.4,0,.2,1);
+  }
+  .topj-empty { margin: 0; font-size: 11.5px; color: var(--muted); }
 
-  /* ---------- MAIN COLUMN ---------- */
-  .main-col{display:flex;flex-direction:column;gap:16px;min-width:0}
+  .stat-month-grid { display: grid; gap: 12px; }
+  .stat-month-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--mist);
+    border-radius: 11px;
+  }
+  .stat-month-label {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .stat-month-value {
+    font-family: 'Manrope', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .stat-month-value small {
+    font-size: 10.5px;
+    color: var(--muted);
+    margin-left: 4px;
+  }
+  .stat-month-progress-bar {
+    height: 6px;
+    border-radius: 999px;
+    background: var(--mist);
+    overflow: hidden;
+    margin-top: 8px;
+  }
+  .stat-month-progress-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--green-dark), var(--green));
+    transition: width .7s cubic-bezier(.4,0,.2,1);
+  }
+  .stat-month-progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--muted);
+  }
 
-  /* HERO */
-  .hero{
-    position:relative;
-    border-radius:26px;
-    padding:30px;
-    min-height:330px;
-    display:grid;
-    grid-template-columns:1.35fr .65fr;
-    gap:24px;
-    color:#f4fff9;
-    overflow:hidden;
-    isolation:isolate;
-    box-shadow:0 30px 70px -34px rgba(15,101,74,.7);
-=======
+  /* ---------- MAIN ---------- */
+  .main-col { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+
   .hero {
-    position: relative; border-radius: 26px; padding: 34px;
-    min-height: 420px;
-    display: grid; grid-template-columns: 1.25fr .75fr; gap: 24px;
-    color: #f4fff9; overflow: hidden; margin-bottom: 20px;
+    position: relative;
+    border-radius: 26px;
+    padding: 34px;
+    min-height: 400px;
+    display: grid;
+    grid-template-columns: 1.25fr .75fr;
+    gap: 24px;
+    color: #f4fff9;
+    overflow: hidden;
     isolation: isolate;
     box-shadow: 0 30px 70px -34px rgba(15,101,74,.7);
->>>>>>> 41a8156 (hero: hapus CTA duplikat, perbesar headline, pisah tanggal)
     background:
       linear-gradient(100deg,
         rgba(9,58,41,.94) 0%,
@@ -336,222 +456,113 @@
       radial-gradient(120% 90% at 100% 0%, rgba(214,239,189,.25), transparent 55%),
       url('images.jpg') center/cover no-repeat;
   }
-<<<<<<< HEAD
-  .hero::before{
-    content:"";position:absolute;left:-130px;bottom:-160px;
-    width:340px;height:340px;border-radius:50%;
-    border:1px solid rgba(255,255,255,.14);
-    box-shadow:
-      0 0 0 32px rgba(255,255,255,.04),
-      0 0 0 64px rgba(255,255,255,.03);
-    pointer-events:none;z-index:0;
-  }
-  .hero::after{
-    content:"";position:absolute;right:-120px;top:-140px;
-    width:520px;height:520px;border-radius:50%;
-    background:radial-gradient(closest-side, rgba(214,239,189,.35), transparent 70%);
-    pointer-events:none;z-index:0;
-  }
-  .hero-left{
-    position:relative;z-index:2;
-    display:flex;flex-direction:column;min-width:0;
-  }
-  .hero-eyebrow{
-    font-size:10px;font-weight:800;letter-spacing:.2em;
-    text-transform:uppercase;
-    color:rgba(244,255,249,.78);
-  }
-  .hero-headline{
-    font-family:'Manrope',sans-serif;
-    font-size:clamp(28px,3.4vw,42px);
-    line-height:1.05;letter-spacing:-.04em;
-    font-weight:800;margin:16px 0 12px;
-    max-width:440px;
-    text-shadow:0 2px 24px rgba(0,0,0,.35);
-  }
-  .hero-sub{
-    margin:0 0 22px;max-width:440px;
-    color:rgba(244,255,249,.88);
-    font-size:13.5px;line-height:1.6;
-    text-shadow:0 1px 12px rgba(0,0,0,.3);
-  }
-  .hero-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:auto}
-
-  .hero-right{
-    position:relative;z-index:2;
-    display:grid;place-items:center;min-height:240px;
-  }
-  .hero-emblem{
-    position:relative;
-    width:min(240px,90%);
-    aspect-ratio:1/1;
-    display:grid;place-items:center;
-  }
-  .hero-emblem::before,
-  .hero-emblem::after{
-    content:"";position:absolute;inset:0;
-    border-radius:50%;
-    border:1px solid rgba(255,255,255,.22);
-    pointer-events:none;
-  }
-  .hero-emblem::before{
-    inset:-22px;border-color:rgba(255,255,255,.16);
-    animation:spin 40s linear infinite;
-  }
-  .hero-emblem::after{
-    inset:-46px;border-style:dashed;border-color:rgba(255,255,255,.12);
-    animation:spin 60s linear infinite reverse;
-  }
-  @keyframes spin{to{transform:rotate(360deg)}}
-  .hero-emblem img{
-    position:relative;z-index:1;
-    width:78%;height:78%;object-fit:contain;
-    filter:drop-shadow(0 26px 40px rgba(6,50,35,.55));
-    animation:float 6s ease-in-out infinite;
-  }
-  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-  .hero-emblem-glow{
-    position:absolute;inset:6%;border-radius:50%;
-    background:radial-gradient(closest-side, rgba(214,239,189,.45), transparent 70%);
-    filter:blur(14px);z-index:0;pointer-events:none;
-  }
-
-  /* KPI ROW — 4 kartu berwarna seperti kartu siswa di referensi */
-  .kpi-row{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:14px;
-  }
-  .kpi-card{
-    position:relative;overflow:hidden;
-    border-radius:20px;padding:18px;
-    color:#fff;isolation:isolate;
-    min-height:132px;
-    display:flex;flex-direction:column;justify-content:space-between;
-    box-shadow:0 20px 40px -28px rgba(15,101,74,.6);
-    transition:.3s cubic-bezier(.4,0,.2,1);
-    border:0;
-  }
-  .kpi-card:hover{transform:translateY(-3px)}
-  .kpi-card::after{
-    content:"";position:absolute;right:-30px;bottom:-40px;
-    width:120px;height:120px;border-radius:50%;
-    background:radial-gradient(closest-side, rgba(255,255,255,.22), transparent 70%);
-    z-index:0;
-  }
-  .kpi-card-1{background:linear-gradient(150deg,#0f654a 0%,#177b5c 100%)}
-  .kpi-card-2{background:linear-gradient(150deg,#1a8a66 0%,#2aa47a 100%)}
-  .kpi-card-3{background:linear-gradient(150deg,#3ea884 0%,#5cc39a 100%)}
-  .kpi-card-4{background:linear-gradient(150deg,#2c7d9a 0%,#3f97b5 100%)}
-  .kpi-top{
-    position:relative;z-index:1;
-    display:flex;align-items:center;justify-content:space-between;
-  }
-  .kpi-icon{
-    width:34px;height:34px;border-radius:11px;
-    display:grid;place-items:center;
-    background:rgba(255,255,255,.22);backdrop-filter:blur(6px);
-    font-size:14px;font-weight:800;
-  }
-  .kpi-arrow{
-    width:28px;height:28px;border-radius:50%;
-    display:grid;place-items:center;
-    background:rgba(255,255,255,.22);backdrop-filter:blur(6px);
-    font-size:12px;font-weight:800;
-  }
-  .kpi-value{
-    position:relative;z-index:1;
-    font-family:'Manrope',sans-serif;
-    font-size:30px;font-weight:800;letter-spacing:-.03em;
-    line-height:1;margin-top:14px;
-  }
-  .kpi-label{
-    position:relative;z-index:1;
-    font-size:11px;font-weight:700;
-    margin-top:6px;color:rgba(255,255,255,.85);
-  }
-
-  /* MID GRID — chart + recent */
-  .mid-grid{
-    display:grid;
-    grid-template-columns:1.4fr .6fr;
-    gap:16px;
-  }
-  .panel{
-    border-radius:22px;padding:20px 22px;
-    background:#fff;border:1px solid var(--line);
-    box-shadow:0 16px 40px -30px rgba(24,69,51,.4);
-    display:flex;flex-direction:column;min-height:0;
-=======
   .hero::before {
-    content: ""; position: absolute;
-    left: -130px; bottom: -160px;
-    width: 340px; height: 340px; border-radius: 50%;
+    content: "";
+    position: absolute;
+    left: -130px;
+    bottom: -160px;
+    width: 340px;
+    height: 340px;
+    border-radius: 50%;
     border: 1px solid rgba(255,255,255,.14);
     box-shadow: 0 0 0 32px rgba(255,255,255,.04), 0 0 0 64px rgba(255,255,255,.03);
-    pointer-events: none; z-index: 0;
+    pointer-events: none;
+    z-index: 0;
   }
   .hero::after {
-    content: ""; position: absolute;
-    right: -120px; top: -140px;
-    width: 520px; height: 520px; border-radius: 50%;
+    content: "";
+    position: absolute;
+    right: -120px;
+    top: -140px;
+    width: 520px;
+    height: 520px;
+    border-radius: 50%;
     background: radial-gradient(closest-side, rgba(214,239,189,.35), transparent 70%);
-    pointer-events: none; z-index: 0;
+    pointer-events: none;
+    z-index: 0;
   }
   .hero-left {
-    position: relative; z-index: 2;
-    display: flex; flex-direction: column; justify-content: center;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     min-width: 0;
     gap: 4px;
   }
   .hero-eyebrow {
-    font-size: 10px; font-weight: 800; letter-spacing: .2em;
-    text-transform: uppercase; color: rgba(244,255,249,.78);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: rgba(244,255,249,.78);
     margin-bottom: 18px;
   }
   .hero-headline {
     font-family: 'Manrope', sans-serif;
-    font-size: clamp(34px, 4vw, 52px);
-    line-height: 1.04; letter-spacing: -.045em;
-    font-weight: 800; margin: 0 0 18px;
+    font-size: clamp(32px, 3.6vw, 48px);
+    line-height: 1.04;
+    letter-spacing: -.045em;
+    font-weight: 800;
+    margin: 0 0 18px;
     max-width: 480px;
     text-shadow: 0 2px 24px rgba(0,0,0,.35);
   }
   .hero-date {
     margin: 0 0 8px;
     color: rgba(244,255,249,.92);
-    font-size: 14px; font-weight: 700;
-    letter-spacing: .01em;
+    font-size: 14px;
+    font-weight: 700;
     text-shadow: 0 1px 12px rgba(0,0,0,.3);
   }
   .hero-sub {
     margin: 0;
     max-width: 460px;
     color: rgba(244,255,249,.82);
-    font-size: 14px; line-height: 1.6;
+    font-size: 14px;
+    line-height: 1.6;
     text-shadow: 0 1px 12px rgba(0,0,0,.3);
   }
-
-  .hero-right { position: relative; z-index: 2; display: grid; place-items: center; min-height: 240px; }
-  .hero-emblem { position: relative; width: min(260px, 90%); aspect-ratio: 1/1; display: grid; place-items: center; }
+  .hero-right {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    min-height: 220px;
+  }
+  .hero-emblem {
+    position: relative;
+    width: min(220px, 90%);
+    aspect-ratio: 1/1;
+    display: grid;
+    place-items: center;
+  }
   .hero-emblem::before,
   .hero-emblem::after {
-    content: ""; position: absolute; inset: 0; border-radius: 50%;
-    border: 1px solid rgba(255,255,255,.22); pointer-events: none;
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.22);
   }
   .hero-emblem::before {
-    inset: -22px; border-color: rgba(255,255,255,.16);
+    inset: -22px;
+    border-color: rgba(255,255,255,.16);
     animation: spin 40s linear infinite;
   }
   .hero-emblem::after {
-    inset: -46px; border-style: dashed;
+    inset: -46px;
+    border-style: dashed;
     border-color: rgba(255,255,255,.12);
     animation: spin 60s linear infinite reverse;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
   .hero-emblem img {
-    position: relative; z-index: 1;
-    width: 78%; height: 78%; object-fit: contain;
+    position: relative;
+    z-index: 1;
+    width: 78%;
+    height: 78%;
+    object-fit: contain;
     filter: drop-shadow(0 26px 40px rgba(6,50,35,.55));
     animation: float 6s ease-in-out infinite;
   }
@@ -560,250 +571,385 @@
     50% { transform: translateY(-8px); }
   }
   .hero-emblem-glow {
-    position: absolute; inset: 6%; border-radius: 50%;
+    position: absolute;
+    inset: 6%;
+    border-radius: 50%;
     background: radial-gradient(closest-side, rgba(214,239,189,.45), transparent 70%);
-    filter: blur(14px); z-index: 0; pointer-events: none;
+    filter: blur(14px);
+    z-index: 0;
   }
-
   .hero-kpis {
-    grid-column: 1 / -1; position: relative; z-index: 2;
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
-    margin-top: 32px;
+    grid-column: 1 / -1;
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 30px;
     align-self: end;
   }
   .kpi {
-    padding: 14px 16px; border-radius: 16px;
+    padding: 14px 16px;
+    border-radius: 16px;
     background: rgba(255,255,255,.14);
     border: 1px solid rgba(255,255,255,.2);
     backdrop-filter: blur(12px);
   }
   .kpi-value {
     font-family: 'Manrope', sans-serif;
-    font-size: 22px; font-weight: 800; letter-spacing: -.03em;
-    color: #fff; line-height: 1;
+    font-size: 22px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
   }
   .kpi-label {
-    display: flex; align-items: center; gap: 6px; margin-top: 6px;
-    font-size: 10.5px; font-weight: 700; color: rgba(244,255,249,.82);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: rgba(244,255,249,.82);
   }
-  .kpi-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--lime); flex: none; }
+  .kpi-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--lime);
+    flex: none;
+  }
 
-  /* =========================================================
-     CHART PANEL
-     ========================================================= */
+  /* CHART */
   .chart-panel {
-    border-radius: 22px; padding: 24px 26px 22px;
-    background: #fff; border: 1px solid var(--line);
+    border-radius: 22px;
+    padding: 24px 26px 22px;
+    background: #fff;
+    border: 1px solid var(--line);
     box-shadow: 0 16px 40px -30px rgba(24,69,51,.4);
-    margin-bottom: 20px;
   }
   .chart-header {
-    display: flex; justify-content: space-between; align-items: flex-start;
-    gap: 16px; flex-wrap: wrap; margin-bottom: 16px;
->>>>>>> 41a8156 (hero: hapus CTA duplikat, perbesar headline, pisah tanggal)
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
   }
   .chart-kicker {
-    display: inline-block; color: var(--green);
-    font-size: 10.5px; font-weight: 800; letter-spacing: .14em;
-    text-transform: uppercase; margin-bottom: 4px;
+    display: inline-block;
+    color: var(--green);
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
   }
   .chart-title {
-    margin: 0; font-family: 'Manrope', sans-serif;
-    font-size: 18px; font-weight: 800; letter-spacing: -.03em; color: var(--ink);
+    margin: 0;
+    font-family: 'Manrope', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--ink);
   }
-<<<<<<< HEAD
-  .panel-head a{
-    font-size:12px;font-weight:700;color:var(--green);text-decoration:none;
-  }
-  .panel-badge{
-    padding:5px 10px;border-radius:999px;
-    background:var(--ink);color:#fff;
-    font-size:10.5px;font-weight:800;
-  }
-  .chart{
-    flex:1;min-height:180px;
-    display:flex;flex-direction:column;
-    position:relative;padding-bottom:22px;
-  }
-  .chart svg{width:100%;flex:1;display:block;overflow:visible}
-  .chart-x{
-    position:absolute;left:0;right:0;bottom:0;
-    display:flex;justify-content:space-between;
-    font-size:10px;color:var(--muted);font-weight:700;
-  }
-
-  /* FEATURES — 3 kartu menu */
-  .section-head{
-    display:flex;align-items:flex-end;justify-content:space-between;
-    gap:14px;margin:6px 0 0;flex-wrap:wrap;
-  }
-  .section-head h2{
-    margin:0;font-family:'Manrope',sans-serif;
-    font-size:17px;font-weight:800;letter-spacing:-.03em;
-  }
-  .section-head p{margin:4px 0 0;color:var(--muted);font-size:12.5px}
-
-  .features{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:14px;
-  }
-  .feature{
-    display:flex;flex-direction:column;gap:14px;
-    padding:20px;border:1px solid var(--line);
-    border-radius:20px;background:#fff;
-    text-decoration:none;color:inherit;
-    transition:.3s cubic-bezier(.4,0,.2,1);
-    position:relative;overflow:hidden;
-  }
-  .feature::before{
-    content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
-    background:var(--green);transform:scaleY(0);
-    transition:transform .3s cubic-bezier(.4,0,.2,1);
-  }
-  .feature:hover{
-    transform:translateY(-3px);border-color:transparent;
-    box-shadow:0 22px 44px -28px rgba(24,69,51,.55);
-  }
-  .feature:hover::before{transform:scaleY(1)}
-  .feature-top{
-    display:flex;align-items:center;justify-content:space-between;
-  }
-  .feature-icon{
-    width:46px;height:46px;flex:none;border-radius:14px;
-    display:grid;place-items:center;
-    background:var(--mist);color:var(--green-dark);
-    font-weight:800;font-size:14px;transition:.25s;
-  }
-  .feature:hover .feature-icon{background:var(--lime);transform:rotate(-4deg)}
-  .feature-arrow{
-    width:30px;height:30px;border-radius:50%;
-    display:grid;place-items:center;
-    color:var(--green-dark);background:var(--mist);
-    font-size:12px;font-weight:800;transition:.25s;
-  }
-  .feature:hover .feature-arrow{
-    background:var(--green-dark);color:#fff;transform:translateX(3px);
-=======
   .chart-sub {
-    margin: 5px 0 0; color: var(--muted);
-    font-size: 12.5px; line-height: 1.5; max-width: 460px;
+    margin: 5px 0 0;
+    color: var(--muted);
+    font-size: 12.5px;
+    line-height: 1.5;
+    max-width: 460px;
   }
-  .chart-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-
   .chart-tabs {
-    display: inline-flex; gap: 4px; padding: 4px;
-    border: 1px solid var(--line); border-radius: 11px;
+    display: inline-flex;
+    gap: 4px;
+    padding: 4px;
+    border: 1px solid var(--line);
+    border-radius: 11px;
     background: var(--mist);
   }
   .chart-tab {
-    padding: 8px 16px; border: 0; border-radius: 8px;
-    background: transparent; color: var(--muted);
-    font: inherit; font-size: 12.5px; font-weight: 700;
-    cursor: pointer; transition: .18s;
+    padding: 8px 16px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    min-width: 64px;
   }
-  .chart-tab:hover { color: var(--ink); }
+  .chart-tab small { font-size: 9.5px; color: var(--muted); }
   .chart-tab.is-active {
-    background: var(--paper); color: var(--green-dark);
+    background: var(--paper);
+    color: var(--green-dark);
     box-shadow: 0 2px 8px rgba(24,69,51,.1);
->>>>>>> 41a8156 (hero: hapus CTA duplikat, perbesar headline, pisah tanggal)
   }
-  .feature-copy h3{
-    margin:0 0 4px;font-family:'Manrope',sans-serif;
-    font-size:15px;font-weight:800;letter-spacing:-.02em;
-  }
-  .feature-copy p{margin:0;color:var(--muted);font-size:12.5px;line-height:1.5}
+  .chart-tab.is-active small { color: var(--green); }
 
-<<<<<<< HEAD
-  /* TABLE PANEL */
-  .table-panel{
-    border-radius:22px;padding:22px 24px 12px;
-    background:#fff;border:1px solid var(--line);
-    box-shadow:0 16px 40px -30px rgba(24,69,51,.4);
-=======
-  .chart-legend { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .chart-summary {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 14px 16px;
+    background: var(--mist);
+    border-radius: 12px;
+    margin-bottom: 16px;
+  }
+  .chart-summary-label {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .chart-summary-value {
+    font-family: 'Manrope', sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .chart-summary-value small {
+    font-size: 12px;
+    color: var(--muted);
+    margin-left: 4px;
+  }
+  .chart-summary-delta {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 800;
+  }
+  .chart-summary-delta.up { background: #e6f4ec; color: #0d6047; }
+  .chart-summary-delta.down { background: #fbe6e6; color: #a33d31; }
+  .chart-summary-delta.flat { background: var(--paper); color: var(--muted); }
+  .chart-summary-delta.new { background: #eef4fd; color: #1e40af; }
+  .chart-summary-period {
+    margin-left: auto;
+    color: var(--muted);
+    font-size: 11.5px;
+    font-weight: 700;
+  }
+
+  .chart-legend {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
   .legend-chip {
-    display: inline-flex; align-items: center; gap: 7px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
     padding: 6px 12px 6px 9px;
-    border: 1px solid var(--line); border-radius: 999px;
-    background: #fff; color: var(--ink);
-    font-size: 12px; font-weight: 700;
-    cursor: pointer; transition: .18s;
->>>>>>> 41a8156 (hero: hapus CTA duplikat, perbesar headline, pisah tanggal)
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--ink);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .18s;
   }
   .legend-chip:hover { border-color: #b9d2c4; background: var(--mist); }
   .legend-chip.is-off { opacity: .45; }
-  .legend-chip-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .legend-chip-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
 
-  .chart-canvas { position: relative; width: 100%; height: 320px; }
-  .chart-canvas svg { width: 100%; height: 100%; display: block; overflow: visible; }
+  .chart-canvas {
+    position: relative;
+    width: 100%;
+    height: 320px;
+  }
+  .chart-canvas svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    overflow: visible;
+  }
   .chart-canvas .grid-line { stroke: #eef3f0; stroke-width: 1; }
   .chart-canvas .grid-line-y { stroke: #eef3f0; stroke-width: 1; stroke-dasharray: 3 4; }
   .chart-canvas .axis-label {
     font-family: 'DM Sans', sans-serif;
-    font-size: 10px; fill: var(--muted); font-weight: 700;
+    font-size: 10px;
+    fill: var(--muted);
+    font-weight: 700;
   }
   .chart-canvas .series-line {
-    fill: none; stroke-width: 2.2;
-    stroke-linecap: round; stroke-linejoin: round;
+    fill: none;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
-  .chart-canvas .series-dot { stroke: #fff; stroke-width: 2; transition: r .2s; }
+  .chart-canvas .series-dot { stroke: #fff; stroke-width: 2; }
   .chart-canvas .series-halo { opacity: .22; }
   .chart-canvas .series-label {
     font-family: 'DM Sans', sans-serif;
-    font-size: 11px; font-weight: 800; fill: var(--ink);
+    font-size: 11px;
+    font-weight: 800;
+    fill: var(--ink);
   }
   .chart-canvas .x-label {
     font-family: 'DM Sans', sans-serif;
-    font-size: 10.5px; fill: var(--muted); font-weight: 700;
+    font-size: 10.5px;
+    fill: var(--muted);
+    font-weight: 700;
     text-anchor: middle;
   }
   .chart-canvas .x-label.is-current { fill: var(--green-dark); }
 
+  .hover-col { cursor: crosshair; }
+  .hover-col .hover-line {
+    opacity: 0;
+    transition: opacity .15s;
+    stroke: #b9d2c4;
+    stroke-width: 1;
+    stroke-dasharray: 3 3;
+  }
+  .hover-col:hover .hover-line { opacity: 1; }
+  .hover-col:hover .hover-hit { fill: rgba(23,123,92,.05); }
+
+  .chart-tooltip {
+    position: absolute;
+    z-index: 10;
+    min-width: 180px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: #fff;
+    border: 1px solid var(--line);
+    box-shadow: 0 16px 40px -20px rgba(24,69,51,.4);
+    color: var(--ink);
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(-50%, -110%);
+    transition: opacity .15s, transform .15s;
+  }
+  .chart-tooltip.is-visible {
+    opacity: 1;
+    transform: translate(-50%, -115%);
+  }
+  .chart-tooltip-date {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .chart-tooltip-list { display: grid; gap: 5px; }
+  .chart-tooltip-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+  }
+  .chart-tooltip-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .chart-tooltip-name {
+    flex: 1;
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 130px;
+  }
+  .chart-tooltip-value {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    color: var(--green-dark);
+  }
+  .chart-tooltip-total {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .chart-tooltip-total strong {
+    font-family: 'Manrope', sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--ink);
+  }
+
   .chart-empty {
-    margin: 0; padding: 40px 20px;
-    text-align: center; color: var(--muted); font-size: 13.5px;
-    border: 1px dashed var(--line); border-radius: 14px;
+    margin: 0;
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13.5px;
+    border: 1px dashed var(--line);
+    border-radius: 14px;
   }
   .chart-empty[hidden] { display: none; }
 
-  /* =========================================================
-     STAT PANEL
-     ========================================================= */
+  /* STAT PANEL */
   .stat-panel {
-    border-radius: 22px; padding: 24px 26px 26px;
-    background: #fff; border: 1px solid var(--line);
+    border-radius: 22px;
+    padding: 24px 26px 26px;
+    background: #fff;
+    border: 1px solid var(--line);
     box-shadow: 0 16px 40px -30px rgba(24,69,51,.4);
   }
   .stat-panel-head {
-    display: flex; justify-content: space-between; align-items: baseline;
-    gap: 12px; flex-wrap: wrap; margin-bottom: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
   }
   .stat-panel-head h2 {
-    margin: 0; font-family: 'Manrope', sans-serif;
-    font-size: 16px; font-weight: 800; letter-spacing: -.03em; color: var(--ink);
+    margin: 0;
+    font-family: 'Manrope', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--ink);
   }
   .stat-panel-sub { color: var(--muted); font-size: 12px; font-weight: 700; }
-
   .stat-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 12px;
   }
   .stat-card {
-    position: relative; padding: 16px 18px 15px;
-    border: 1px solid var(--line); border-radius: 14px;
-    background: #fff; transition: .2s;
+    padding: 16px 18px 15px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: #fff;
+    transition: .2s;
   }
   .stat-card:hover {
     border-color: #b9d2c4;
     box-shadow: 0 12px 24px -20px rgba(24,69,51,.5);
   }
   .stat-card-title {
-    display: block;
-    font-size: 12.5px; font-weight: 700; color: var(--muted);
-    letter-spacing: .02em; line-height: 1.4;
-    min-height: 34px; margin-bottom: 10px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--muted);
+    line-height: 1.4;
+    min-height: 34px;
+    margin-bottom: 10px;
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -811,17 +957,28 @@
   }
   .stat-card-value {
     font-family: 'Manrope', sans-serif;
-    font-size: 30px; font-weight: 800; letter-spacing: -.04em;
-    color: var(--ink); line-height: 1; margin-bottom: 8px;
+    font-size: 30px;
+    font-weight: 800;
+    color: var(--ink);
+    line-height: 1;
+    margin-bottom: 8px;
   }
   .stat-card-meta {
-    display: flex; align-items: center; gap: 8px;
-    font-size: 11px; color: var(--muted); font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 700;
   }
   .trend {
-    display: inline-flex; align-items: center; gap: 3px;
-    padding: 3px 8px; border-radius: 999px;
-    font-size: 10.5px; font-weight: 800; letter-spacing: .02em;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 10.5px;
+    font-weight: 800;
   }
   .trend-up { background: #e6f4ec; color: #0d6047; }
   .trend-down { background: #fbe6e6; color: #a33d31; }
@@ -830,42 +987,29 @@
 
   .stat-empty {
     grid-column: 1 / -1;
-    padding: 30px 20px; text-align: center;
-    color: var(--muted); font-size: 13.5px;
-    border: 1px dashed var(--line); border-radius: 14px;
+    padding: 30px 20px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13.5px;
+    border: 1px dashed var(--line);
+    border-radius: 14px;
   }
 
-  /* =========================================================
-     RESPONSIVE
-     ========================================================= */
-<<<<<<< HEAD
-  @media (max-width:1080px){
-    .dash{grid-template-columns:1fr}
-    .side-col{position:static;flex-direction:row;flex-wrap:wrap}
-    .side-col .side-card{flex:1;min-width:260px}
+  /* RESPONSIVE */
+  @media (max-width: 1200px) {
+    .dash { grid-template-columns: 260px 1fr; }
   }
-  @media (max-width:960px){
-    .hero{grid-template-columns:1fr;min-height:0}
-    .hero-right{min-height:200px;order:-1}
-    .hero-emblem{width:min(200px,60%)}
-    .mid-grid{grid-template-columns:1fr}
-    .kpi-row{grid-template-columns:repeat(2,1fr)}
-    .features{grid-template-columns:1fr}
-    .top-nav{display:none}
+  @media (max-width: 1080px) {
+    .top-nav { display: none; }
+    .dash { grid-template-columns: 1fr; gap: 14px; }
+    .side-col {
+      position: static;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .side-col .side-card { flex: 1 1 260px; }
   }
-  @media (max-width:640px){
-    .topbar{padding:10px 16px;gap:10px}
-    .topbar-brand span{display:none}
-    .top-search{max-width:none}
-    .dash{padding:16px 16px 50px}
-    .hero{padding:24px;border-radius:20px}
-    .hero-headline{font-size:26px}
-    .kpi-row{grid-template-columns:1fr}
-    .table-cols,.row{grid-template-columns:1.6fr .8fr}
-    .table-cols span:nth-child(3),.table-cols span:nth-child(4),
-    .row > *:nth-child(3),.row > *:nth-child(4){display:none}
-    .search-input{min-width:140px}
-=======
   @media (max-width: 960px) {
     .hero { grid-template-columns: 1fr; min-height: 0; }
     .hero-right { min-height: 200px; order: -1; }
@@ -873,24 +1017,21 @@
     .hero-kpis { grid-template-columns: repeat(2, 1fr); margin-top: 24px; }
   }
   @media (max-width: 640px) {
-    .dash { padding: 20px 16px 50px; }
+    .topbar { padding: 10px 16px; gap: 10px; }
+    .topbar-brand span:last-child { display: none; }
+    .dash { padding: 16px 16px 50px; }
     .hero { padding: 24px; border-radius: 20px; }
     .hero-headline { font-size: 28px; }
     .hero-kpis { grid-template-columns: 1fr; }
-    .dash-actions { width: 100%; }
-    .dash-actions .btn-primary { flex: 1; justify-content: center; }
-
+    .side-col { flex-direction: column; }
     .chart-panel { padding: 20px 18px; }
     .chart-canvas { height: 240px; }
     .chart-title { font-size: 16px; }
-    .chart-header { gap: 12px; }
-    .chart-controls { width: 100%; }
     .chart-tabs { width: 100%; }
-    .chart-tab { flex: 1; text-align: center; }
-
+    .chart-tab { flex: 1; }
+    .chart-summary-period { margin-left: 0; flex-basis: 100%; }
     .stat-panel { padding: 20px 18px; }
     .stat-grid { grid-template-columns: 1fr; }
->>>>>>> 41a8156 (hero: hapus CTA duplikat, perbesar headline, pisah tanggal)
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -902,30 +1043,18 @@
 </head>
 <body>
 
-  <!-- ================= TOPBAR ================= -->
   <header class="topbar">
     <div class="topbar-brand">
       <span class="topbar-logo" aria-hidden="true"></span>
       <span>Sistem Surat Dinas</span>
     </div>
-
-    <label class="top-search" for="globalSearch">
-      <span aria-hidden="true">⌕</span>
-      <input id="globalSearch" type="search" placeholder="Cari surat, template…" aria-label="Pencarian global">
-    </label>
-
     <nav class="top-nav" aria-label="Navigasi utama">
-      <a href="dashboard.html" class="active">Dashboard</a>
+      <a href="index.html" class="active">Dashboard</a>
       <a href="arsip.html">Arsip</a>
       <a href="template.html">Template</a>
       <a href="buat-surat.html">Buat Surat</a>
     </nav>
-
     <div class="top-actions">
-      <button class="icon-btn" type="button" aria-label="Notifikasi">
-        <span aria-hidden="true">🔔</span>
-        <span class="dot" aria-hidden="true"></span>
-      </button>
       <div class="profile">
         <button id="profile-button" class="profile-button" type="button"
                 aria-expanded="false" aria-controls="profile-popover">
@@ -934,318 +1063,134 @@
         </button>
         <div id="profile-container"></div>
       </div>
-      <a href="buat-surat.html" class="btn btn-primary btn-sm">+ Surat baru</a>
+      <a href="buat-surat.html" class="btn-primary">+ Surat baru</a>
     </div>
   </header>
 
-  <!-- ================= LAYOUT ================= -->
   <div class="dash">
 
-<<<<<<< HEAD
-    <!-- ============ SIDEBAR KIRI ============ -->
     <aside class="side-col">
-
       <div class="side-card">
         <div class="side-head">
-          <h3>Template Populer</h3>
-          <a href="template.html">Kelola</a>
-        </div>
-
-        <a class="tpl-feature" href="buat-surat.html">
-          <span class="badge">Sering dipakai</span>
-          <span class="play" aria-hidden="true">→</span>
-          <div class="inner">
-            <strong>Surat Keterangan Domisili</strong>
-            <small>Wizard 4 langkah · otomatis</small>
-          </div>
-        </a>
-
-        <a class="tpl-feature" href="buat-surat.html"
-           style="background:linear-gradient(150deg,#2c7d9a 0%,#3f97b5 100%)">
-          <span class="badge">Baru</span>
-          <span class="play" aria-hidden="true">→</span>
-          <div class="inner">
-            <strong>Surat Pengantar KTP</strong>
-            <small>Template diperbarui minggu ini</small>
-          </div>
-        </a>
-      </div>
-
-      <div class="side-card">
-        <div class="side-head">
-          <h3>Aktivitas Terbaru</h3>
+          <h3>Terbaru</h3>
           <a href="arsip.html">Semua</a>
         </div>
-        <div class="mini-list" id="miniList"></div>
+        <div class="activity-list" id="activityList"></div>
+        <a class="activity-more" href="arsip.html">Lihat semua aktivitas →</a>
       </div>
 
+      <div class="side-card">
+        <div class="cal-head">
+          <span class="cal-month" id="calMonth">—</span>
+          <div class="cal-nav">
+            <button type="button" id="calPrev" aria-label="Bulan sebelumnya">‹</button>
+            <button type="button" id="calNext" aria-label="Bulan berikutnya">›</button>
+          </div>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+        <div class="cal-legend">
+          <span class="cal-legend-dot"></span>
+          <span>Hari dengan surat baru</span>
+        </div>
+      </div>
+
+      <div class="side-card">
+        <div class="side-head">
+          <h3>Jenis Terpopuler</h3>
+          <a href="arsip.html">Detail</a>
+        </div>
+        <div class="topj-list" id="topJenisList"></div>
+      </div>
+
+      <div class="side-card">
+        <div class="side-head">
+          <h3>Bulan Ini</h3>
+        </div>
+        <div class="stat-month-grid" id="statMonthGrid"></div>
+      </div>
     </aside>
 
-    <!-- ============ MAIN ============ -->
     <main class="main-col">
 
-      <!-- HERO -->
       <section class="hero">
         <div class="hero-left">
           <span class="hero-eyebrow">Dinas Kependudukan dan Pencatatan Sipil</span>
           <h1 class="hero-headline" id="greeting">Selamat datang</h1>
+          <p class="hero-date" id="heroDate"></p>
           <p class="hero-sub" id="heroSub">
             Kelola pembuatan, template, dan arsip surat dari satu tempat.
-            Mulai dari wizard 4 langkah, sisanya otomatis.
           </p>
-          <div class="hero-actions">
-            <a href="buat-surat.html" class="btn btn-light">Buat surat baru →</a>
-            <a href="arsip.html" class="btn btn-light">Lihat arsip</a>
-          </div>
         </div>
-
         <div class="hero-right">
           <div class="hero-emblem">
             <span class="hero-emblem-glow"></span>
             <img src="Lambang_Kabupaten_Tuban.webp" alt="Lambang Kabupaten Tuban">
           </div>
         </div>
-      </section>
-
-      <!-- KPI ROW -->
-      <section class="kpi-row" aria-label="Ringkasan surat">
-        <article class="kpi-card kpi-card-1">
-          <div class="kpi-top">
-            <span class="kpi-icon" aria-hidden="true">∑</span>
-            <span class="kpi-arrow" aria-hidden="true">↗</span>
-          </div>
-          <div>
+        <div class="hero-kpis">
+          <div class="kpi">
             <div class="kpi-value" id="stat-letters">0</div>
-            <div class="kpi-label">Total arsip surat</div>
+            <div class="kpi-label"><span class="kpi-dot"></span> Total arsip</div>
           </div>
-        </article>
-
-        <article class="kpi-card kpi-card-2">
-          <div class="kpi-top">
-            <span class="kpi-icon" aria-hidden="true">⌘</span>
-            <span class="kpi-arrow" aria-hidden="true">↗</span>
-          </div>
-          <div>
+          <div class="kpi">
             <div class="kpi-value" id="stat-templates">0</div>
-            <div class="kpi-label">Template aktif</div>
+            <div class="kpi-label"><span class="kpi-dot"></span> Jenis surat</div>
           </div>
-        </article>
-
-        <article class="kpi-card kpi-card-3">
-          <div class="kpi-top">
-            <span class="kpi-icon" aria-hidden="true">◷</span>
-            <span class="kpi-arrow" aria-hidden="true">↗</span>
-          </div>
-          <div>
+          <div class="kpi">
             <div class="kpi-value" id="stat-week-num">0</div>
-            <div class="kpi-label">Dibuat minggu ini</div>
+            <div class="kpi-label"><span class="kpi-dot"></span> 30 hari terakhir</div>
           </div>
-        </article>
+          <div class="kpi">
+            <div class="kpi-value" id="stat-month-num">0</div>
+            <div class="kpi-label"><span class="kpi-dot"></span> Bulan ini</div>
+          </div>
+        </div>
+      </section>
 
-        <article class="kpi-card kpi-card-4">
-          <div class="kpi-top">
-            <span class="kpi-icon" aria-hidden="true">✎</span>
-            <span class="kpi-arrow" aria-hidden="true">↗</span>
-          </div>
+      <section class="chart-panel">
+        <div class="chart-header">
           <div>
-            <div class="kpi-value" id="stat-drafts">0</div>
-            <div class="kpi-label">Draft belum selesai</div>
+            <span class="chart-kicker">Statistik Surat</span>
+            <h2 class="chart-title">Jumlah Surat per Jenis</h2>
+            <p class="chart-sub">Pantau banyaknya surat yang dibuat dari waktu ke waktu. Sorot grafik untuk melihat angka detailnya.</p>
           </div>
-        </article>
+          <div class="chart-controls">
+            <div class="chart-tabs" role="tablist" aria-label="Rentang waktu">
+              <button type="button" class="chart-tab" data-range="daily">
+                <span>Harian</span><small>30 hari</small>
+              </button>
+              <button type="button" class="chart-tab is-active" data-range="monthly">
+                <span>Bulanan</span><small>12 bulan</small>
+              </button>
+              <button type="button" class="chart-tab" data-range="yearly">
+                <span>Tahunan</span><small>5 tahun</small>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-summary">
+          <span class="chart-summary-label" id="summaryLabel">Bulan ini</span>
+          <span class="chart-summary-value" id="summaryValue">0<small>surat</small></span>
+          <span class="chart-summary-delta flat" id="summaryDelta">— 0%</span>
+          <span class="chart-summary-period" id="summaryPeriod">—</span>
+        </div>
+
+        <div class="chart-legend" id="chartLegend"></div>
+
+        <div class="chart-canvas" id="chartCanvas">
+          <svg id="chartSvg" viewBox="0 0 800 320" preserveAspectRatio="none" aria-hidden="true"></svg>
+          <div class="chart-tooltip" id="chartTooltip"></div>
+        </div>
+        <p class="chart-empty" id="chartEmpty" hidden>Belum ada cukup data untuk menampilkan grafik.</p>
       </section>
 
-      <!-- CHART + RECENT -->
-      <div class="mid-grid">
-        <div class="panel">
-          <div class="panel-head">
-            <h3>Aktivitas 7 hari terakhir</h3>
-            <span class="panel-badge" id="chartBadge">0</span>
-          </div>
-          <div class="chart">
-            <svg viewBox="0 0 320 140" preserveAspectRatio="none" aria-hidden="true">
-              <defs>
-                <linearGradient id="gArea" x1="0" x2="0" y1="0" y2="1">
-                  <stop offset="0" stop-color="var(--green)" stop-opacity=".22"/>
-                  <stop offset="1" stop-color="var(--green)" stop-opacity="0"/>
-                </linearGradient>
-              </defs>
-              <path id="areaPath" d="M0,100 L320,100 L320,140 L0,140 Z" fill="url(#gArea)"/>
-              <path id="linePath" d="M0,100 L320,100"
-                    fill="none" stroke="var(--green)" stroke-width="2.2" stroke-linecap="round"/>
-              <path id="linePrev" d="M0,110 L320,110"
-                    fill="none" stroke="var(--muted)" stroke-width="1.6"
-                    stroke-dasharray="3 4" stroke-linecap="round"/>
-            </svg>
-            <div class="chart-x" id="chartX"></div>
-          </div>
+      <section class="stat-panel">
+        <div class="stat-panel-head">
+          <h2>Ringkasan per Jenis Surat</h2>
+          <span class="stat-panel-sub">Perbandingan 30 hari terakhir vs 30 hari sebelumnya</span>
         </div>
-
-        <div class="panel">
-          <div class="panel-head">
-            <h3>Status arsip</h3>
-            <a href="arsip.html">Detail</a>
-          </div>
-          <div class="mini-list" id="miniListRight"></div>
-        </div>
-      </div>
-
-      <!-- FEATURES -->
-      <div class="section-head">
-        <div>
-          <h2>Menu utama</h2>
-          <p>Pilih yang ingin Anda kerjakan sekarang.</p>
-        </div>
-      </div>
-
-      <section class="features">
-        <a class="feature" href="buat-surat.html">
-          <div class="feature-top">
-            <span class="feature-icon">B</span>
-            <span class="feature-arrow" aria-hidden="true">→</span>
-          </div>
-          <div class="feature-copy">
-            <h3>Buat Surat</h3>
-            <p>Wizard 4 langkah: data pembuat, pilih template, tentukan penandatangan, lalu cetak.</p>
-          </div>
-        </a>
-=======
-    <!-- HEADER -->
-    <header class="dash-top">
-      <div class="dash-brand">
-        <span class="dash-logo" aria-hidden="true"></span>
-        Sistem Surat Dinas Kabupaten Tuban
-      </div>
-      <div class="dash-actions">
-        <div class="profile">
-          <button id="profile-button" class="profile-button" type="button"
-                  aria-expanded="false" aria-controls="profile-popover">
-            <span id="profile-avatar" class="profile-avatar">A</span>
-            <span id="profile-label">Profil</span>
-          </button>
-          <div id="profile-container"></div>
-        </div>
-        <a href="buat-surat.html" class="btn btn-primary">Buat surat baru</a>
-      </div>
-    </header>
-
-    <!-- HERO -->
-    <section class="hero">
-      <div class="hero-left">
-        <span class="hero-eyebrow">Dinas Kependudukan dan Pencatatan Sipil</span>
-        <h1 class="hero-headline" id="greeting">Selamat datang</h1>
-        <p class="hero-date" id="heroDate"></p>
-        <p class="hero-sub" id="heroSub">
-          Kelola pembuatan, template, dan arsip surat dari satu tempat.
-        </p>
-      </div>
-
-      <div class="hero-right">
-        <div class="hero-emblem">
-          <span class="hero-emblem-glow"></span>
-          <img src="Lambang_Kabupaten_Tuban.webp" alt="Lambang Kabupaten Tuban">
-        </div>
-      </div>
-
-      <div class="hero-kpis" aria-label="Ringkasan surat">
-        <div class="kpi">
-          <div class="kpi-value" id="stat-letters">0</div>
-          <div class="kpi-label"><span class="kpi-dot"></span> Total arsip</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-value" id="stat-templates">0</div>
-          <div class="kpi-label"><span class="kpi-dot"></span> Jenis surat</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-value" id="stat-week-num">0</div>
-          <div class="kpi-label"><span class="kpi-dot"></span> 30 hari terakhir</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-value" id="stat-month-num">0</div>
-          <div class="kpi-label"><span class="kpi-dot"></span> Bulan ini</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CHART PANEL -->
-    <section class="chart-panel">
-      <div class="chart-header">
-        <div>
-          <span class="chart-kicker">Tren</span>
-          <h2 class="chart-title">Aktivitas per Jenis Surat</h2>
-          <p class="chart-sub">Pantau naik-turunnya minat tiap jenis surat — per hari, per bulan, atau per tahun.</p>
-        </div>
-        <div class="chart-controls">
-          <div class="chart-tabs" role="tablist" aria-label="Rentang waktu">
-            <button type="button" class="chart-tab" data-range="daily">Hari</button>
-            <button type="button" class="chart-tab is-active" data-range="monthly">Bulan</button>
-            <button type="button" class="chart-tab" data-range="yearly">Tahun</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="chart-legend" id="chartLegend"></div>
-      <div class="chart-canvas" id="chartCanvas">
-        <svg id="chartSvg" viewBox="0 0 800 320" preserveAspectRatio="none" aria-hidden="true"></svg>
-      </div>
-      <p class="chart-empty" id="chartEmpty" hidden>Belum ada cukup data untuk menampilkan grafik.</p>
-    </section>
-
-    <!-- STAT PANEL -->
-    <section class="stat-panel">
-      <div class="stat-panel-head">
-        <h2>Ringkasan per Jenis Surat</h2>
-        <span class="stat-panel-sub">Perbandingan 30 hari terakhir vs 30 hari sebelumnya</span>
-      </div>
-      <div class="stat-grid" id="statGrid"></div>
-    </section>
->>>>>>> 41a8156 (hero: hapus CTA duplikat, perbesar headline, pisah tanggal)
-
-        <a class="feature" href="template.html">
-          <div class="feature-top">
-            <span class="feature-icon">E</span>
-            <span class="feature-arrow" aria-hidden="true">→</span>
-          </div>
-          <div class="feature-copy">
-            <h3>Kelola Surat</h3>
-            <p>Ubah nama template, HTML surat, dan field tanpa menyentuh kode aplikasi.</p>
-          </div>
-        </a>
-
-        <a class="feature" href="arsip.html">
-          <div class="feature-top">
-            <span class="feature-icon">A</span>
-            <span class="feature-arrow" aria-hidden="true">→</span>
-          </div>
-          <div class="feature-copy">
-            <h3>Arsip Surat</h3>
-            <p>Riwayat surat tersimpan otomatis di browser. Cari, buka ulang, atau cetak lagi.</p>
-          </div>
-        </a>
-      </section>
-
-      <!-- TABLE -->
-      <section class="table-panel">
-        <div class="table-head">
-          <h3>Daftar surat</h3>
-          <div class="table-tools">
-            <input class="search-input" id="search" type="search" placeholder="Cari nomor / template…" aria-label="Cari surat">
-            <select class="select" id="filterStatus" aria-label="Filter status">
-              <option value="">Semua status</option>
-              <option value="final">Final</option>
-              <option value="draft">Draft</option>
-              <option value="gagal">Gagal</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="table-cols">
-          <span>Surat</span>
-          <span>Tanggal</span>
-          <span>Status</span>
-          <span>Aktivitas</span>
-        </div>
-
-        <div id="rows"></div>
+        <div class="stat-grid" id="statGrid"></div>
       </section>
 
     </main>
@@ -1253,20 +1198,29 @@
 
   <script src="data.js"></script>
   <script>
-<<<<<<< HEAD
-    /* ====== HELPERS ====== */
-    function escapeHtml(s){
+    function escapeHtml(s) {
       return String(s ?? "").replace(/[&<>"']/g, c => ({
-        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
       }[c]));
     }
 
-    /* ====== GREETING ====== */
-=======
-    /* =========================================================
-       GREETING
-       ========================================================= */
->>>>>>> 41a8156 (hero: hapus CTA duplikat, perbesar headline, pisah tanggal)
+    function timeAgo(iso) {
+      if (!iso) return "—";
+      const d = new Date(iso);
+      if (isNaN(d)) return "—";
+      const diff = Date.now() - d.getTime();
+      const m = Math.floor(diff / 60000);
+      if (m < 1) return "baru saja";
+      if (m < 60) return `${m} menit lalu`;
+      const h = Math.floor(m / 60);
+      if (h < 24) return `${h} jam lalu`;
+      const dd = Math.floor(h / 24);
+      if (dd < 7) return `${dd} hari lalu`;
+      const w = Math.floor(dd / 7);
+      if (w < 4) return `${w} minggu lalu`;
+      return d.toLocaleDateString("id-ID", { day: "numeric", month: "short" });
+    }
+
     const auth = typeof getAuth === "function" ? getAuth() : null;
     const authName = auth?.nama || auth?.username || "Admin Surat";
     const hour = new Date().getHours();
@@ -1276,67 +1230,192 @@
                : "Selamat malam";
     document.getElementById("greeting").textContent = `${salam}, ${authName}`;
     document.getElementById("heroDate").textContent =
-      new Date().toLocaleDateString("id-ID",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+      new Date().toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
     document.getElementById("profile-label").textContent = authName;
     document.getElementById("profile-avatar").textContent = authName.charAt(0).toUpperCase();
 
-<<<<<<< HEAD
-    /* ====== DATA ====== */
-=======
-    /* =========================================================
-       DATA
-       ========================================================= */
->>>>>>> 41a8156 (hero: hapus CTA duplikat, perbesar headline, pisah tanggal)
     const letters   = typeof getLetters   === "function" ? getLetters()   : [];
     const templates = typeof getTemplates === "function" ? getTemplates() : [];
 
-    /* =========================================================
-       KPI
-       ========================================================= */
     const now = Date.now();
     const D30 = 30 * 24 * 60 * 60 * 1000;
     const now30 = now - D30;
-    const thisMonth = (function () {
+    const thisMonthStart = (function () {
       const d = new Date();
       return new Date(d.getFullYear(), d.getMonth(), 1).getTime();
     })();
 
-<<<<<<< HEAD
-    document.getElementById("stat-letters").textContent   = letters.length;
-    document.getElementById("stat-templates").textContent = templates.length;
-    document.getElementById("stat-drafts").textContent    = drafts.length;
-    document.getElementById("stat-week-num").textContent  = thisWeek.length;
-    document.getElementById("chartBadge").textContent     = thisWeek.length;
-=======
     const count30 = letters.filter(l => new Date(l.created_at || l.tanggal || 0).getTime() >= now30);
-    const countMonth = letters.filter(l => new Date(l.created_at || l.tanggal || 0).getTime() >= thisMonth);
+    const countMonth = letters.filter(l => new Date(l.created_at || l.tanggal || 0).getTime() >= thisMonthStart);
 
     document.getElementById("stat-letters").textContent   = letters.length;
     document.getElementById("stat-templates").textContent = templates.length;
     document.getElementById("stat-week-num").textContent  = count30.length;
     document.getElementById("stat-month-num").textContent = countMonth.length;
->>>>>>> 41a8156 (hero: hapus CTA duplikat, perbesar headline, pisah tanggal)
 
-    /* =========================================================
-       CHART — Tren per Jenis Surat
-       ========================================================= */
-    const COLORS = [
-      "#7c3aed", // ungu
-      "#ec4899", // pink
-      "#f97316", // oranye
-      "#3b82f6", // biru
-      "#10b981", // hijau
-    ];
+    (function renderActivity() {
+      const el = document.getElementById("activityList");
+      const recent = letters.slice(0, 5);
+      if (!recent.length) {
+        el.innerHTML = `<p style="margin:0;color:var(--muted);font-size:12px">Belum ada aktivitas.</p>`;
+        return;
+      }
+      el.innerHTML = recent.map(l => {
+        const tpl = templates.find(t => t.key === l.template_key) || { nama: "Template" };
+        const initial = (tpl.nama || "S").charAt(0).toUpperCase();
+        return `
+          <div class="activity-item">
+            <span class="activity-avatar">${escapeHtml(initial)}</span>
+            <div class="activity-copy">
+              <strong>${escapeHtml(l.nomor_surat || l.id)}</strong>
+              <small>${escapeHtml(tpl.nama)}</small>
+            </div>
+            <span class="activity-time">${escapeHtml(timeAgo(l.created_at))}</span>
+          </div>
+        `;
+      }).join("");
+    })();
 
-    const chartState = {
-      range: "monthly",   // "daily" | "monthly" | "yearly"
-      hiddenKeys: new Set(),
-    };
+    (function initCalendar() {
+      const monthEl = document.getElementById("calMonth");
+      const gridEl = document.getElementById("calGrid");
+      const prevBtn = document.getElementById("calPrev");
+      const nextBtn = document.getElementById("calNext");
+      let cursor = new Date();
+
+      const countsByDate = {};
+      letters.forEach(l => {
+        const ts = new Date(l.created_at || l.tanggal || 0);
+        if (isNaN(ts)) return;
+        const key = ts.getFullYear() + "-" + (ts.getMonth() + 1) + "-" + ts.getDate();
+        countsByDate[key] = (countsByDate[key] || 0) + 1;
+      });
+
+      const DOW = ["S", "S", "R", "K", "J", "S", "M"];
+
+      function render() {
+        const year = cursor.getFullYear();
+        const month = cursor.getMonth();
+        monthEl.textContent = cursor.toLocaleDateString("id-ID", { month: "long", year: "numeric" });
+
+        const first = new Date(year, month, 1);
+        const startOffset = (first.getDay() === 0 ? 6 : first.getDay() - 1);
+        const gridStart = new Date(year, month, 1 - startOffset);
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const totalCells = Math.ceil((startOffset + daysInMonth) / 7) * 7;
+
+        const today = new Date();
+        const isToday = (d) => d.getFullYear() === today.getFullYear()
+                            && d.getMonth() === today.getMonth()
+                            && d.getDate() === today.getDate();
+
+        let html = "";
+        DOW.forEach(d => html += `<span class="cal-dow">${d}</span>`);
+
+        for (let i = 0; i < totalCells; i++) {
+          const d = new Date(gridStart);
+          d.setDate(d.getDate() + i);
+          const isOut = d.getMonth() !== month;
+          const isTd = isToday(d);
+          const key = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+          const hasData = !isOut && countsByDate[key] > 0;
+
+          const cls = [
+            "cal-day",
+            isOut ? "is-out" : "",
+            isTd ? "is-today" : "",
+            hasData ? "has-data" : "",
+          ].filter(Boolean).join(" ");
+
+          html += `<span class="${cls}">${d.getDate()}</span>`;
+        }
+        gridEl.innerHTML = html;
+      }
+
+      prevBtn.addEventListener("click", () => {
+        cursor = new Date(cursor.getFullYear(), cursor.getMonth() - 1, 1);
+        render();
+      });
+      nextBtn.addEventListener("click", () => {
+        cursor = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1);
+        render();
+      });
+
+      render();
+    })();
+
+    (function renderTopJenis() {
+      const el = document.getElementById("topJenisList");
+      if (!templates.length || !letters.length) {
+        el.innerHTML = `<p class="topj-empty">Belum ada data.</p>`;
+        return;
+      }
+      const counts = templates.map(t => ({
+        template: t,
+        count: letters.filter(l => l.template_key === t.key).length,
+      })).sort((a, b) => b.count - a.count).slice(0, 5);
+
+      const max = Math.max(1, ...counts.map(c => c.count));
+      el.innerHTML = counts.map(c => {
+        const pct = (c.count / max) * 100;
+        return `
+          <div class="topj-item">
+            <span class="topj-name">${escapeHtml(c.template.nama)}</span>
+            <span class="topj-count">${c.count}</span>
+            <div class="topj-bar">
+              <div class="topj-bar-fill" style="width:${pct.toFixed(1)}%"></div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    })();
+
+    (function renderStatMonth() {
+      const el = document.getElementById("statMonthGrid");
+      const nowD = new Date();
+      const year = nowD.getFullYear();
+      const month = nowD.getMonth();
+      const monthStart = new Date(year, month, 1).getTime();
+      const monthEnd = new Date(year, month + 1, 1).getTime();
+      const todayStart = new Date(year, month, nowD.getDate()).getTime();
+      const todayEnd = todayStart + 24 * 60 * 60 * 1000;
+
+      const thisMonthLetters = letters.filter(l => {
+        const ts = new Date(l.created_at || l.tanggal || 0).getTime();
+        return ts >= monthStart && ts < monthEnd;
+      });
+      const todayCount = letters.filter(l => {
+        const ts = new Date(l.created_at || l.tanggal || 0).getTime();
+        return ts >= todayStart && ts < todayEnd;
+      }).length;
+      const dayOfMonth = nowD.getDate();
+      const avgPerDay = (thisMonthLetters.length / Math.max(1, dayOfMonth)).toFixed(1);
+      const targetMonth = 100;
+      const pctTarget = Math.min(100, Math.round((thisMonthLetters.length / targetMonth) * 100));
+
+      el.innerHTML = `
+        <div class="stat-month-item"><span class="stat-month-label">Dibuat hari ini</span><span class="stat-month-value">${todayCount}</span></div>
+        <div class="stat-month-item"><span class="stat-month-label">Bulan ini</span><span class="stat-month-value">${thisMonthLetters.length}</span></div>
+        <div class="stat-month-item"><span class="stat-month-label">Rata-rata / hari</span><span class="stat-month-value">${avgPerDay}</span></div>
+        <div class="stat-month-item" style="display:block;padding:12px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline">
+            <span class="stat-month-label">Target bulanan</span>
+            <span class="stat-month-value">${pctTarget}<small>%</small></span>
+          </div>
+          <div class="stat-month-progress-bar"><div class="stat-month-progress-fill" style="width:${pctTarget}%"></div></div>
+          <div class="stat-month-progress-label"><span>${thisMonthLetters.length} / ${targetMonth}</span><span>surat</span></div>
+        </div>
+      `;
+    })();
+
+    const COLORS = ["#7c3aed", "#ec4899", "#f97316", "#3b82f6", "#10b981"];
+    const chartState = { range: "monthly", hiddenKeys: new Set() };
+    const tooltipEl = document.getElementById("chartTooltip");
+    const canvasEl = document.getElementById("chartCanvas");
 
     function getBuckets(mode) {
       const list = [];
       const base = new Date();
-
       if (mode === "daily") {
         for (let i = 29; i >= 0; i--) {
           const d = new Date(base.getFullYear(), base.getMonth(), base.getDate() - i);
@@ -1346,12 +1425,11 @@
             start: start.getTime(),
             end: end.getTime() + 1,
             label: d.getDate() + "/" + (d.getMonth() + 1),
-            fullLabel: d.toLocaleDateString("id-ID", { weekday:"long", day:"numeric", month:"long", year:"numeric" }),
+            fullLabel: d.toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" }),
           });
         }
         return list;
       }
-
       if (mode === "monthly") {
         for (let i = 11; i >= 0; i--) {
           const d = new Date(base.getFullYear(), base.getMonth() - i, 1);
@@ -1359,12 +1437,11 @@
             start: d.getTime(),
             end: new Date(d.getFullYear(), d.getMonth() + 1, 1).getTime(),
             label: d.toLocaleDateString("id-ID", { month: "short" }),
-            fullLabel: d.toLocaleDateString("id-ID", { month:"long", year:"numeric" }),
+            fullLabel: d.toLocaleDateString("id-ID", { month: "long", year: "numeric" }),
           });
         }
         return list;
       }
-
       const yearNow = base.getFullYear();
       for (let i = 4; i >= 0; i--) {
         const y = yearNow - i;
@@ -1384,79 +1461,6 @@
         const t = new Date(l.created_at || l.tanggal || 0).getTime();
         return t >= bucket.start && t < bucket.end;
       }).length;
-<<<<<<< HEAD
-    });
-    const maxCount = Math.max(1, ...counts);
-    const w = 320, h = 140, pad = 20;
-    const step = w / 6;
-    const points = counts.map((c, i) => {
-      const x = i * step;
-      const y = h - pad - (c / maxCount) * (h - pad * 2);
-      return [x, y];
-    });
-    const linePath = points.map((p,i) => (i === 0 ? `M${p[0]},${p[1]}` : `L${p[0]},${p[1]}`)).join(" ");
-    const areaPath = `${linePath} L${w},${h} L0,${h} Z`;
-    document.getElementById("linePath").setAttribute("d", linePath);
-    document.getElementById("areaPath").setAttribute("d", areaPath);
-    const avg = counts.reduce((a,b)=>a+b,0) / counts.length;
-    const yAvg = h - pad - (avg / maxCount) * (h - pad * 2);
-    document.getElementById("linePrev").setAttribute("d", `M0,${yAvg} L${w},${yAvg}`);
-
-    document.getElementById("chartX").innerHTML = days.map(d =>
-      `<span>${d.toLocaleDateString("id-ID",{day:"numeric",month:"short"})}</span>`
-    ).join("");
-
-    /* ====== MINI LIST (sidebar kiri) ====== */
-    const miniList = document.getElementById("miniList");
-    if (letters.length) {
-      miniList.innerHTML = letters.slice(0, 4).map(l => {
-        const tpl = templates.find(t => t.key === l.template_key) || { nama: "Template" };
-        const status = (l.status || "final").toLowerCase();
-        const cls = status === "draft" ? "pill-draft"
-                  : status === "gagal" ? "pill-gagal"
-                  : "pill-final";
-        return `
-          <div class="mini-item">
-            <span class="mini-thumb">${escapeHtml((tpl.nama||"S").charAt(0).toUpperCase())}</span>
-            <div class="mini-copy">
-              <strong>${escapeHtml(l.nomor_surat || l.id)}</strong>
-              <small>${escapeHtml(tpl.nama)}</small>
-            </div>
-            <span class="pill ${cls}">${escapeHtml(status)}</span>
-          </div>`;
-      }).join("");
-    } else {
-      miniList.innerHTML = `<p style="color:var(--muted);font-size:12.5px;margin:0">Belum ada surat.</p>`;
-    }
-
-    /* ====== MINI LIST (panel kanan — ringkasan status) ====== */
-    const miniRight = document.getElementById("miniListRight");
-    (function(){
-      const finalCount = letters.filter(l => (l.status||"final").toLowerCase() === "final").length;
-      const draftCount = drafts.length;
-      const gagalCount = letters.filter(l => (l.status||"").toLowerCase() === "gagal").length;
-      const rows = [
-        { label: "Final",  value: finalCount, cls: "pill-final", initial: "F" },
-        { label: "Draft",  value: draftCount, cls: "pill-draft", initial: "D" },
-        { label: "Gagal",  value: gagalCount, cls: "pill-gagal", initial: "G" },
-      ];
-      miniRight.innerHTML = rows.map(r => `
-        <div class="mini-item">
-          <span class="mini-thumb">${r.initial}</span>
-          <div class="mini-copy">
-            <strong>${r.label}</strong>
-            <small>${r.value} surat</small>
-          </div>
-          <span class="pill ${r.cls}">${r.value}</span>
-        </div>
-      `).join("");
-    })();
-
-    /* ====== TABEL ====== */
-    const rowsEl   = document.getElementById("rows");
-    const searchEl = document.getElementById("search");
-    const filterEl = document.getElementById("filterStatus");
-=======
     }
 
     function smoothPath(points) {
@@ -1470,14 +1474,12 @@
       }
       return d;
     }
->>>>>>> 41a8156 (hero: hapus CTA duplikat, perbesar headline, pisah tanggal)
 
     function renderChartLegend(series) {
       const el = document.getElementById("chartLegend");
       if (!series.length) { el.innerHTML = ""; return; }
       el.innerHTML = series.map(s => `
-        <button type="button" class="legend-chip ${chartState.hiddenKeys.has(s.key) ? "is-off" : ""}"
-                data-key="${escapeHtml(s.key)}">
+        <button type="button" class="legend-chip ${chartState.hiddenKeys.has(s.key) ? "is-off" : ""}" data-key="${escapeHtml(s.key)}">
           <span class="legend-chip-dot" style="background:${s.color}"></span>
           ${escapeHtml(s.name)}
         </button>
@@ -1492,21 +1494,55 @@
       });
     }
 
+    function renderChartSummary() {
+      const buckets = getBuckets(chartState.range);
+      const latest = buckets[buckets.length - 1];
+      const previous = buckets[buckets.length - 2];
+
+      const totalLatest = letters.filter(l => {
+        const ts = new Date(l.created_at || l.tanggal || 0).getTime();
+        return ts >= latest.start && ts < latest.end;
+      }).length;
+      const totalPrevious = previous ? letters.filter(l => {
+        const ts = new Date(l.created_at || l.tanggal || 0).getTime();
+        return ts >= previous.start && ts < previous.end;
+      }).length : 0;
+
+      let labelText = "", periodText = "";
+      if (chartState.range === "daily") { labelText = "Hari ini"; periodText = latest.fullLabel; }
+      else if (chartState.range === "monthly") { labelText = "Bulan ini"; periodText = latest.fullLabel; }
+      else { labelText = "Tahun ini"; periodText = latest.fullLabel; }
+
+      document.getElementById("summaryLabel").textContent = labelText;
+      document.getElementById("summaryValue").innerHTML = `${totalLatest}<small>surat</small>`;
+      document.getElementById("summaryPeriod").textContent = periodText;
+
+      const deltaEl = document.getElementById("summaryDelta");
+      if (totalPrevious === 0 && totalLatest > 0) {
+        deltaEl.className = "chart-summary-delta new";
+        deltaEl.textContent = "✦ Baru";
+      } else if (totalPrevious > 0) {
+        const pct = Math.round(((totalLatest - totalPrevious) / totalPrevious) * 100);
+        if (pct > 0) { deltaEl.className = "chart-summary-delta up"; deltaEl.textContent = `▲ +${pct}%`; }
+        else if (pct < 0) { deltaEl.className = "chart-summary-delta down"; deltaEl.textContent = `▼ ${pct}%`; }
+        else { deltaEl.className = "chart-summary-delta flat"; deltaEl.textContent = "→ 0%"; }
+      } else {
+        deltaEl.className = "chart-summary-delta flat";
+        deltaEl.textContent = "— 0%";
+      }
+    }
+
     function renderChart() {
       const svg = document.getElementById("chartSvg");
       const emptyEl = document.getElementById("chartEmpty");
-      const canvasEl = document.getElementById("chartCanvas");
-
       const buckets = getBuckets(chartState.range);
+      renderChartSummary();
 
-      const topTemplates = templates
-        .map(t => ({
-          key: t.key,
-          name: t.nama,
-          total: letters.filter(l => l.template_key === t.key).length,
-        }))
-        .sort((a, b) => b.total - a.total)
-        .slice(0, 5);
+      const topTemplates = templates.map(t => ({
+        key: t.key,
+        name: t.nama,
+        total: letters.filter(l => l.template_key === t.key).length,
+      })).sort((a, b) => b.total - a.total).slice(0, 5);
 
       if (!letters.length || !topTemplates.length) {
         svg.innerHTML = "";
@@ -1527,52 +1563,8 @@
 
       const visibleSeries = allSeries.filter(s => !chartState.hiddenKeys.has(s.key));
       renderChartLegend(allSeries);
+      if (!visibleSeries.length) { svg.innerHTML = ""; return; }
 
-      if (!visibleSeries.length) {
-        svg.innerHTML = "";
-        return;
-      }
-
-<<<<<<< HEAD
-      rowsEl.innerHTML = filtered.slice(0, 8).map(l => {
-        const tpl = templates.find(t => t.key === l.template_key) || { nama: "Template" };
-        const status = (l.status || "final").toLowerCase();
-        const cls = status === "draft" ? "pill-draft"
-                  : status === "gagal" ? "pill-gagal"
-                  : "pill-final";
-        const tgl = l.created_at || l.tanggal;
-        const dateStr = tgl ? new Date(tgl).toLocaleDateString("id-ID",{day:"numeric",month:"short"}) : "—";
-        const seed = (String(l.id||"x").charCodeAt(0) || 1);
-        const sparkD = Array.from({length:8}).map((_,i)=>{
-          const y = 20 - ((Math.sin(seed + i) + 1) * 6);
-          return `${i===0?`M0,${y}`:`L${(i)*14},${y}`}`;
-        }).join(" ");
-        return `
-          <div class="row">
-            <div class="row-title">
-              <span class="thumb">${escapeHtml((tpl.nama||"S").charAt(0).toUpperCase())}</span>
-              <div>
-                <strong>${escapeHtml(l.nomor_surat || l.id)}</strong>
-                <small>${escapeHtml(tpl.nama)}</small>
-              </div>
-            </div>
-            <div class="row-num">${escapeHtml(dateStr)}</div>
-            <div><span class="pill ${cls}">${escapeHtml(status)}</span></div>
-            <div>
-              <svg class="spark" viewBox="0 0 100 28" preserveAspectRatio="none">
-                <path d="${sparkD}" fill="none" stroke="var(--green)" stroke-width="1.6" stroke-linecap="round"/>
-              </svg>
-            </div>
-          </div>`;
-      }).join("");
-    }
-    searchEl.addEventListener("input", renderRows);
-    filterEl.addEventListener("change", renderRows);
-    renderRows();
-
-    /* ====== PROFILE ====== */
-    const profileButton    = document.getElementById("profile-button");
-=======
       const maxVal = Math.max(1, ...allSeries.flatMap(s => s.values));
       const yMax = Math.max(4, Math.ceil(maxVal * 1.15));
 
@@ -1580,7 +1572,6 @@
       const padL = 44, padR = 24, padT = 24, padB = 44;
       const innerW = W - padL - padR;
       const innerH = H - padT - padB;
-
       const N = buckets.length;
       const stepX = N > 1 ? innerW / (N - 1) : 0;
       const xOf = i => padL + i * stepX;
@@ -1595,10 +1586,7 @@
         gridLines.push(`<text class="axis-label" x="${padL - 10}" y="${y + 3}" text-anchor="end">${Math.round(v)}</text>`);
       }
 
-      const labelStep = chartState.range === "daily" ? 5
-                      : chartState.range === "monthly" ? 1
-                      : 1;
-
+      const labelStep = chartState.range === "daily" ? 5 : 1;
       const verticalLines = [];
       const xLabels = [];
       buckets.forEach((b, i) => {
@@ -1606,40 +1594,80 @@
         const isLast = i === buckets.length - 1;
         if (i % labelStep === 0 || isLast) {
           verticalLines.push(`<line class="grid-line" x1="${x}" y1="${padT}" x2="${x}" y2="${padT + innerH}" />`);
-          xLabels.push(
-            `<text class="x-label ${isLast ? "is-current" : ""}" x="${x}" y="${padT + innerH + 22}">${escapeHtml(b.label)}</text>`
-          );
+          xLabels.push(`<text class="x-label ${isLast ? "is-current" : ""}" x="${x}" y="${padT + innerH + 22}">${escapeHtml(b.label)}</text>`);
         }
       });
 
       const paths = [];
       visibleSeries.forEach(s => {
         const points = s.values.map((v, i) => [xOf(i), yOf(v)]);
-        const d = smoothPath(points);
-        paths.push(`<path class="series-line" d="${d}" stroke="${s.color}" />`);
-
+        paths.push(`<path class="series-line" d="${smoothPath(points)}" stroke="${s.color}" />`);
         points.forEach(([x, y], i) => {
           const isLast = i === points.length - 1;
-          const showDot = (i % labelStep === 0) || isLast;
-          if (!showDot) return;
-          const r = isLast ? 5 : 3;
-          if (isLast) {
-            paths.push(`<circle class="series-halo" cx="${x}" cy="${y}" r="12" fill="${s.color}" />`);
+          if ((i % labelStep === 0) || isLast) {
+            if (isLast) paths.push(`<circle class="series-halo" cx="${x}" cy="${y}" r="12" fill="${s.color}" />`);
+            paths.push(`<circle class="series-dot" cx="${x}" cy="${y}" r="${isLast ? 5 : 3}" fill="${s.color}" />`);
           }
-          paths.push(`<circle class="series-dot" cx="${x}" cy="${y}" r="${r}" fill="${s.color}" />`);
         });
-
         const lastX = points[points.length - 1][0];
         const lastY = points[points.length - 1][1];
         paths.push(`<text class="series-label" x="${lastX + 10}" y="${lastY + 4}" fill="${s.color}">${s.values[s.values.length - 1]}</text>`);
       });
 
-      svg.innerHTML = `
-        <g>${gridLines.join("")}</g>
-        <g>${verticalLines.join("")}</g>
-        <g>${paths.join("")}</g>
-        <g>${xLabels.join("")}</g>
-      `;
+      const hoverWidth = stepX > 0 ? stepX : innerW / Math.max(1, N);
+      const hoverCols = buckets.map((b, i) => {
+        const cx = xOf(i);
+        const hx = cx - hoverWidth / 2;
+        return `
+          <g class="hover-col" data-idx="${i}">
+            <rect class="hover-hit" x="${hx}" y="${padT}" width="${hoverWidth}" height="${innerH}" fill="transparent" />
+            <line class="hover-line" x1="${cx}" y1="${padT}" x2="${cx}" y2="${padT + innerH}" />
+          </g>
+        `;
+      }).join("");
+
+      svg.innerHTML = `<g>${gridLines.join("")}</g><g>${verticalLines.join("")}</g><g>${paths.join("")}</g><g>${xLabels.join("")}</g><g>${hoverCols}</g>`;
+      bindTooltip(allSeries, buckets, xOf, W);
+      svg.onmouseleave = () => tooltipEl.classList.remove("is-visible");
+    }
+
+    function bindTooltip(allSeries, buckets, xOf, W) {
+      const svg = document.getElementById("chartSvg");
+      svg.querySelectorAll(".hover-col").forEach(col => {
+        col.addEventListener("mouseenter", () => {
+          const i = Number(col.dataset.idx);
+          const b = buckets[i];
+          const rows = allSeries.map(s => ({
+            name: s.name, color: s.color, value: s.values[i],
+            hidden: chartState.hiddenKeys.has(s.key),
+          }));
+          const visibleRows = rows.filter(r => !r.hidden);
+          const total = visibleRows.reduce((sum, r) => sum + r.value, 0);
+
+          tooltipEl.innerHTML = `
+            <div class="chart-tooltip-date">${escapeHtml(b.fullLabel)}</div>
+            <div class="chart-tooltip-list">
+              ${visibleRows.map(r => `
+                <div class="chart-tooltip-row">
+                  <span class="chart-tooltip-dot" style="background:${r.color}"></span>
+                  <span class="chart-tooltip-name">${escapeHtml(r.name)}</span>
+                  <span class="chart-tooltip-value">${r.value}</span>
+                </div>
+              `).join("")}
+            </div>
+            <div class="chart-tooltip-total"><span>Total</span><strong>${total}</strong></div>
+          `;
+
+          const rect = svg.getBoundingClientRect();
+          const containerRect = canvasEl.getBoundingClientRect();
+          const xPx = (xOf(i) / W) * rect.width + (rect.left - containerRect.left);
+          const tooltipWidth = 200;
+          const clampedX = Math.max(tooltipWidth / 2 + 4, Math.min(xPx, rect.width - tooltipWidth / 2 - 4));
+          tooltipEl.style.left = clampedX + "px";
+          tooltipEl.style.top = "0px";
+          tooltipEl.classList.add("is-visible");
+        });
+      });
     }
 
     document.querySelectorAll(".chart-tab").forEach(tab => {
@@ -1653,19 +1681,14 @@
 
     renderChart();
 
-    /* =========================================================
-       STAT — Ringkasan per Jenis
-       ========================================================= */
     function renderStatGrid() {
       const el = document.getElementById("statGrid");
       if (!templates.length) {
-        el.innerHTML = `<div class="stat-empty">Belum ada jenis surat. Buat template dulu di menu Kelola Surat.</div>`;
+        el.innerHTML = `<div class="stat-empty">Belum ada jenis surat.</div>`;
         return;
       }
-
       const prevStart = now - D30 * 2;
       const prevEnd = now - D30;
-
       const cards = templates.map(t => {
         const allForT = letters.filter(l => l.template_key === t.key);
         const last = allForT.filter(l => {
@@ -1676,25 +1699,20 @@
           const ts = new Date(l.created_at || l.tanggal || 0).getTime();
           return ts >= prevStart && ts < prevEnd;
         }).length;
-
         let trend = { cls: "trend-flat", label: "—", text: "0%" };
-        if (prev === 0 && last > 0) {
-          trend = { cls: "trend-new", label: "✦", text: "Baru" };
-        } else if (prev > 0) {
+        if (prev === 0 && last > 0) trend = { cls: "trend-new", label: "✦", text: "Baru" };
+        else if (prev > 0) {
           const pct = Math.round(((last - prev) / prev) * 100);
-          if (pct > 0)      trend = { cls: "trend-up",   label: "▲", text: `+${pct}%` };
+          if (pct > 0) trend = { cls: "trend-up", label: "▲", text: `+${pct}%` };
           else if (pct < 0) trend = { cls: "trend-down", label: "▼", text: `${pct}%` };
-          else              trend = { cls: "trend-flat", label: "→", text: "0%" };
+          else trend = { cls: "trend-flat", label: "→", text: "0%" };
         }
-
-        return { template: t, total: allForT.length, last, prev, trend };
+        return { template: t, total: allForT.length, last, trend };
       });
-
-      cards.sort((a, b) => (b.last - a.last) || (b.total - a.total));
-
+      cards.sort((a, b) => b.last - a.last || b.total - a.total);
       el.innerHTML = cards.map(c => `
         <div class="stat-card">
-          <span class="stat-card-title">${escapeHtml(c.template.nama)}</span>
+          <div class="stat-card-title">${escapeHtml(c.template.nama)}</div>
           <div class="stat-card-value">${c.total}</div>
           <div class="stat-card-meta">
             <span class="trend ${c.trend.cls}">${c.trend.label} ${c.trend.text}</span>
@@ -1703,14 +1721,9 @@
         </div>
       `).join("");
     }
-
     renderStatGrid();
 
-    /* =========================================================
-       PROFILE
-       ========================================================= */
     const profileButton = document.getElementById("profile-button");
->>>>>>> 41a8156 (hero: hapus CTA duplikat, perbesar headline, pisah tanggal)
     const profileContainer = document.getElementById("profile-container");
 
     function toggleProfile() {
@@ -1720,10 +1733,7 @@
       pop.hidden = isOpen;
       profileButton.setAttribute("aria-expanded", String(!isOpen));
     }
-    profileButton.addEventListener("click", (e) => {
-      e.stopPropagation();
-      toggleProfile();
-    });
+    profileButton.addEventListener("click", (e) => { e.stopPropagation(); toggleProfile(); });
     document.addEventListener("click", (e) => {
       const pop = document.getElementById("profile-popover");
       if (!pop || pop.hidden) return;
