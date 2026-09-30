@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="style.css">
 <style>
   /* =========================================================
+<<<<<<< HEAD
      DASHBOARD — layout referensi (sidebar + main), palet hijau
      ========================================================= */
   *{box-sizing:border-box}
@@ -97,20 +98,64 @@
     position:absolute;z-index:70;top:calc(100% + 10px);right:0;width:220px;
     padding:15px;border:1px solid var(--line);border-radius:15px;
     background:#fff;box-shadow:var(--shadow);
-  }
-  .profile-popover[hidden]{display:none}
-  .profile-name{margin:0 0 3px;font-size:13px;font-weight:800}
-  .profile-role{margin:0 0 13px;color:var(--muted);font-size:11px;line-height:1.5}
-  .profile-guide,.profile-logout{
-    width:100%;padding:9px 11px;border-radius:9px;
-    font:inherit;font-size:12px;font-weight:700;cursor:pointer;
-    text-align:left;transition:.2s;
-  }
-  .profile-guide{margin:0 0 7px;border:0;background:var(--mist);color:var(--green-dark)}
-  .profile-guide:hover{background:var(--lime)}
-  .profile-logout{border:1px solid var(--line);background:transparent;color:var(--ink)}
-  .profile-logout:hover{background:var(--mist)}
+=======
+     DASHBOARD
+     ========================================================= */
+  .dash { max-width: 1240px; margin: 0 auto; padding: 26px 26px 70px; }
 
+  /* ---------- HEADER ---------- */
+  .dash-top { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 18px; margin-bottom: 22px; }
+  .dash-brand {
+    display: flex; align-items: center; gap: 11px;
+    color: var(--green-dark);
+    font-size: 11.5px; font-weight: 800; letter-spacing: .14em;
+    text-transform: uppercase;
+  }
+  .dash-logo {
+    width: 38px; height: 38px; flex: none; padding: 5px;
+    border: 1px solid var(--line); border-radius: 11px;
+    background: #fff url('Lambang_Kabupaten_Tuban.webp') center/contain no-repeat;
+  }
+  .dash-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  /* ---------- PROFILE ---------- */
+  .profile { position: relative; }
+  .profile-button {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 4px 13px 4px 4px;
+    border: 1px solid var(--line); border-radius: 999px;
+    background: #fff; color: var(--ink);
+    font: inherit; font-size: 12px; font-weight: 700;
+    cursor: pointer; transition: .2s;
+  }
+  .profile-button:hover { border-color: var(--green); }
+  .profile-avatar {
+    width: 26px; height: 26px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: var(--green-dark); color: #fff;
+    font-size: 10.5px; font-weight: 800;
+  }
+  .profile-popover {
+    position: absolute; z-index: 5; top: calc(100% + 10px); right: 0;
+    width: 210px; padding: 15px;
+    border: 1px solid var(--line); border-radius: 15px;
+    background: #fff; box-shadow: var(--shadow);
+>>>>>>> 41a8156 (hero: hapus CTA duplikat, perbesar headline, pisah tanggal)
+  }
+  .profile-popover[hidden] { display: none; }
+  .profile-name { margin: 0 0 3px; font-size: 13px; font-weight: 800; }
+  .profile-role { margin: 0 0 13px; color: var(--muted); font-size: 11px; line-height: 1.5; }
+  .profile-guide, .profile-logout {
+    width: 100%; padding: 9px 11px; border-radius: 9px;
+    font: inherit; font-size: 12px; font-weight: 700;
+    cursor: pointer; text-align: left; transition: .2s;
+  }
+  .profile-guide { margin: 0 0 7px; border: 0; background: var(--mist); color: var(--green-dark); }
+  .profile-guide:hover { background: var(--lime); }
+  .profile-logout { border: 1px solid var(--line); background: transparent; color: var(--ink); }
+  .profile-logout:hover { background: var(--mist); }
+
+<<<<<<< HEAD
   /* ---------- BUTTONS ---------- */
   .btn{
     display:inline-flex;align-items:center;gap:9px;
@@ -118,11 +163,21 @@
     font-size:13px;font-weight:700;font-family:inherit;
     cursor:pointer;border:1px solid transparent;
     text-decoration:none;transition:.25s cubic-bezier(.4,0,.2,1);
+=======
+  /* ---------- TOMBOL ---------- */
+  .btn {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 11px 20px; border-radius: 10px;
+    font-size: 13.5px; font-weight: 700; font-family: inherit;
+    cursor: pointer; border: 1px solid transparent;
+    text-decoration: none; transition: .22s cubic-bezier(.4, 0, .2, 1);
+>>>>>>> 41a8156 (hero: hapus CTA duplikat, perbesar headline, pisah tanggal)
   }
-  .btn-primary{
-    background:var(--green);color:#fff;
-    box-shadow:0 14px 28px -14px rgba(23,123,92,.8);
+  .btn-primary {
+    background: var(--green); color: #fff;
+    box-shadow: 0 10px 22px -10px rgba(23,123,92,.7);
   }
+<<<<<<< HEAD
   .btn-primary:hover{background:var(--green-dark);transform:translateY(-1px)}
   .btn-light{
     background:rgba(255,255,255,.18);color:#fff;
@@ -135,10 +190,14 @@
   }
   .btn-ghost:hover{border-color:var(--green);background:var(--mist)}
   .btn-sm{padding:8px 14px;font-size:12px}
+=======
+  .btn-primary:hover { background: var(--green-dark); transform: translateY(-1px); }
+>>>>>>> 41a8156 (hero: hapus CTA duplikat, perbesar headline, pisah tanggal)
 
   /* =========================================================
      LAYOUT
      ========================================================= */
+<<<<<<< HEAD
   .dash{
     max-width:1340px;margin:0 auto;
     padding:22px 26px 70px;
@@ -260,6 +319,15 @@
     overflow:hidden;
     isolation:isolate;
     box-shadow:0 30px 70px -34px rgba(15,101,74,.7);
+=======
+  .hero {
+    position: relative; border-radius: 26px; padding: 34px;
+    min-height: 420px;
+    display: grid; grid-template-columns: 1.25fr .75fr; gap: 24px;
+    color: #f4fff9; overflow: hidden; margin-bottom: 20px;
+    isolation: isolate;
+    box-shadow: 0 30px 70px -34px rgba(15,101,74,.7);
+>>>>>>> 41a8156 (hero: hapus CTA duplikat, perbesar headline, pisah tanggal)
     background:
       linear-gradient(100deg,
         rgba(9,58,41,.94) 0%,
@@ -268,6 +336,7 @@
       radial-gradient(120% 90% at 100% 0%, rgba(214,239,189,.25), transparent 55%),
       url('images.jpg') center/cover no-repeat;
   }
+<<<<<<< HEAD
   .hero::before{
     content:"";position:absolute;left:-130px;bottom:-160px;
     width:340px;height:340px;border-radius:50%;
@@ -413,16 +482,136 @@
     background:#fff;border:1px solid var(--line);
     box-shadow:0 16px 40px -30px rgba(24,69,51,.4);
     display:flex;flex-direction:column;min-height:0;
+=======
+  .hero::before {
+    content: ""; position: absolute;
+    left: -130px; bottom: -160px;
+    width: 340px; height: 340px; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.14);
+    box-shadow: 0 0 0 32px rgba(255,255,255,.04), 0 0 0 64px rgba(255,255,255,.03);
+    pointer-events: none; z-index: 0;
   }
-  .panel-head{
-    display:flex;align-items:center;justify-content:space-between;
-    gap:12px;margin-bottom:14px;
+  .hero::after {
+    content: ""; position: absolute;
+    right: -120px; top: -140px;
+    width: 520px; height: 520px; border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(214,239,189,.35), transparent 70%);
+    pointer-events: none; z-index: 0;
   }
-  .panel-head h3{
-    margin:0;font-family:'Manrope',sans-serif;
-    font-size:13.5px;font-weight:800;letter-spacing:-.01em;
-    color:var(--ink);
+  .hero-left {
+    position: relative; z-index: 2;
+    display: flex; flex-direction: column; justify-content: center;
+    min-width: 0;
+    gap: 4px;
   }
+  .hero-eyebrow {
+    font-size: 10px; font-weight: 800; letter-spacing: .2em;
+    text-transform: uppercase; color: rgba(244,255,249,.78);
+    margin-bottom: 18px;
+  }
+  .hero-headline {
+    font-family: 'Manrope', sans-serif;
+    font-size: clamp(34px, 4vw, 52px);
+    line-height: 1.04; letter-spacing: -.045em;
+    font-weight: 800; margin: 0 0 18px;
+    max-width: 480px;
+    text-shadow: 0 2px 24px rgba(0,0,0,.35);
+  }
+  .hero-date {
+    margin: 0 0 8px;
+    color: rgba(244,255,249,.92);
+    font-size: 14px; font-weight: 700;
+    letter-spacing: .01em;
+    text-shadow: 0 1px 12px rgba(0,0,0,.3);
+  }
+  .hero-sub {
+    margin: 0;
+    max-width: 460px;
+    color: rgba(244,255,249,.82);
+    font-size: 14px; line-height: 1.6;
+    text-shadow: 0 1px 12px rgba(0,0,0,.3);
+  }
+
+  .hero-right { position: relative; z-index: 2; display: grid; place-items: center; min-height: 240px; }
+  .hero-emblem { position: relative; width: min(260px, 90%); aspect-ratio: 1/1; display: grid; place-items: center; }
+  .hero-emblem::before,
+  .hero-emblem::after {
+    content: ""; position: absolute; inset: 0; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.22); pointer-events: none;
+  }
+  .hero-emblem::before {
+    inset: -22px; border-color: rgba(255,255,255,.16);
+    animation: spin 40s linear infinite;
+  }
+  .hero-emblem::after {
+    inset: -46px; border-style: dashed;
+    border-color: rgba(255,255,255,.12);
+    animation: spin 60s linear infinite reverse;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .hero-emblem img {
+    position: relative; z-index: 1;
+    width: 78%; height: 78%; object-fit: contain;
+    filter: drop-shadow(0 26px 40px rgba(6,50,35,.55));
+    animation: float 6s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  .hero-emblem-glow {
+    position: absolute; inset: 6%; border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(214,239,189,.45), transparent 70%);
+    filter: blur(14px); z-index: 0; pointer-events: none;
+  }
+
+  .hero-kpis {
+    grid-column: 1 / -1; position: relative; z-index: 2;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+    margin-top: 32px;
+    align-self: end;
+  }
+  .kpi {
+    padding: 14px 16px; border-radius: 16px;
+    background: rgba(255,255,255,.14);
+    border: 1px solid rgba(255,255,255,.2);
+    backdrop-filter: blur(12px);
+  }
+  .kpi-value {
+    font-family: 'Manrope', sans-serif;
+    font-size: 22px; font-weight: 800; letter-spacing: -.03em;
+    color: #fff; line-height: 1;
+  }
+  .kpi-label {
+    display: flex; align-items: center; gap: 6px; margin-top: 6px;
+    font-size: 10.5px; font-weight: 700; color: rgba(244,255,249,.82);
+  }
+  .kpi-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--lime); flex: none; }
+
+  /* =========================================================
+     CHART PANEL
+     ========================================================= */
+  .chart-panel {
+    border-radius: 22px; padding: 24px 26px 22px;
+    background: #fff; border: 1px solid var(--line);
+    box-shadow: 0 16px 40px -30px rgba(24,69,51,.4);
+    margin-bottom: 20px;
+  }
+  .chart-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 16px; flex-wrap: wrap; margin-bottom: 16px;
+>>>>>>> 41a8156 (hero: hapus CTA duplikat, perbesar headline, pisah tanggal)
+  }
+  .chart-kicker {
+    display: inline-block; color: var(--green);
+    font-size: 10.5px; font-weight: 800; letter-spacing: .14em;
+    text-transform: uppercase; margin-bottom: 4px;
+  }
+  .chart-title {
+    margin: 0; font-family: 'Manrope', sans-serif;
+    font-size: 18px; font-weight: 800; letter-spacing: -.03em; color: var(--ink);
+  }
+<<<<<<< HEAD
   .panel-head a{
     font-size:12px;font-weight:700;color:var(--green);text-decoration:none;
   }
@@ -495,6 +684,29 @@
   }
   .feature:hover .feature-arrow{
     background:var(--green-dark);color:#fff;transform:translateX(3px);
+=======
+  .chart-sub {
+    margin: 5px 0 0; color: var(--muted);
+    font-size: 12.5px; line-height: 1.5; max-width: 460px;
+  }
+  .chart-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+  .chart-tabs {
+    display: inline-flex; gap: 4px; padding: 4px;
+    border: 1px solid var(--line); border-radius: 11px;
+    background: var(--mist);
+  }
+  .chart-tab {
+    padding: 8px 16px; border: 0; border-radius: 8px;
+    background: transparent; color: var(--muted);
+    font: inherit; font-size: 12.5px; font-weight: 700;
+    cursor: pointer; transition: .18s;
+  }
+  .chart-tab:hover { color: var(--ink); }
+  .chart-tab.is-active {
+    background: var(--paper); color: var(--green-dark);
+    box-shadow: 0 2px 8px rgba(24,69,51,.1);
+>>>>>>> 41a8156 (hero: hapus CTA duplikat, perbesar headline, pisah tanggal)
   }
   .feature-copy h3{
     margin:0 0 4px;font-family:'Manrope',sans-serif;
@@ -502,78 +714,131 @@
   }
   .feature-copy p{margin:0;color:var(--muted);font-size:12.5px;line-height:1.5}
 
+<<<<<<< HEAD
   /* TABLE PANEL */
   .table-panel{
     border-radius:22px;padding:22px 24px 12px;
     background:#fff;border:1px solid var(--line);
     box-shadow:0 16px 40px -30px rgba(24,69,51,.4);
+=======
+  .chart-legend { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .legend-chip {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 6px 12px 6px 9px;
+    border: 1px solid var(--line); border-radius: 999px;
+    background: #fff; color: var(--ink);
+    font-size: 12px; font-weight: 700;
+    cursor: pointer; transition: .18s;
+>>>>>>> 41a8156 (hero: hapus CTA duplikat, perbesar headline, pisah tanggal)
   }
-  .table-head{
-    display:flex;align-items:center;justify-content:space-between;
-    gap:14px;margin-bottom:8px;flex-wrap:wrap;
+  .legend-chip:hover { border-color: #b9d2c4; background: var(--mist); }
+  .legend-chip.is-off { opacity: .45; }
+  .legend-chip-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+  .chart-canvas { position: relative; width: 100%; height: 320px; }
+  .chart-canvas svg { width: 100%; height: 100%; display: block; overflow: visible; }
+  .chart-canvas .grid-line { stroke: #eef3f0; stroke-width: 1; }
+  .chart-canvas .grid-line-y { stroke: #eef3f0; stroke-width: 1; stroke-dasharray: 3 4; }
+  .chart-canvas .axis-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px; fill: var(--muted); font-weight: 700;
   }
-  .table-head h3{
-    margin:0;font-family:'Manrope',sans-serif;
-    font-size:14.5px;font-weight:800;letter-spacing:-.02em;
+  .chart-canvas .series-line {
+    fill: none; stroke-width: 2.2;
+    stroke-linecap: round; stroke-linejoin: round;
   }
-  .table-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-  .search-input{
-    padding:8px 14px;border-radius:999px;
-    border:1px solid var(--line);background:#fff;
-    font:inherit;font-size:12.5px;color:var(--ink);
-    min-width:180px;outline:0;transition:.2s;
+  .chart-canvas .series-dot { stroke: #fff; stroke-width: 2; transition: r .2s; }
+  .chart-canvas .series-halo { opacity: .22; }
+  .chart-canvas .series-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px; font-weight: 800; fill: var(--ink);
   }
-  .search-input:focus{border-color:var(--green);box-shadow:0 0 0 4px rgba(23,123,92,.1)}
-  .select{
-    appearance:none;
-    padding:8px 30px 8px 12px;border-radius:999px;
-    border:1px solid var(--line);
-    background:#fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%236f7d77' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>") no-repeat right 12px center;
-    font:inherit;font-size:12px;font-weight:700;
-    color:var(--ink);cursor:pointer;
+  .chart-canvas .x-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10.5px; fill: var(--muted); font-weight: 700;
+    text-anchor: middle;
   }
-  .table-cols{
-    display:grid;grid-template-columns:2fr .8fr 1fr 1.2fr;
-    gap:14px;padding:10px 8px;
-    font-size:10.5px;font-weight:800;
-    letter-spacing:.12em;text-transform:uppercase;
-    color:var(--muted);border-bottom:1px solid var(--line);
+  .chart-canvas .x-label.is-current { fill: var(--green-dark); }
+
+  .chart-empty {
+    margin: 0; padding: 40px 20px;
+    text-align: center; color: var(--muted); font-size: 13.5px;
+    border: 1px dashed var(--line); border-radius: 14px;
   }
-  .row{
-    display:grid;grid-template-columns:2fr .8fr 1fr 1.2fr;
-    gap:14px;align-items:center;
-    padding:14px 8px;border-bottom:1px solid var(--line);
+  .chart-empty[hidden] { display: none; }
+
+  /* =========================================================
+     STAT PANEL
+     ========================================================= */
+  .stat-panel {
+    border-radius: 22px; padding: 24px 26px 26px;
+    background: #fff; border: 1px solid var(--line);
+    box-shadow: 0 16px 40px -30px rgba(24,69,51,.4);
   }
-  .row:last-child{border-bottom:0}
-  .row-title{display:flex;align-items:center;gap:12px;min-width:0}
-  .thumb{
-    width:44px;height:44px;border-radius:10px;flex:none;
-    display:grid;place-items:center;
-    background:var(--mist);color:var(--green-dark);
-    font-size:15px;font-weight:800;
+  .stat-panel-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    gap: 12px; flex-wrap: wrap; margin-bottom: 18px;
   }
-  .row-title strong{
-    display:block;font-size:13px;font-weight:700;color:var(--ink);
-    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  .stat-panel-head h2 {
+    margin: 0; font-family: 'Manrope', sans-serif;
+    font-size: 16px; font-weight: 800; letter-spacing: -.03em; color: var(--ink);
   }
-  .row-title small{
-    display:block;margin-top:3px;font-size:10.5px;color:var(--muted);
-    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  .stat-panel-sub { color: var(--muted); font-size: 12px; font-weight: 700; }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
   }
-  .row-num{
-    font-family:'Manrope',sans-serif;
-    font-size:13.5px;font-weight:800;letter-spacing:-.02em;
-    color:var(--ink);
+  .stat-card {
+    position: relative; padding: 16px 18px 15px;
+    border: 1px solid var(--line); border-radius: 14px;
+    background: #fff; transition: .2s;
   }
-  .spark{width:100%;height:28px;display:block}
-  .empty-row{
-    padding:32px 12px;text-align:center;color:var(--muted);font-size:13px;
+  .stat-card:hover {
+    border-color: #b9d2c4;
+    box-shadow: 0 12px 24px -20px rgba(24,69,51,.5);
   }
-  .empty-row strong{color:var(--green-dark);display:block;margin-bottom:6px}
+  .stat-card-title {
+    display: block;
+    font-size: 12.5px; font-weight: 700; color: var(--muted);
+    letter-spacing: .02em; line-height: 1.4;
+    min-height: 34px; margin-bottom: 10px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .stat-card-value {
+    font-family: 'Manrope', sans-serif;
+    font-size: 30px; font-weight: 800; letter-spacing: -.04em;
+    color: var(--ink); line-height: 1; margin-bottom: 8px;
+  }
+  .stat-card-meta {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 11px; color: var(--muted); font-weight: 700;
+  }
+  .trend {
+    display: inline-flex; align-items: center; gap: 3px;
+    padding: 3px 8px; border-radius: 999px;
+    font-size: 10.5px; font-weight: 800; letter-spacing: .02em;
+  }
+  .trend-up { background: #e6f4ec; color: #0d6047; }
+  .trend-down { background: #fbe6e6; color: #a33d31; }
+  .trend-flat { background: var(--mist); color: var(--muted); }
+  .trend-new { background: #eef4fd; color: #1e40af; }
+
+  .stat-empty {
+    grid-column: 1 / -1;
+    padding: 30px 20px; text-align: center;
+    color: var(--muted); font-size: 13.5px;
+    border: 1px dashed var(--line); border-radius: 14px;
+  }
 
   /* =========================================================
      RESPONSIVE
      ========================================================= */
+<<<<<<< HEAD
   @media (max-width:1080px){
     .dash{grid-template-columns:1fr}
     .side-col{position:static;flex-direction:row;flex-wrap:wrap}
@@ -600,12 +865,38 @@
     .table-cols span:nth-child(3),.table-cols span:nth-child(4),
     .row > *:nth-child(3),.row > *:nth-child(4){display:none}
     .search-input{min-width:140px}
+=======
+  @media (max-width: 960px) {
+    .hero { grid-template-columns: 1fr; min-height: 0; }
+    .hero-right { min-height: 200px; order: -1; }
+    .hero-emblem { width: min(200px, 60%); }
+    .hero-kpis { grid-template-columns: repeat(2, 1fr); margin-top: 24px; }
+  }
+  @media (max-width: 640px) {
+    .dash { padding: 20px 16px 50px; }
+    .hero { padding: 24px; border-radius: 20px; }
+    .hero-headline { font-size: 28px; }
+    .hero-kpis { grid-template-columns: 1fr; }
+    .dash-actions { width: 100%; }
+    .dash-actions .btn-primary { flex: 1; justify-content: center; }
+
+    .chart-panel { padding: 20px 18px; }
+    .chart-canvas { height: 240px; }
+    .chart-title { font-size: 16px; }
+    .chart-header { gap: 12px; }
+    .chart-controls { width: 100%; }
+    .chart-tabs { width: 100%; }
+    .chart-tab { flex: 1; text-align: center; }
+
+    .stat-panel { padding: 20px 18px; }
+    .stat-grid { grid-template-columns: 1fr; }
+>>>>>>> 41a8156 (hero: hapus CTA duplikat, perbesar headline, pisah tanggal)
   }
 
-  @media (prefers-reduced-motion:reduce){
+  @media (prefers-reduced-motion: reduce) {
     .hero-emblem::before,
     .hero-emblem::after,
-    .hero-emblem img{animation:none}
+    .hero-emblem img { animation: none; }
   }
 </style>
 </head>
@@ -650,6 +941,7 @@
   <!-- ================= LAYOUT ================= -->
   <div class="dash">
 
+<<<<<<< HEAD
     <!-- ============ SIDEBAR KIRI ============ -->
     <aside class="side-col">
 
@@ -816,6 +1108,97 @@
             <p>Wizard 4 langkah: data pembuat, pilih template, tentukan penandatangan, lalu cetak.</p>
           </div>
         </a>
+=======
+    <!-- HEADER -->
+    <header class="dash-top">
+      <div class="dash-brand">
+        <span class="dash-logo" aria-hidden="true"></span>
+        Sistem Surat Dinas Kabupaten Tuban
+      </div>
+      <div class="dash-actions">
+        <div class="profile">
+          <button id="profile-button" class="profile-button" type="button"
+                  aria-expanded="false" aria-controls="profile-popover">
+            <span id="profile-avatar" class="profile-avatar">A</span>
+            <span id="profile-label">Profil</span>
+          </button>
+          <div id="profile-container"></div>
+        </div>
+        <a href="buat-surat.html" class="btn btn-primary">Buat surat baru</a>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-left">
+        <span class="hero-eyebrow">Dinas Kependudukan dan Pencatatan Sipil</span>
+        <h1 class="hero-headline" id="greeting">Selamat datang</h1>
+        <p class="hero-date" id="heroDate"></p>
+        <p class="hero-sub" id="heroSub">
+          Kelola pembuatan, template, dan arsip surat dari satu tempat.
+        </p>
+      </div>
+
+      <div class="hero-right">
+        <div class="hero-emblem">
+          <span class="hero-emblem-glow"></span>
+          <img src="Lambang_Kabupaten_Tuban.webp" alt="Lambang Kabupaten Tuban">
+        </div>
+      </div>
+
+      <div class="hero-kpis" aria-label="Ringkasan surat">
+        <div class="kpi">
+          <div class="kpi-value" id="stat-letters">0</div>
+          <div class="kpi-label"><span class="kpi-dot"></span> Total arsip</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-value" id="stat-templates">0</div>
+          <div class="kpi-label"><span class="kpi-dot"></span> Jenis surat</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-value" id="stat-week-num">0</div>
+          <div class="kpi-label"><span class="kpi-dot"></span> 30 hari terakhir</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-value" id="stat-month-num">0</div>
+          <div class="kpi-label"><span class="kpi-dot"></span> Bulan ini</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHART PANEL -->
+    <section class="chart-panel">
+      <div class="chart-header">
+        <div>
+          <span class="chart-kicker">Tren</span>
+          <h2 class="chart-title">Aktivitas per Jenis Surat</h2>
+          <p class="chart-sub">Pantau naik-turunnya minat tiap jenis surat — per hari, per bulan, atau per tahun.</p>
+        </div>
+        <div class="chart-controls">
+          <div class="chart-tabs" role="tablist" aria-label="Rentang waktu">
+            <button type="button" class="chart-tab" data-range="daily">Hari</button>
+            <button type="button" class="chart-tab is-active" data-range="monthly">Bulan</button>
+            <button type="button" class="chart-tab" data-range="yearly">Tahun</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-legend" id="chartLegend"></div>
+      <div class="chart-canvas" id="chartCanvas">
+        <svg id="chartSvg" viewBox="0 0 800 320" preserveAspectRatio="none" aria-hidden="true"></svg>
+      </div>
+      <p class="chart-empty" id="chartEmpty" hidden>Belum ada cukup data untuk menampilkan grafik.</p>
+    </section>
+
+    <!-- STAT PANEL -->
+    <section class="stat-panel">
+      <div class="stat-panel-head">
+        <h2>Ringkasan per Jenis Surat</h2>
+        <span class="stat-panel-sub">Perbandingan 30 hari terakhir vs 30 hari sebelumnya</span>
+      </div>
+      <div class="stat-grid" id="statGrid"></div>
+    </section>
+>>>>>>> 41a8156 (hero: hapus CTA duplikat, perbesar headline, pisah tanggal)
 
         <a class="feature" href="template.html">
           <div class="feature-top">
@@ -870,6 +1253,7 @@
 
   <script src="data.js"></script>
   <script>
+<<<<<<< HEAD
     /* ====== HELPERS ====== */
     function escapeHtml(s){
       return String(s ?? "").replace(/[&<>"']/g, c => ({
@@ -878,6 +1262,11 @@
     }
 
     /* ====== GREETING ====== */
+=======
+    /* =========================================================
+       GREETING
+       ========================================================= */
+>>>>>>> 41a8156 (hero: hapus CTA duplikat, perbesar headline, pisah tanggal)
     const auth = typeof getAuth === "function" ? getAuth() : null;
     const authName = auth?.nama || auth?.username || "Admin Surat";
     const hour = new Date().getHours();
@@ -886,39 +1275,116 @@
                : hour < 19 ? "Selamat sore"
                : "Selamat malam";
     document.getElementById("greeting").textContent = `${salam}, ${authName}`;
-    document.getElementById("heroSub").textContent =
-      `${new Date().toLocaleDateString("id-ID",{weekday:"long",day:"numeric",month:"long",year:"numeric"})} — kelola pembuatan, template, dan arsip surat dari satu tempat.`;
+    document.getElementById("heroDate").textContent =
+      new Date().toLocaleDateString("id-ID",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
     document.getElementById("profile-label").textContent = authName;
     document.getElementById("profile-avatar").textContent = authName.charAt(0).toUpperCase();
 
+<<<<<<< HEAD
     /* ====== DATA ====== */
+=======
+    /* =========================================================
+       DATA
+       ========================================================= */
+>>>>>>> 41a8156 (hero: hapus CTA duplikat, perbesar headline, pisah tanggal)
     const letters   = typeof getLetters   === "function" ? getLetters()   : [];
     const templates = typeof getTemplates === "function" ? getTemplates() : [];
 
+    /* =========================================================
+       KPI
+       ========================================================= */
     const now = Date.now();
-    const weekAgo = now - 7 * 24 * 60 * 60 * 1000;
-    const thisWeek = letters.filter(l => new Date(l.created_at || l.tanggal || 0).getTime() >= weekAgo);
-    const drafts = letters.filter(l => (l.status || "").toLowerCase() === "draft");
+    const D30 = 30 * 24 * 60 * 60 * 1000;
+    const now30 = now - D30;
+    const thisMonth = (function () {
+      const d = new Date();
+      return new Date(d.getFullYear(), d.getMonth(), 1).getTime();
+    })();
 
+<<<<<<< HEAD
     document.getElementById("stat-letters").textContent   = letters.length;
     document.getElementById("stat-templates").textContent = templates.length;
     document.getElementById("stat-drafts").textContent    = drafts.length;
     document.getElementById("stat-week-num").textContent  = thisWeek.length;
     document.getElementById("chartBadge").textContent     = thisWeek.length;
+=======
+    const count30 = letters.filter(l => new Date(l.created_at || l.tanggal || 0).getTime() >= now30);
+    const countMonth = letters.filter(l => new Date(l.created_at || l.tanggal || 0).getTime() >= thisMonth);
 
-    /* ====== CHART ====== */
-    const days = [];
-    for (let i = 6; i >= 0; i--) {
-      const d = new Date(); d.setDate(d.getDate() - i); d.setHours(0,0,0,0);
-      days.push(d);
+    document.getElementById("stat-letters").textContent   = letters.length;
+    document.getElementById("stat-templates").textContent = templates.length;
+    document.getElementById("stat-week-num").textContent  = count30.length;
+    document.getElementById("stat-month-num").textContent = countMonth.length;
+>>>>>>> 41a8156 (hero: hapus CTA duplikat, perbesar headline, pisah tanggal)
+
+    /* =========================================================
+       CHART — Tren per Jenis Surat
+       ========================================================= */
+    const COLORS = [
+      "#7c3aed", // ungu
+      "#ec4899", // pink
+      "#f97316", // oranye
+      "#3b82f6", // biru
+      "#10b981", // hijau
+    ];
+
+    const chartState = {
+      range: "monthly",   // "daily" | "monthly" | "yearly"
+      hiddenKeys: new Set(),
+    };
+
+    function getBuckets(mode) {
+      const list = [];
+      const base = new Date();
+
+      if (mode === "daily") {
+        for (let i = 29; i >= 0; i--) {
+          const d = new Date(base.getFullYear(), base.getMonth(), base.getDate() - i);
+          const start = new Date(d); start.setHours(0,0,0,0);
+          const end = new Date(d);   end.setHours(23,59,59,999);
+          list.push({
+            start: start.getTime(),
+            end: end.getTime() + 1,
+            label: d.getDate() + "/" + (d.getMonth() + 1),
+            fullLabel: d.toLocaleDateString("id-ID", { weekday:"long", day:"numeric", month:"long", year:"numeric" }),
+          });
+        }
+        return list;
+      }
+
+      if (mode === "monthly") {
+        for (let i = 11; i >= 0; i--) {
+          const d = new Date(base.getFullYear(), base.getMonth() - i, 1);
+          list.push({
+            start: d.getTime(),
+            end: new Date(d.getFullYear(), d.getMonth() + 1, 1).getTime(),
+            label: d.toLocaleDateString("id-ID", { month: "short" }),
+            fullLabel: d.toLocaleDateString("id-ID", { month:"long", year:"numeric" }),
+          });
+        }
+        return list;
+      }
+
+      const yearNow = base.getFullYear();
+      for (let i = 4; i >= 0; i--) {
+        const y = yearNow - i;
+        list.push({
+          start: new Date(y, 0, 1).getTime(),
+          end: new Date(y + 1, 0, 1).getTime(),
+          label: String(y),
+          fullLabel: String(y),
+        });
+      }
+      return list;
     }
-    const counts = days.map(day => {
-      const start = day.getTime();
-      const end = start + 24 * 60 * 60 * 1000;
+
+    function countInBucket(templateKey, bucket) {
       return letters.filter(l => {
+        if (l.template_key !== templateKey) return false;
         const t = new Date(l.created_at || l.tanggal || 0).getTime();
-        return t >= start && t < end;
+        return t >= bucket.start && t < bucket.end;
       }).length;
+<<<<<<< HEAD
     });
     const maxCount = Math.max(1, ...counts);
     const w = 320, h = 140, pad = 20;
@@ -990,22 +1456,84 @@
     const rowsEl   = document.getElementById("rows");
     const searchEl = document.getElementById("search");
     const filterEl = document.getElementById("filterStatus");
+=======
+    }
 
-    function renderRows() {
-      const q = searchEl.value.trim().toLowerCase();
-      const f = filterEl.value.toLowerCase();
-      const filtered = letters.filter(l => {
-        const tpl = templates.find(t => t.key === l.template_key) || { nama: "" };
-        const text = `${l.nomor_surat||""} ${l.id||""} ${tpl.nama||""}`.toLowerCase();
-        const status = (l.status || "final").toLowerCase();
-        return (!q || text.includes(q)) && (!f || status === f);
+    function smoothPath(points) {
+      if (points.length < 2) return "";
+      let d = `M ${points[0][0]},${points[0][1]}`;
+      for (let i = 1; i < points.length; i++) {
+        const [x0, y0] = points[i - 1];
+        const [x1, y1] = points[i];
+        const cx = (x0 + x1) / 2;
+        d += ` C ${cx},${y0} ${cx},${y1} ${x1},${y1}`;
+      }
+      return d;
+    }
+>>>>>>> 41a8156 (hero: hapus CTA duplikat, perbesar headline, pisah tanggal)
+
+    function renderChartLegend(series) {
+      const el = document.getElementById("chartLegend");
+      if (!series.length) { el.innerHTML = ""; return; }
+      el.innerHTML = series.map(s => `
+        <button type="button" class="legend-chip ${chartState.hiddenKeys.has(s.key) ? "is-off" : ""}"
+                data-key="${escapeHtml(s.key)}">
+          <span class="legend-chip-dot" style="background:${s.color}"></span>
+          ${escapeHtml(s.name)}
+        </button>
+      `).join("");
+      el.querySelectorAll("[data-key]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const k = btn.dataset.key;
+          if (chartState.hiddenKeys.has(k)) chartState.hiddenKeys.delete(k);
+          else chartState.hiddenKeys.add(k);
+          renderChart();
+        });
       });
+    }
 
-      if (!filtered.length) {
-        rowsEl.innerHTML = `<div class="empty-row"><strong>Tidak ada surat yang cocok</strong>Ubah kata kunci atau filter, atau buat surat baru.</div>`;
+    function renderChart() {
+      const svg = document.getElementById("chartSvg");
+      const emptyEl = document.getElementById("chartEmpty");
+      const canvasEl = document.getElementById("chartCanvas");
+
+      const buckets = getBuckets(chartState.range);
+
+      const topTemplates = templates
+        .map(t => ({
+          key: t.key,
+          name: t.nama,
+          total: letters.filter(l => l.template_key === t.key).length,
+        }))
+        .sort((a, b) => b.total - a.total)
+        .slice(0, 5);
+
+      if (!letters.length || !topTemplates.length) {
+        svg.innerHTML = "";
+        canvasEl.style.display = "none";
+        emptyEl.hidden = false;
+        renderChartLegend([]);
+        return;
+      }
+      canvasEl.style.display = "";
+      emptyEl.hidden = true;
+
+      const allSeries = topTemplates.map((t, i) => ({
+        key: t.key,
+        name: t.name,
+        color: COLORS[i % COLORS.length],
+        values: buckets.map(b => countInBucket(t.key, b)),
+      }));
+
+      const visibleSeries = allSeries.filter(s => !chartState.hiddenKeys.has(s.key));
+      renderChartLegend(allSeries);
+
+      if (!visibleSeries.length) {
+        svg.innerHTML = "";
         return;
       }
 
+<<<<<<< HEAD
       rowsEl.innerHTML = filtered.slice(0, 8).map(l => {
         const tpl = templates.find(t => t.key === l.template_key) || { nama: "Template" };
         const status = (l.status || "final").toLowerCase();
@@ -1044,6 +1572,145 @@
 
     /* ====== PROFILE ====== */
     const profileButton    = document.getElementById("profile-button");
+=======
+      const maxVal = Math.max(1, ...allSeries.flatMap(s => s.values));
+      const yMax = Math.max(4, Math.ceil(maxVal * 1.15));
+
+      const W = 800, H = 320;
+      const padL = 44, padR = 24, padT = 24, padB = 44;
+      const innerW = W - padL - padR;
+      const innerH = H - padT - padB;
+
+      const N = buckets.length;
+      const stepX = N > 1 ? innerW / (N - 1) : 0;
+      const xOf = i => padL + i * stepX;
+      const yOf = v => padT + innerH - (v / yMax) * innerH;
+
+      const gridLines = [];
+      const gridCount = 4;
+      for (let i = 0; i <= gridCount; i++) {
+        const v = (yMax / gridCount) * i;
+        const y = yOf(v);
+        gridLines.push(`<line class="grid-line-y" x1="${padL}" y1="${y}" x2="${padL + innerW}" y2="${y}" />`);
+        gridLines.push(`<text class="axis-label" x="${padL - 10}" y="${y + 3}" text-anchor="end">${Math.round(v)}</text>`);
+      }
+
+      const labelStep = chartState.range === "daily" ? 5
+                      : chartState.range === "monthly" ? 1
+                      : 1;
+
+      const verticalLines = [];
+      const xLabels = [];
+      buckets.forEach((b, i) => {
+        const x = xOf(i);
+        const isLast = i === buckets.length - 1;
+        if (i % labelStep === 0 || isLast) {
+          verticalLines.push(`<line class="grid-line" x1="${x}" y1="${padT}" x2="${x}" y2="${padT + innerH}" />`);
+          xLabels.push(
+            `<text class="x-label ${isLast ? "is-current" : ""}" x="${x}" y="${padT + innerH + 22}">${escapeHtml(b.label)}</text>`
+          );
+        }
+      });
+
+      const paths = [];
+      visibleSeries.forEach(s => {
+        const points = s.values.map((v, i) => [xOf(i), yOf(v)]);
+        const d = smoothPath(points);
+        paths.push(`<path class="series-line" d="${d}" stroke="${s.color}" />`);
+
+        points.forEach(([x, y], i) => {
+          const isLast = i === points.length - 1;
+          const showDot = (i % labelStep === 0) || isLast;
+          if (!showDot) return;
+          const r = isLast ? 5 : 3;
+          if (isLast) {
+            paths.push(`<circle class="series-halo" cx="${x}" cy="${y}" r="12" fill="${s.color}" />`);
+          }
+          paths.push(`<circle class="series-dot" cx="${x}" cy="${y}" r="${r}" fill="${s.color}" />`);
+        });
+
+        const lastX = points[points.length - 1][0];
+        const lastY = points[points.length - 1][1];
+        paths.push(`<text class="series-label" x="${lastX + 10}" y="${lastY + 4}" fill="${s.color}">${s.values[s.values.length - 1]}</text>`);
+      });
+
+      svg.innerHTML = `
+        <g>${gridLines.join("")}</g>
+        <g>${verticalLines.join("")}</g>
+        <g>${paths.join("")}</g>
+        <g>${xLabels.join("")}</g>
+      `;
+    }
+
+    document.querySelectorAll(".chart-tab").forEach(tab => {
+      tab.addEventListener("click", () => {
+        document.querySelectorAll(".chart-tab").forEach(t => t.classList.remove("is-active"));
+        tab.classList.add("is-active");
+        chartState.range = tab.dataset.range;
+        renderChart();
+      });
+    });
+
+    renderChart();
+
+    /* =========================================================
+       STAT — Ringkasan per Jenis
+       ========================================================= */
+    function renderStatGrid() {
+      const el = document.getElementById("statGrid");
+      if (!templates.length) {
+        el.innerHTML = `<div class="stat-empty">Belum ada jenis surat. Buat template dulu di menu Kelola Surat.</div>`;
+        return;
+      }
+
+      const prevStart = now - D30 * 2;
+      const prevEnd = now - D30;
+
+      const cards = templates.map(t => {
+        const allForT = letters.filter(l => l.template_key === t.key);
+        const last = allForT.filter(l => {
+          const ts = new Date(l.created_at || l.tanggal || 0).getTime();
+          return ts >= now30;
+        }).length;
+        const prev = allForT.filter(l => {
+          const ts = new Date(l.created_at || l.tanggal || 0).getTime();
+          return ts >= prevStart && ts < prevEnd;
+        }).length;
+
+        let trend = { cls: "trend-flat", label: "—", text: "0%" };
+        if (prev === 0 && last > 0) {
+          trend = { cls: "trend-new", label: "✦", text: "Baru" };
+        } else if (prev > 0) {
+          const pct = Math.round(((last - prev) / prev) * 100);
+          if (pct > 0)      trend = { cls: "trend-up",   label: "▲", text: `+${pct}%` };
+          else if (pct < 0) trend = { cls: "trend-down", label: "▼", text: `${pct}%` };
+          else              trend = { cls: "trend-flat", label: "→", text: "0%" };
+        }
+
+        return { template: t, total: allForT.length, last, prev, trend };
+      });
+
+      cards.sort((a, b) => (b.last - a.last) || (b.total - a.total));
+
+      el.innerHTML = cards.map(c => `
+        <div class="stat-card">
+          <span class="stat-card-title">${escapeHtml(c.template.nama)}</span>
+          <div class="stat-card-value">${c.total}</div>
+          <div class="stat-card-meta">
+            <span class="trend ${c.trend.cls}">${c.trend.label} ${c.trend.text}</span>
+            <span>${c.last} surat / 30 hari</span>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    renderStatGrid();
+
+    /* =========================================================
+       PROFILE
+       ========================================================= */
+    const profileButton = document.getElementById("profile-button");
+>>>>>>> 41a8156 (hero: hapus CTA duplikat, perbesar headline, pisah tanggal)
     const profileContainer = document.getElementById("profile-container");
 
     function toggleProfile() {
