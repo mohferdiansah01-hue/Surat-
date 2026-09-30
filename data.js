@@ -6,6 +6,7 @@ const DIRUT_KEY = "suratapp_dirut";
 const LETTERS_KEY = "suratapp_letters";
 const DUMMY_TEMPLATE_SEED_KEY = "suratapp_dummy_blitar_seeded";
 const DUMMY_TEMPLATE_VERSION_KEY = "suratapp_dummy_blitar_version";
+const DUMMY_LETTERS_SEED_KEY = "suratapp_dummy_letters_seeded";
 let pendingProtectedControl = null;
 
 // =========================================================
@@ -471,10 +472,108 @@ function renderTemplate(template, data) {
 }
 
 // =========================================================
+// DEMO SEED — 1 tahun berjalan
+// Hanya jalan sekali, kalau arsip masih kosong
+// =========================================================
+function seedDemoLetters() {
+  const raw = localStorage.getItem(LETTERS_KEY);
+  let existing = [];
+  try { existing = JSON.parse(raw) || []; } catch (e) { existing = []; }
+  if (existing.length > 0) {
+    localStorage.setItem(DUMMY_LETTERS_SEED_KEY, "v1");
+    return;
+  }
+
+  const templates = getTemplates();
+  const signers = getDirut();
+  if (!templates.length || !signers.length) return;
+
+  // Pola volume per bulan: [11 bulan lalu, ..., bulan ini]
+  // Angka sengaja bervariasi supaya tren terlihat
+  const PATTERN_BY_TEMPLATE = {
+    "Konfirmasi Keabsahan Kutipan Akta Kelahiran": [3, 5, 7, 9, 11, 13, 12, 16, 18, 21, 24, 28],
+    "Surat Keterangan":                            [22, 20, 24, 21, 26, 24, 28, 26, 29, 27, 30, 32],
+    "Jawaban Keabsahan Akta Kelahiran":            [14, 18, 11, 20, 15, 22, 17, 24, 19, 26, 21, 30],
+  };
+  const DEFAULT_PATTERN = [8, 9, 10, 9, 11, 12, 11, 13, 14, 13, 15, 16];
+
+  const creators = [
+    "Ahmad Fauzi", "Budi Santoso", "Citra Dewi Lestari", "Dedi Kurniawan",
+    "Eka Farid Sani", "Fitri Handayani", "Gunawan Pratama", "Hesti Purnamasari",
+  ];
+
+  const today = new Date();
+  const letters = [];
+  let counter = 1;
+
+  templates.forEach((tpl) => {
+    const pattern = PATTERN_BY_TEMPLATE[tpl.nama] || DEFAULT_PATTERN;
+
+    for (let i = 0; i < 12; i++) {
+      // bulan ke-(11-i): i=0 → 11 bulan lalu, i=11 → bulan ini
+      const monthDate = new Date(today.getFullYear(), today.getMonth() - (11 - i), 1);
+      const count = pattern[i] || 0;
+
+      for (let j = 0; j < count; j++) {
+        const day = 1 + Math.floor(Math.random() * 27);
+        const hour = 8 + Math.floor(Math.random() * 9);
+        const minute = Math.floor(Math.random() * 60);
+
+        const dt = new Date(monthDate.getFullYear(), monthDate.getMonth(), day, hour, minute);
+
+        // Jangan sampai melampaui hari ini
+        if (dt.getTime() > Date.now()) continue;
+
+        const signer = signers[Math.floor(Math.random() * signers.length)];
+        const creator = creators[Math.floor(Math.random() * creators.length)];
+
+        const roll = Math.random();
+        const status = roll < 0.06 ? "draft"
+                    : roll < 0.10 ? "gagal"
+                    : "final";
+
+        const bulanRomawi = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII"][dt.getMonth()];
+
+        letters.push({
+          id: `L${String(counter).padStart(3, "0")}`,
+          template_key: tpl.key,
+          created_by: creator,
+          created_by_detail: { jabatan: "Staf Pelayanan" },
+          signer_mode: "selected",
+          signer_id: signer.id,
+          signer_nama: signer.nama,
+          signer_jabatan: signer.jabatan,
+          signer_pangkat: signer.pangkat || "",
+          signer_nip: signer.nip || "",
+          nomor_surat: `B/${String(400 + counter).padStart(3, "0")}/470.02/${bulanRomawi}/${dt.getFullYear()}`,
+          data: { ...(tpl.sample_data || {}) },
+          attachment: null,
+          status,
+          created_at: dt.toISOString(),
+          updated_at: dt.toISOString(),
+        });
+
+        counter++;
+      }
+    }
+  });
+
+  // Urut dari terbaru
+  letters.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+  localStorage.setItem(LETTERS_KEY, JSON.stringify(letters));
+  localStorage.setItem(DUMMY_LETTERS_SEED_KEY, "v1");
+}
+
+// =========================================================
 // LETTERS
 // =========================================================
 function getLetters() {
   try {
+    // Auto-seed sekali kalau arsip masih kosong
+    if (localStorage.getItem(DUMMY_LETTERS_SEED_KEY) !== "v1") {
+      seedDemoLetters();
+    }
     const saved = JSON.parse(localStorage.getItem(LETTERS_KEY));
     return Array.isArray(saved) ? saved : [];
   } catch (error) { return []; }

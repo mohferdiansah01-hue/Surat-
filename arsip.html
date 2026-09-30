@@ -6,7 +6,9 @@
 <title>Arsip Surat · Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban</title>
 <link rel="stylesheet" href="style.css">
 <style>
-  /* === Filter bar (sejajar) === */
+  /* =========================================================
+     TOOLBAR — Search + Jenis + Sort + Date Picker
+     ========================================================= */
   .archive-toolbar {
     display: flex;
     align-items: center;
@@ -58,7 +60,6 @@
     color: var(--green-dark);
     font-weight: 700;
   }
-
   .archive-count {
     flex: 1 1 100%;
     margin: 0;
@@ -67,7 +68,298 @@
     font-weight: 700;
   }
 
-  /* === Grid kartu jenis surat === */
+  /* =========================================================
+     DATE PICKER
+     ========================================================= */
+  .date-picker { position: relative; flex: 0 0 auto; }
+
+  .date-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 11px 15px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #fbfdfc;
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s, background .2s;
+  }
+  .date-trigger:hover { border-color: #b9d2c4; }
+  .date-trigger:focus-visible {
+    border-color: var(--green);
+    box-shadow: 0 0 0 4px rgba(23,123,92,.11);
+  }
+  .date-trigger.is-active {
+    border-color: var(--green);
+    background: #f1f8f3;
+    color: var(--green-dark);
+  }
+  .date-trigger svg {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .date-trigger-caret {
+    width: 9px;
+    height: 6px;
+    margin-left: 2px;
+    stroke: var(--muted);
+    fill: none;
+    stroke-width: 1.8;
+    transition: transform .2s;
+  }
+  .date-trigger[aria-expanded="true"] .date-trigger-caret { transform: rotate(180deg); }
+
+  .date-panel {
+    position: absolute;
+    z-index: 40;
+    top: calc(100% + 10px);
+    left: 0;
+    width: 360px;
+    max-width: calc(100vw - 24px);
+    padding: 20px 20px 18px;
+    border-radius: 22px;
+    background:
+      linear-gradient(160deg,
+        #b8cdc0 0%,
+        #92ad9c 40%,
+        #6f8b7a 100%);
+    color: #fff;
+    box-shadow:
+      0 30px 60px -20px rgba(24, 69, 51, .45),
+      0 8px 24px -8px rgba(24, 69, 51, .3);
+    transform-origin: top left;
+    animation: datePanelIn .18s cubic-bezier(.4, 0, .2, 1);
+  }
+  .date-panel[hidden] { display: none; }
+  @keyframes datePanelIn {
+    from { opacity: 0; transform: translateY(-6px) scale(.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .date-mode {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 22px;
+  }
+  .date-mode-toggle {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    padding: 4px;
+    border-radius: 12px;
+    background: rgba(255,255,255,.15);
+    backdrop-filter: blur(6px);
+  }
+  .date-mode-toggle button {
+    padding: 8px 12px;
+    border: 0;
+    border-radius: 9px;
+    background: transparent;
+    color: rgba(255,255,255,.75);
+    font: inherit;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .18s;
+  }
+  .date-mode-toggle button:hover { color: #fff; }
+  .date-mode-toggle button.is-active {
+    background: #fff;
+    color: #2c4a3d;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+  }
+
+  .date-settings {
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255,255,255,.18);
+    color: #fff;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: background .18s;
+  }
+  .date-settings:hover { background: rgba(255,255,255,.28); }
+  .date-settings svg {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .date-headline {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 26px;
+    font-family: 'Manrope', sans-serif;
+    color: #fff;
+  }
+  .date-headline-month {
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -.03em;
+    line-height: 1;
+    text-shadow: 0 1px 12px rgba(0,0,0,.18);
+  }
+  .date-headline-day {
+    font-size: 54px;
+    font-weight: 800;
+    letter-spacing: -.05em;
+    line-height: 1;
+    text-shadow: 0 1px 14px rgba(0,0,0,.22);
+  }
+  .date-headline-day.is-empty { opacity: .35; font-size: 44px; }
+
+  .date-week {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 18px;
+  }
+  .date-day-head {
+    padding: 4px 0 8px;
+    font-size: 10.5px;
+    font-weight: 700;
+    text-align: center;
+    color: rgba(255,255,255,.72);
+    letter-spacing: .02em;
+  }
+  .date-day {
+    position: relative;
+    display: grid;
+    place-items: center;
+    height: 40px;
+    padding: 0;
+    border: 0;
+    border-radius: 12px;
+    background: transparent;
+    color: rgba(255,255,255,.9);
+    font: inherit;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .15s;
+  }
+  .date-day:hover {
+    background: rgba(255,255,255,.18);
+    color: #fff;
+  }
+  .date-day.is-out {
+    color: rgba(255,255,255,.32);
+    cursor: default;
+  }
+  .date-day.is-out:hover { background: transparent; }
+  .date-day.is-today {
+    box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.5);
+  }
+  .date-day.is-selected {
+    background: #fff;
+    color: #2c4a3d;
+    box-shadow: 0 6px 16px -6px rgba(0,0,0,.35);
+  }
+  .date-day.is-selected:hover { background: #fff; color: #2c4a3d; }
+
+  .date-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .date-nav-btn {
+    width: 34px;
+    height: 34px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255,255,255,.18);
+    color: #fff;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: background .18s;
+  }
+  .date-nav-btn:hover { background: rgba(255,255,255,.28); }
+  .date-nav-btn svg {
+    width: 15px;
+    height: 15px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .date-nav-label {
+    flex: 1;
+    text-align: center;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: rgba(255,255,255,.9);
+  }
+
+  .date-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255,255,255,.18);
+  }
+  .date-action {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 12px;
+    border: 1px solid rgba(255,255,255,.22);
+    border-radius: 10px;
+    background: rgba(255,255,255,.14);
+    color: #fff;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .18s;
+  }
+  .date-action:hover { background: rgba(255,255,255,.24); }
+  .date-action.is-primary {
+    background: #fff;
+    color: #2c4a3d;
+    border-color: #fff;
+  }
+  .date-action.is-primary:hover { background: #f1f8f3; }
+  .date-action svg {
+    width: 13px;
+    height: 13px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* =========================================================
+     GRID kartu jenis surat
+     ========================================================= */
   .category-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -163,7 +455,9 @@
     max-width: 720px;
   }
 
-  /* === Modal daftar surat per kategori === */
+  /* =========================================================
+     MODAL daftar surat
+     ========================================================= */
   .letters-modal { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 24px; }
   .letters-modal[hidden] { display: none; }
   .letters-modal-backdrop { position: absolute; inset: 0; background: rgba(23,35,31,.55); backdrop-filter: blur(3px); }
@@ -181,7 +475,7 @@
   .letters-modal-header {
     display: flex; align-items: center; justify-content: space-between;
     gap: 12px;
-    padding: 20px 24px;
+    padding: 20px 24px 14px;
     border-bottom: 1px solid var(--line);
   }
   .letters-modal-header h3 {
@@ -201,9 +495,64 @@
     width: 34px; height: 34px;
     border: 0; border-radius: 8px;
     background: transparent; color: var(--muted);
-    font-size: 20px; cursor: pointer;
+    font-size: 20px; cursor: pointer; flex-shrink: 0;
   }
   .letters-modal-close:hover { background: var(--mist); color: var(--ink); }
+
+  .modal-search-wrap { padding: 14px 24px 0; position: relative; flex-shrink: 0; }
+  .modal-search-icon {
+    position: absolute;
+    left: 36px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px; height: 16px;
+    stroke: var(--muted);
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    pointer-events: none;
+  }
+  .modal-search {
+    width: 100%;
+    padding: 11px 38px 11px 40px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #fbfdfc;
+    color: var(--ink);
+    font: inherit; font-size: 13px;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s, background .2s;
+  }
+  .modal-search:focus {
+    border-color: var(--green);
+    background: var(--paper);
+    box-shadow: 0 0 0 4px rgba(23,123,92,.11);
+  }
+  .modal-search-clear {
+    position: absolute;
+    right: 36px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px; height: 22px;
+    border: 0; border-radius: 50%;
+    background: var(--mist);
+    color: var(--muted);
+    font-size: 14px; line-height: 1;
+    cursor: pointer;
+    display: none;
+    place-items: center;
+  }
+  .modal-search-clear:hover { background: var(--line); color: var(--ink); }
+  .modal-search-clear.is-visible { display: grid; }
+
+  .modal-search-hint {
+    margin: 6px 2px 0;
+    font-size: 11.5px;
+    color: var(--muted);
+    font-weight: 700;
+  }
+  .modal-search-hint strong { color: var(--ink); }
 
   .letters-modal-body {
     flex: 1; overflow-y: auto;
@@ -227,6 +576,14 @@
     letter-spacing: -.02em;
     color: var(--ink);
   }
+  .letter-row-title mark,
+  .letter-row-meta mark {
+    background: var(--lime);
+    color: var(--green-dark);
+    padding: 0 3px;
+    border-radius: 3px;
+    font-weight: 800;
+  }
   .letter-row-meta {
     display: grid; gap: 3px;
     color: var(--muted); font-size: 12px; line-height: 1.5;
@@ -246,13 +603,25 @@
     text-align: center; color: var(--muted); font-size: 14px;
   }
 
+  /* =========================================================
+     RESPONSIVE
+     ========================================================= */
   @media (max-width: 640px) {
     .archive-toolbar { flex-direction: column; align-items: stretch; }
     .archive-filter { width: 100%; }
+    .date-picker { width: 100%; }
+    .date-trigger { width: 100%; justify-content: space-between; }
+    .date-panel { width: 100%; left: 0; right: 0; }
+
     .letters-modal { padding: 0; }
     .letters-modal-panel {
       width: 100%; height: 100vh; max-height: 100vh; border-radius: 0;
     }
+    .letters-modal-header { padding: 16px 18px 12px; }
+    .modal-search-wrap { padding: 12px 18px 0; }
+    .modal-search-icon { left: 30px; }
+    .modal-search-clear { right: 30px; }
+    .letters-modal-body { padding: 12px 18px 18px; }
     .letter-row { flex-direction: column; }
     .letter-row-actions { justify-content: flex-start; }
   }
@@ -286,7 +655,6 @@
     <h1 class="form-title">Histori Surat</h1>
     <p class="form-sub">Filter atau cari surat, lalu klik kartu jenis untuk melihat daftarnya.</p>
 
-    <!-- === Filter bar sejajar === -->
     <div class="archive-toolbar">
       <input id="archive-search" class="archive-search" type="search" placeholder="Cari nomor, jenis, pembuat..." autocomplete="off">
 
@@ -294,12 +662,54 @@
         <option value="">Semua jenis</option>
       </select>
 
-      <select id="filter-tanggal" class="archive-filter" title="Filter tanggal">
-        <option value="all">Semua tanggal</option>
-        <option value="today">Hari ini</option>
-        <option value="7days">7 hari terakhir</option>
-        <option value="30days">30 hari terakhir</option>
-      </select>
+      <!-- DATE PICKER -->
+      <div class="date-picker" id="datePicker">
+        <button type="button" class="date-trigger" id="dateTrigger" aria-haspopup="dialog" aria-expanded="false">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span id="dateTriggerLabel">Semua tanggal</span>
+          <svg class="date-trigger-caret" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4"/></svg>
+        </button>
+
+        <div class="date-panel" id="datePanel" role="dialog" aria-label="Pilih tanggal" hidden>
+          <div class="date-mode">
+            <div class="date-mode-toggle" role="tablist">
+              <button type="button" data-viewmode="weekly" class="is-active">Mingguan</button>
+              <button type="button" data-viewmode="monthly">Bulanan</button>
+            </div>
+            <button type="button" class="date-settings" aria-label="Pengaturan">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            </button>
+          </div>
+
+          <div class="date-headline">
+            <span class="date-headline-month" id="dateMonth">—</span>
+            <span class="date-headline-day" id="dateDay">—</span>
+          </div>
+
+          <div class="date-week" id="dateWeek"></div>
+
+          <div class="date-nav">
+            <button type="button" class="date-nav-btn" id="datePrev" aria-label="Sebelumnya">
+              <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <span class="date-nav-label" id="dateNavLabel"></span>
+            <button type="button" class="date-nav-btn" id="dateNext" aria-label="Berikutnya">
+              <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+
+          <div class="date-actions">
+            <button type="button" class="date-action" id="dateReset">
+              <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              Semua tanggal
+            </button>
+            <button type="button" class="date-action is-primary" id="dateToday">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
+              Hari ini
+            </button>
+          </div>
+        </div>
+      </div>
 
       <select id="filter-sort" class="archive-filter" title="Urutkan">
         <option value="terbanyak">Terbanyak</option>
@@ -333,6 +743,15 @@
       </div>
       <button type="button" class="letters-modal-close" data-close-modal aria-label="Tutup">×</button>
     </header>
+
+    <div class="modal-search-wrap">
+      <svg class="modal-search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="modal-search" class="modal-search" type="search"
+             placeholder="Cari nomor, pembuat, penandatangan, status, tanggal..." autocomplete="off">
+      <button type="button" id="modal-search-clear" class="modal-search-clear" aria-label="Hapus pencarian">×</button>
+    </div>
+    <p id="modal-search-hint" class="modal-search-hint" hidden></p>
+
     <div id="letters-modal-body" class="letters-modal-body"></div>
   </section>
 </div>
@@ -346,16 +765,34 @@
   const countEl = document.getElementById("archive-count");
   const searchInput = document.getElementById("archive-search");
   const jenisSelect = document.getElementById("filter-jenis");
-  const tanggalSelect = document.getElementById("filter-tanggal");
   const sortSelect = document.getElementById("filter-sort");
   const resetBtn = document.getElementById("reset-filter");
 
+  // Date picker elements
+  const datePickerEl = document.getElementById("datePicker");
+  const dateTrigger = document.getElementById("dateTrigger");
+  const dateTriggerLabel = document.getElementById("dateTriggerLabel");
+  const datePanel = document.getElementById("datePanel");
+  const dateMonthEl = document.getElementById("dateMonth");
+  const dateDayEl = document.getElementById("dateDay");
+  const dateWeekEl = document.getElementById("dateWeek");
+  const dateNavLabel = document.getElementById("dateNavLabel");
+  const datePrev = document.getElementById("datePrev");
+  const dateNext = document.getElementById("dateNext");
+  const dateReset = document.getElementById("dateReset");
+  const dateToday = document.getElementById("dateToday");
+
+  // Modal
   const modal = document.getElementById("letters-modal");
   const modalTitle = document.getElementById("letters-modal-title");
   const modalSubtitle = document.getElementById("letters-modal-subtitle");
   const modalBody = document.getElementById("letters-modal-body");
+  const modalSearch = document.getElementById("modal-search");
+  const modalSearchClear = document.getElementById("modal-search-clear");
+  const modalSearchHint = document.getElementById("modal-search-hint");
 
   let currentTemplateKey = null;
+  let modalSearchQuery = "";
 
   const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -363,82 +800,326 @@
   jenisSelect.innerHTML = '<option value="">Semua jenis</option>' +
     templates.map((t) => `<option value="${escapeHtml(t.key)}">${escapeHtml(t.nama)}</option>`).join("");
 
-  // ============ FILTER STATE ============
-  function getFilterState() {
-    return {
-      q: searchInput.value.trim().toLowerCase(),
-      jenis: jenisSelect.value,
-      tanggal: tanggalSelect.value,
-      sort: sortSelect.value,
-    };
+  /* =========================================================
+     STATE — filter tanggal + view kalender
+     ========================================================= */
+  const dateFilter = {
+    mode: "all",       // "all" | "specific"
+    date: null,        // Date object kalau mode === "specific"
+    view: "weekly",    // "weekly" | "monthly"
+    cursor: new Date(),
+  };
+
+  /* =========================================================
+     TRIGGER LABEL
+     ========================================================= */
+  function updateTriggerLabel() {
+    const active = dateFilter.mode === "specific" && dateFilter.date;
+    dateTrigger.classList.toggle("is-active", active);
+
+    if (!active) {
+      dateTriggerLabel.textContent = "Semua tanggal";
+      return;
+    }
+    const d = dateFilter.date;
+    const isToday = isSameDay(d, new Date());
+    if (isToday) {
+      dateTriggerLabel.textContent = "Hari ini";
+    } else {
+      dateTriggerLabel.textContent = d.toLocaleDateString("id-ID", {
+        day: "numeric", month: "short", year: "numeric"
+      });
+    }
   }
 
-  // Tandai dropdown yang aktif
-  function markActiveFilters() {
-    [jenisSelect, tanggalSelect].forEach((sel) => {
-      sel.classList.toggle("is-active", sel.value !== "" && sel.value !== "all");
+  function isSameDay(a, b) {
+    return a.getFullYear() === b.getFullYear()
+        && a.getMonth() === b.getMonth()
+        && a.getDate() === b.getDate();
+  }
+
+  /* =========================================================
+     PANEL RENDER
+     ========================================================= */
+  function startOfWeek(d) {
+    const x = new Date(d);
+    const day = x.getDay(); // 0=Sun
+    const diff = (day === 0 ? -6 : 1 - day); // Senin sebagai awal
+    x.setDate(x.getDate() + diff);
+    x.setHours(0,0,0,0);
+    return x;
+  }
+
+  function renderPanel() {
+    const cursor = dateFilter.cursor;
+    const selected = dateFilter.date;
+    const today = new Date();
+
+    if (dateFilter.view === "weekly") {
+      const monthName = cursor.toLocaleDateString("id-ID", { month: "long" });
+      dateMonthEl.textContent = monthName;
+      if (selected) {
+        dateDayEl.textContent = String(selected.getDate());
+        dateDayEl.classList.remove("is-empty");
+      } else {
+        dateDayEl.textContent = String(cursor.getDate());
+        dateDayEl.classList.remove("is-empty");
+      }
+    } else {
+      dateMonthEl.textContent = cursor.toLocaleDateString("id-ID", {
+        month: "long", year: "numeric"
+      });
+      if (selected) {
+        dateDayEl.textContent = String(selected.getDate());
+        dateDayEl.classList.remove("is-empty");
+      } else {
+        dateDayEl.textContent = "—";
+        dateDayEl.classList.add("is-empty");
+      }
+    }
+
+    if (dateFilter.view === "weekly") {
+      renderWeeklyStrip(cursor, selected, today);
+      dateNavLabel.textContent = getWeekRangeLabel(cursor);
+    } else {
+      renderMonthlyGrid(cursor, selected, today);
+      dateNavLabel.textContent = cursor.toLocaleDateString("id-ID", {
+        month: "long", year: "numeric"
+      });
+    }
+  }
+
+  function getWeekRangeLabel(weekStart) {
+    const end = new Date(weekStart);
+    end.setDate(end.getDate() + 6);
+    const fmt = (d) => d.toLocaleDateString("id-ID", { day: "numeric", month: "short" });
+    return `${fmt(weekStart)} – ${fmt(end)}`;
+  }
+
+  function renderWeeklyStrip(weekStart, selected, today) {
+    const dayNames = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
+    const dayNamesFull = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
+
+    let html = "";
+    for (let i = 0; i < 7; i++) {
+      html += `<span class="date-day-head">${dayNames[i]}</span>`;
+    }
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(weekStart);
+      d.setDate(d.getDate() + i);
+      const isSel = selected && isSameDay(d, selected);
+      const isTd = isSameDay(d, today);
+      const cls = [
+        "date-day",
+        isSel ? "is-selected" : "",
+        !isSel && isTd ? "is-today" : "",
+      ].filter(Boolean).join(" ");
+      html += `<button type="button" class="${cls}" data-date="${d.toISOString()}"
+                        title="${dayNamesFull[i]}, ${d.getDate()}">${d.getDate()}</button>`;
+    }
+    dateWeekEl.innerHTML = html;
+    bindDateClicks();
+  }
+
+  function renderMonthlyGrid(monthCursor, selected, today) {
+    const year = monthCursor.getFullYear();
+    const month = monthCursor.getMonth();
+    const first = new Date(year, month, 1);
+    const startOffset = (first.getDay() === 0 ? 6 : first.getDay() - 1);
+    const gridStart = new Date(year, month, 1 - startOffset);
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const totalCells = Math.ceil((startOffset + daysInMonth) / 7) * 7;
+
+    const dayNames = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
+    let html = "";
+    for (let i = 0; i < 7; i++) {
+      html += `<span class="date-day-head">${dayNames[i]}</span>`;
+    }
+    for (let i = 0; i < totalCells; i++) {
+      const d = new Date(gridStart);
+      d.setDate(d.getDate() + i);
+      const isOut = d.getMonth() !== month;
+      const isSel = selected && isSameDay(d, selected);
+      const isTd = isSameDay(d, today);
+      const cls = [
+        "date-day",
+        isOut ? "is-out" : "",
+        isSel ? "is-selected" : "",
+        !isSel && !isOut && isTd ? "is-today" : "",
+      ].filter(Boolean).join(" ");
+      if (isOut) {
+        html += `<button type="button" class="${cls}" disabled>${d.getDate()}</button>`;
+      } else {
+        html += `<button type="button" class="${cls}" data-date="${d.toISOString()}">${d.getDate()}</button>`;
+      }
+    }
+    dateWeekEl.innerHTML = html;
+    bindDateClicks();
+  }
+
+  function bindDateClicks() {
+    dateWeekEl.querySelectorAll("[data-date]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const d = new Date(btn.dataset.date);
+        dateFilter.mode = "specific";
+        dateFilter.date = d;
+        dateFilter.cursor = new Date(d);
+        closePanel();
+        updateTriggerLabel();
+        renderCategories();
+      });
     });
-    searchInput.classList.toggle("is-active", searchInput.value.trim() !== "");
   }
 
-  // Cek apakah letter lolos filter tanggal
-  function passesDate(letter, tanggal) {
-    if (tanggal === "all") return true;
-    const ts = new Date(letter.created_at || letter.updated_at || 0).getTime();
-    if (!ts) return true;
-    const now = Date.now();
-    const cutoff = tanggal === "today" ? now - DAY_MS
-                 : tanggal === "7days" ? now - 7 * DAY_MS
-                 : tanggal === "30days" ? now - 30 * DAY_MS
-                 : 0;
-    return ts >= cutoff;
+  /* =========================================================
+     PANEL OPEN / CLOSE
+     ========================================================= */
+  function openPanel() {
+    datePanel.hidden = false;
+    dateTrigger.setAttribute("aria-expanded", "true");
+    dateFilter.cursor = dateFilter.date ? new Date(dateFilter.date) : new Date();
+    renderPanel();
+  }
+  function closePanel() {
+    datePanel.hidden = true;
+    dateTrigger.setAttribute("aria-expanded", "false");
+  }
+  function togglePanel() {
+    if (datePanel.hidden) openPanel();
+    else closePanel();
   }
 
-  // Cek apakah letter cocok dengan query di dalam field-nya
+  dateTrigger.addEventListener("click", (e) => {
+    e.stopPropagation();
+    togglePanel();
+  });
+
+  document.addEventListener("click", (e) => {
+    if (datePanel.hidden) return;
+    if (!datePickerEl.contains(e.target)) closePanel();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !datePanel.hidden) closePanel();
+  });
+
+  datePanel.querySelectorAll("[data-viewmode]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      datePanel.querySelectorAll("[data-viewmode]").forEach((b) => b.classList.remove("is-active"));
+      btn.classList.add("is-active");
+      dateFilter.view = btn.dataset.viewmode;
+      renderPanel();
+    });
+  });
+
+  datePrev.addEventListener("click", () => {
+    if (dateFilter.view === "weekly") {
+      dateFilter.cursor.setDate(dateFilter.cursor.getDate() - 7);
+    } else {
+      dateFilter.cursor = new Date(
+        dateFilter.cursor.getFullYear(),
+        dateFilter.cursor.getMonth() - 1,
+        1
+      );
+    }
+    renderPanel();
+  });
+  dateNext.addEventListener("click", () => {
+    if (dateFilter.view === "weekly") {
+      dateFilter.cursor.setDate(dateFilter.cursor.getDate() + 7);
+    } else {
+      dateFilter.cursor = new Date(
+        dateFilter.cursor.getFullYear(),
+        dateFilter.cursor.getMonth() + 1,
+        1
+      );
+    }
+    renderPanel();
+  });
+
+  dateReset.addEventListener("click", () => {
+    dateFilter.mode = "all";
+    dateFilter.date = null;
+    closePanel();
+    updateTriggerLabel();
+    renderCategories();
+  });
+
+  dateToday.addEventListener("click", () => {
+    const today = new Date();
+    dateFilter.mode = "specific";
+    dateFilter.date = today;
+    dateFilter.cursor = new Date(today);
+    closePanel();
+    updateTriggerLabel();
+    renderCategories();
+  });
+
+  /* =========================================================
+     FILTER LOGIC
+     ========================================================= */
+  function passesDate(letter) {
+    if (dateFilter.mode === "all") return true;
+    if (dateFilter.mode === "specific" && dateFilter.date) {
+      const ts = new Date(letter.created_at || letter.updated_at || 0).getTime();
+      if (!ts) return false;
+      const start = new Date(dateFilter.date); start.setHours(0,0,0,0);
+      const end = new Date(dateFilter.date); end.setHours(23,59,59,999);
+      return ts >= start.getTime() && ts <= end.getTime();
+    }
+    return true;
+  }
+
   function letterMatchesQuery(letter, q) {
     if (!q) return true;
     const tpl = templates.find((t) => t.key === letter.template_key);
     const hay = [
       letter.nomor_surat, letter.id, letter.created_by, letter.signer_nama,
-      letter.signer_jabatan, tpl?.nama
+      letter.signer_jabatan, letter.status, formatDate(letter.created_at), tpl?.nama
     ].map((v) => String(v || "").toLowerCase()).join(" ");
     return hay.includes(q);
   }
 
-  // ============ PROSES FILTER & SORT ============
+  function getFilterState() {
+    return {
+      q: searchInput.value.trim().toLowerCase(),
+      jenis: jenisSelect.value,
+      sort: sortSelect.value,
+    };
+  }
+
+  function markActiveFilters() {
+    jenisSelect.classList.toggle("is-active", jenisSelect.value !== "");
+    searchInput.classList.toggle("is-active", searchInput.value.trim() !== "");
+  }
+
   function buildFilteredCategories() {
-    const { q, jenis, tanggal, sort } = getFilterState();
+    const { q, jenis, sort } = getFilterState();
 
     const result = templates
-      // Filter jenis: kalau tidak "semua", hanya template terpilih
       .filter((t) => !jenis || t.key === jenis)
       .map((t) => {
         const all = letters.filter((l) => l.template_key === t.key);
         const nameMatches = !q || t.nama.toLowerCase().includes(q);
 
-        // Letters yang lolos filter tanggal & (search-in-letter-field jika nama tidak match)
         const filtered = all.filter((l) => {
-          if (!passesDate(l, tanggal)) return false;
+          if (!passesDate(l)) return false;
           if (q && !nameMatches) {
             if (!letterMatchesQuery(l, q)) return false;
           }
           return true;
         });
 
-        // Tampilkan kategori jika: nama match query, ATAU ada letter yang lolos
         const show = nameMatches || filtered.length > 0;
         if (!show) return null;
 
-        // Kalau nama match, tampilkan semua letter (yang lolos tanggal saja)
         const displayLetters = nameMatches
-          ? all.filter((l) => passesDate(l, tanggal))
+          ? all.filter((l) => passesDate(l))
           : filtered;
 
         return { template: t, letters: displayLetters, count: displayLetters.length };
       })
       .filter(Boolean);
 
-    // Sort
     result.sort((a, b) => {
       if (sort === "terbanyak") return b.count - a.count;
       if (sort === "tersedikit") return a.count - b.count;
@@ -460,7 +1141,9 @@
     return result;
   }
 
-  // ============ RENDER GRID ============
+  /* =========================================================
+     RENDER GRID
+     ========================================================= */
   function renderCategories() {
     const list = buildFilteredCategories();
     const totalLetters = list.reduce((sum, c) => sum + c.count, 0);
@@ -497,42 +1180,89 @@
       .map((w) => w[0]).join("").toUpperCase();
   }
 
-  // ============ MODAL ============
+  /* =========================================================
+     MODAL
+     ========================================================= */
   function openModal(templateKey) {
     const template = templates.find((t) => t.key === templateKey);
     if (!template) return;
     currentTemplateKey = templateKey;
 
-    const list = buildFilteredCategories().find((c) => c.template.key === templateKey);
-    const items = list?.letters || [];
+    modalSearchQuery = "";
+    modalSearch.value = "";
+    modalSearchClear.classList.remove("is-visible");
 
     modalTitle.textContent = template.nama;
-    modalSubtitle.textContent = `${items.length} surat`;
-
-    renderModalBody(items);
+    renderModalBody();
     modal.hidden = false;
+    setTimeout(() => modalSearch.focus(), 60);
   }
 
   function closeModal() {
     modal.hidden = true;
     currentTemplateKey = null;
+    modalSearchQuery = "";
+    modalSearch.value = "";
+    modalSearchClear.classList.remove("is-visible");
+    modalSearchHint.hidden = true;
   }
 
-  function renderModalBody(items) {
-    if (!items.length) {
+  function getCurrentCategoryLetters() {
+    if (!currentTemplateKey) return [];
+    const list = buildFilteredCategories().find((c) => c.template.key === currentTemplateKey);
+    return list?.letters || [];
+  }
+
+  function filterModalItems(items) {
+    if (!modalSearchQuery) return items;
+    return items.filter((l) => letterMatchesQuery(l, modalSearchQuery));
+  }
+
+  function highlight(text, q) {
+    const s = String(text || "");
+    if (!q) return escapeHtml(s);
+    const esc = escapeHtml(s);
+    const qEsc = q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const re = new RegExp(`(${qEsc})`, "gi");
+    return esc.replace(re, "<mark>$1</mark>");
+  }
+
+  function renderModalBody() {
+    const allItems = getCurrentCategoryLetters();
+    const items = filterModalItems(allItems);
+
+    if (modalSearchQuery) {
+      modalSubtitle.textContent = `${items.length} dari ${allItems.length} surat`;
+    } else {
+      modalSubtitle.textContent = `${allItems.length} surat`;
+    }
+
+    if (modalSearchQuery) {
+      modalSearchHint.hidden = false;
+      modalSearchHint.innerHTML = `Menampilkan <strong>${items.length}</strong> surat yang cocok dengan "<strong>${escapeHtml(modalSearchQuery)}</strong>".`;
+    } else {
+      modalSearchHint.hidden = true;
+      modalSearchHint.textContent = "";
+    }
+
+    if (!allItems.length) {
       modalBody.innerHTML = '<p class="letters-modal-empty">Belum ada surat yang cocok dengan filter di kategori ini.</p>';
+      return;
+    }
+    if (!items.length) {
+      modalBody.innerHTML = '<p class="letters-modal-empty">Tidak ada surat yang cocok dengan pencarian.</p>';
       return;
     }
 
     modalBody.innerHTML = items.map((letter) => `
       <article class="letter-row">
         <div class="letter-row-body">
-          <h4 class="letter-row-title">${escapeHtml(letter.nomor_surat || letter.id)}</h4>
+          <h4 class="letter-row-title">${highlight(letter.nomor_surat || letter.id, modalSearchQuery)}</h4>
           <div class="letter-row-meta">
-            <div><strong>Penandatangan:</strong> ${escapeHtml(letter.signer_nama || "-")}</div>
-            <div><strong>Pembuat:</strong> ${escapeHtml(letter.created_by || "-")}</div>
-            <div><strong>Status:</strong> ${escapeHtml(letter.status || "final")}</div>
-            <div><strong>Dibuat:</strong> ${formatDate(letter.created_at)}</div>
+            <div><strong>Penandatangan:</strong> ${highlight(letter.signer_nama || "-", modalSearchQuery)}</div>
+            <div><strong>Pembuat:</strong> ${highlight(letter.created_by || "-", modalSearchQuery)}</div>
+            <div><strong>Status:</strong> ${highlight(letter.status || "final", modalSearchQuery)}</div>
+            <div><strong>Dibuat:</strong> ${highlight(formatDate(letter.created_at), modalSearchQuery)}</div>
             ${letter.attachment?.name ? `<div><strong>Lampiran:</strong> ${escapeHtml(letter.attachment.name)}</div>` : ""}
           </div>
         </div>
@@ -574,11 +1304,7 @@
         deleteLetter(letter.id);
         const idx = letters.findIndex((l) => l.id === letter.id);
         if (idx >= 0) letters.splice(idx, 1);
-        // Re-render modal + grid
-        const list = buildFilteredCategories().find((c) => c.template.key === currentTemplateKey);
-        const items = list?.letters || [];
-        modalSubtitle.textContent = `${items.length} surat`;
-        renderModalBody(items);
+        renderModalBody();
         renderCategories();
       });
     });
@@ -606,19 +1332,37 @@
     return true;
   }
 
-  // ============ EVENTS ============
+  /* =========================================================
+     EVENTS
+     ========================================================= */
   searchInput.addEventListener("input", () => { markActiveFilters(); renderCategories(); });
   jenisSelect.addEventListener("change", () => { markActiveFilters(); renderCategories(); });
-  tanggalSelect.addEventListener("change", () => { markActiveFilters(); renderCategories(); });
   sortSelect.addEventListener("change", renderCategories);
 
   resetBtn.addEventListener("click", () => {
     searchInput.value = "";
     jenisSelect.value = "";
-    tanggalSelect.value = "all";
     sortSelect.value = "terbanyak";
+    dateFilter.mode = "all";
+    dateFilter.date = null;
+    updateTriggerLabel();
     markActiveFilters();
     renderCategories();
+  });
+
+  let modalSearchTimer = null;
+  modalSearch.addEventListener("input", () => {
+    modalSearchQuery = modalSearch.value.trim().toLowerCase();
+    modalSearchClear.classList.toggle("is-visible", modalSearchQuery !== "");
+    clearTimeout(modalSearchTimer);
+    modalSearchTimer = setTimeout(renderModalBody, 80);
+  });
+  modalSearchClear.addEventListener("click", () => {
+    modalSearch.value = "";
+    modalSearchQuery = "";
+    modalSearchClear.classList.remove("is-visible");
+    modalSearch.focus();
+    renderModalBody();
   });
 
   modal.querySelectorAll("[data-close-modal]").forEach((el) => {
@@ -626,9 +1370,14 @@
   });
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && !modal.hidden) closeModal();
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k" && !modal.hidden) {
+      e.preventDefault();
+      modalSearch.focus();
+    }
   });
 
   // Init
+  updateTriggerLabel();
   renderCategories();
 </script>
 </body>
