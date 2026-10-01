@@ -1,103 +1,28 @@
-const SESSION_KEY = "suratapp_session";
-const AUTH_KEY = "suratapp_auth";
-const AUTH_VERSION = 2;
-const TEMPLATES_KEY = "suratapp_templates";
-const DIRUT_KEY = "suratapp_dirut";
-const LETTERS_KEY = "suratapp_letters";
-const DUMMY_TEMPLATE_SEED_KEY = "suratapp_dummy_blitar_seeded";
-const DUMMY_TEMPLATE_VERSION_KEY = "suratapp_dummy_blitar_version";
-const DUMMY_LETTERS_SEED_KEY = "suratapp_dummy_letters_seeded";
-let pendingProtectedControl = null;
+var SESSION_KEY = "suratapp_session";
+var AUTH_KEY = "suratapp_auth";
+var AUTH_VERSION = 2;
+var TEMPLATES_KEY = "suratapp_templates";
+var DIRUT_KEY = "suratapp_dirut";
+var LETTERS_KEY = "suratapp_letters";
+var DUMMY_TEMPLATE_SEED_KEY = "suratapp_dummy_blitar_seeded";
+var DUMMY_TEMPLATE_VERSION_KEY = "suratapp_dummy_blitar_version";
+var DUMMY_LETTERS_SEED_KEY = "suratapp_dummy_letters_seeded";
+var pendingProtectedControl = null;
 
 // =========================================================
-// DEFAULT TEMPLATES
+// DEFAULT TEMPLATES — 8 JENIS KEABSAHAN
 // =========================================================
-const DEFAULT_TEMPLATES = [
+var DEFAULT_TEMPLATES = [
   {
-    key: "konfirmasi_akta",
-    nama: "Konfirmasi Keabsahan Kutipan Akta Kelahiran",
-    deskripsi: "Surat konfirmasi resmi terkait keabsahan dokumen.",
-    template: `<p>Dengan hormat,</p><p>Dengan ini kami menerangkan bahwa kutipan akta kelahiran atas nama <strong>{{nama_pemohon}}</strong>, NIK <strong>{{nik}}</strong>, tanggal lahir <strong>{{tanggal_lahir}}</strong>, telah dikonfirmasi keabsahannya.</p><p>{{keterangan}}</p>`,
-    fields: [
-      { name: "nama_pemohon", label: "Nama pemohon", type: "text", required: true },
-      { name: "nik", label: "NIK", type: "text", required: true },
-      { name: "tanggal_lahir", label: "Tanggal lahir", type: "date", required: true },
-      { name: "keterangan", label: "Keterangan tambahan", type: "textarea", required: false },
-    ],
-  },
-  {
-    key: "surat_keterangan",
-    nama: "Surat Keterangan",
-    deskripsi: "Template umum untuk kebutuhan keterangan dinas.",
-    template: `<p>Dengan ini menerangkan bahwa:</p><p>Nama: <strong>{{nama}}</strong><br>NIK: <strong>{{nik}}</strong></p><p>Yang bersangkutan memerlukan surat ini untuk keperluan <strong>{{keperluan}}</strong>.</p>`,
-    fields: [
-      { name: "nama", label: "Nama lengkap", type: "text", required: true },
-      { name: "nik", label: "NIK", type: "text", required: true },
-      { name: "keperluan", label: "Keperluan", type: "textarea", required: true },
-    ],
-  },
-  {
-    key: "dummy_keabsahan_akta_blitar",
+    key: "keabsahan_akta_kelahiran",
     nama: "Jawaban Keabsahan Akta Kelahiran",
-    deskripsi: "Surat jawaban verifikasi akta kelahiran (format formal pemerintahan).",
+    deskripsi: "Surat jawaban verifikasi keabsahan Kutipan Akta Kelahiran.",
     layout: "official",
     logo_url: "Lambang_Kabupaten_Tuban.webp",
     logo: "Lambang_Kabupaten_Tuban.webp",
     kop_foto_url: "",
     signature_qr_url: "",
-    template: `<table class="blok-kop">
-  <tr>
-    <td class="kop-logo"><img src="Lambang_Kabupaten_Tuban.webp" alt="Logo"></td>
-    <td class="kop-teks">
-      <div class="kop-instansi">PEMERINTAH KABUPATEN TUBAN</div>
-      <div class="kop-dinas">DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL</div>
-      <div class="kop-alamat">Jalan Manukwari Nomor 25 Satreyan, Kanigoro, Blitar Telp. (0342) 801566</div>
-      <div class="kop-alamat">Pos-el : dispendukcapil@blitarkab.go.id, Laman : dispendukcapil.blitarkab.go.id</div>
-    </td>
-  </tr>
-</table>
-<div class="kop-garis garis-double"></div>
-<table class="blok-identitas">
-  <tr>
-    <td class="id-kiri">
-      <table class="id-table">
-        <tr><td class="id-label">Nomor</td><td class="id-colon">:</td><td>{{nomor_surat}}</td></tr>
-        <tr><td class="id-label">Sifat</td><td class="id-colon">:</td><td>{{sifat_surat}}</td></tr>
-        <tr><td class="id-label">Lampiran</td><td class="id-colon">:</td><td>{{lampiran}}</td></tr>
-        <tr><td class="id-label">Hal</td><td class="id-colon">:</td><td>{{perihal}}</td></tr>
-      </table>
-    </td>
-    <td class="id-kanan">Tuban, {{tanggal_surat}}</td>
-  </tr>
-</table>
-<div class="blok-tujuan">
-  <div>Yth. Kepala Dinas Kependudukan dan</div>
-  <div class="tujuan-2">Pencatatan Sipil Kabupaten Tuban</div>
-  <div>di</div>
-  <div class="tujuan-kota">TUBAN</div>
-</div>
-<div class="blok-isi">
-  <p class="isi-justify">Dengan hormat,</p>
-  <p class="isi-justify">Menindaklanjuti Surat Saudara Nomor: {{nomor_surat_rujukan}} tanggal {{tanggal_rujukan}} perihal pada pokok surat, maka:</p>
-  <table class="tabel-data">
-    <tr><td class="data-label">Nama</td><td class="data-colon">:</td><td>{{nama_pemilik}}</td></tr>
-    <tr><td class="data-label">Tempat, Tanggal Lahir</td><td class="data-colon">:</td><td>{{tempat_tanggal_lahir}}</td></tr>
-    <tr><td class="data-label">No. Akta Kelahiran</td><td class="data-colon">:</td><td>{{nomor_akta}}</td></tr>
-    <tr><td class="data-label">Tgl. Akta Kelahiran</td><td class="data-colon">:</td><td>{{tanggal_akta}}</td></tr>
-    <tr><td class="data-label">Nama Ayah</td><td class="data-colon">:</td><td>{{nama_ayah}}</td></tr>
-    <tr><td class="data-label">Nama Ibu</td><td class="data-colon">:</td><td>{{nama_ibu}}</td></tr>
-  </table>
-  <p class="isi-justify">Berdasarkan hasil verifikasi dan penelitian berkas, bahwa Dokumen Kutipan Akta Kelahiran tersebut tercatat dan benar dikeluarkan oleh Kepala Dinas Kependudukan dan Pencatatan Sipil Kabupaten Blitar, untuk selanjutnya bisa diproses sesuai asas domisili.</p>
-  <p class="isi-justify">Dapat kami sampaikan bahwa dalam rangka menjaga Zona Integritas Wilayah Bebas Korupsi (WBK) menuju Wilayah Birokrasi Bersih Melayani (WBBM), kami berkomitmen untuk terus meningkatkan kualitas pelayanan dan menjaga integritas dan profesionalisme. Adapun seluruh layanan pada Dinas Kependudukan dan Pencatatan Sipil Kabupaten Blitar tidak dipungut biaya apapun (<strong>GRATIS Rp 0.,</strong>).</p>
-  <p class="isi-justify">Demikian untuk menjadikan maklum dan atas kerjasamanya disampaikan terima kasih.</p>
-</div>
-<div class="blok-ttd blok-ttd-kanan">
-  <div class="ttd-jabatan">{{jabatan_penandatangan}},</div>
-  <div class="ttd-qr-wrap"><div class="ttd-space-dummy"></div></div>
-  <div class="ttd-nama">{{nama_penandatangan}}</div>
-  <div class="ttd-pangkat">{{pangkat_penandatangan}}</div>
-  <div class="ttd-nip">NIP. {{nip_penandatangan}}</div>
-</div>`,
+    template: '<table class="blok-kop"><tr><td class="kop-logo"><img src="Lambang_Kabupaten_Tuban.webp" alt="Logo"></td><td class="kop-teks"><div class="kop-instansi">PEMERINTAH KABUPATEN TUBAN</div><div class="kop-dinas">DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL</div><div class="kop-alamat">Jl. Teuku Umar No. 7, Latsari, Kec. Tuban, Kabupaten Tuban, Jawa Timur 62315</div><div class="kop-alamat">Telepon: (0356) 321307 | WhatsApp Pelayanan: 0811-307-764</div><div class="kop-alamat">Pos-el (Email): dispendukcapil@tubankab.go.id / dispendukcapiltuban@gmail.com</div><div class="kop-alamat">Laman (Website): dukcapil.tubankab.go.id</div></td></tr></table><div class="kop-garis garis-double"></div><table class="blok-identitas"><tr><td class="id-kiri"><table class="id-table"><tr><td class="id-label">Nomor</td><td class="id-colon">:</td><td>{{nomor_surat}}</td></tr><tr><td class="id-label">Sifat</td><td class="id-colon">:</td><td>{{sifat_surat}}</td></tr><tr><td class="id-label">Lampiran</td><td class="id-colon">:</td><td>{{lampiran}}</td></tr><tr><td class="id-label">Hal</td><td class="id-colon">:</td><td>{{perihal}}</td></tr></table></td><td class="id-kanan">Tuban, {{tanggal_surat}}</td></tr></table><div class="blok-tujuan"><div>Yth. Kepala Dinas Kependudukan dan</div><div class="tujuan-2">Pencatatan Sipil Kabupaten {{kabupaten_tujuan}}</div><div>di</div><div class="tujuan-kota">{{kota_tujuan}}</div></div><div class="blok-isi"><p class="isi-justify">Dengan hormat,</p><p class="isi-justify">Menindaklanjuti Surat Saudara Nomor: {{nomor_surat_rujukan}} tanggal {{tanggal_rujukan}} perihal pada pokok surat, maka:</p><table class="tabel-data"><tr><td class="data-label">Nama</td><td class="data-colon">:</td><td>{{nama_pemilik}}</td></tr><tr><td class="data-label">Tempat, Tanggal Lahir</td><td class="data-colon">:</td><td>{{tempat_tanggal_lahir}}</td></tr><tr><td class="data-label">No. Akta Kelahiran</td><td class="data-colon">:</td><td>{{nomor_akta}}</td></tr><tr><td class="data-label">Tgl. Akta Kelahiran</td><td class="data-colon">:</td><td>{{tanggal_akta}}</td></tr><tr><td class="data-label">Nama Ayah</td><td class="data-colon">:</td><td>{{nama_ayah}}</td></tr><tr><td class="data-label">Nama Ibu</td><td class="data-colon">:</td><td>{{nama_ibu}}</td></tr></table><p class="isi-justify">Berdasarkan hasil verifikasi dan penelitian berkas, bahwa Dokumen Kutipan Akta Kelahiran tersebut tercatat dan benar dikeluarkan oleh Kepala Dinas Kependudukan dan Pencatatan Sipil Kabupaten {{kabupaten_asal}}, untuk selanjutnya bisa diproses sesuai asas domisili.</p><p class="isi-justify">Dapat kami sampaikan bahwa dalam rangka menjaga Zona Integritas Wilayah Bebas Korupsi (WBK) menuju Wilayah Birokrasi Bersih Melayani (WBBM), kami berkomitmen untuk terus meningkatkan kualitas pelayanan dan menjaga integritas dan profesionalisme. Adapun seluruh layanan pada Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban tidak dipungut biaya apapun (<strong>GRATIS Rp 0,-</strong>).</p><p class="isi-justify">Demikian untuk menjadikan maklum dan atas kerjasamanya disampaikan terima kasih.</p></div><div class="blok-ttd blok-ttd-kanan"><div class="ttd-jabatan">{{jabatan_penandatangan}},</div><div class="ttd-qr-wrap"><div class="ttd-space-dummy"></div></div><div class="ttd-nama">{{nama_penandatangan}}</div><div class="ttd-pangkat">{{pangkat_penandatangan}}</div><div class="ttd-nip">NIP. {{nip_penandatangan}}</div></div>',
     fields: [
       { name: "nomor_surat_rujukan", label: "Nomor surat rujukan", type: "text", required: true },
       { name: "tanggal_rujukan", label: "Tanggal surat rujukan", type: "date", required: true },
@@ -105,12 +30,15 @@ const DEFAULT_TEMPLATES = [
       { name: "lampiran", label: "Lampiran", type: "text", required: true },
       { name: "perihal", label: "Perihal", type: "text", required: true },
       { name: "tanggal_surat", label: "Tanggal surat", type: "date", required: true },
-      { name: "nomor_akta", label: "Nomor akta", type: "text", required: true },
+      { name: "kabupaten_tujuan", label: "Kabupaten tujuan", type: "text", required: true },
+      { name: "kota_tujuan", label: "Kota tujuan", type: "text", required: true },
       { name: "nama_pemilik", label: "Nama pemilik akta", type: "text", required: true },
       { name: "tempat_tanggal_lahir", label: "Tempat, tanggal lahir", type: "text", required: true },
+      { name: "nomor_akta", label: "Nomor akta kelahiran", type: "text", required: true },
+      { name: "tanggal_akta", label: "Tanggal akta kelahiran", type: "date", required: true },
       { name: "nama_ayah", label: "Nama ayah", type: "text", required: true },
       { name: "nama_ibu", label: "Nama ibu", type: "text", required: true },
-      { name: "tanggal_akta", label: "Tanggal akta kelahiran", type: "date", required: true },
+      { name: "kabupaten_asal", label: "Kabupaten asal penerbit akta", type: "text", required: true }
     ],
     sample_data: {
       nomor_surat: "B/470.02/1785/409.20.3/2026",
@@ -120,56 +48,389 @@ const DEFAULT_TEMPLATES = [
       lampiran: "-",
       perihal: "Jawaban Keabsahan Akta Kelahiran a.n. EKA FARID SANI",
       tanggal_surat: "2026-09-22",
+      kabupaten_tujuan: "Tuban",
+      kota_tujuan: "TUBAN",
       nama_pemilik: "EKA FARID SANI",
-      tempat_tanggal_lahir: "Blitar, 07 Maret 1993",
+      tempat_tanggal_lahir: "Tuban, 07 Maret 1993",
       nomor_akta: "429 TAHUN 1993",
       tanggal_akta: "1993-03-09",
       nama_ayah: "Sugiono",
       nama_ibu: "Hani'ah",
-    },
-    blocks: {
-      kop: {
-        enabled: true,
-        mode: "terstruktur",
-        instansi: "PEMERINTAH KABUPATEN TUBAN",
-        dinas: "DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL",
-        alamat: "Jalan Manukwari Nomor 25 Satreyan, Kanigoro, Blitar Telp. (0342) 801566",
-        line: "double",
-        logoUrl: "Lambang_Kabupaten_Tuban.webp",
-        fotoUrl: ""
-      },
-      identitas: {
-        enabled: true,
-        nomor: "",
-        sifat: "Biasa",
-        lampiran: "-",
-        hal: "Jawaban Keabsahan Akta Kelahiran a.n. EKA FARID SANI",
-        tanggal: ""
-      },
-      tujuan: {
-        enabled: true,
-        y1: "Kepala Dinas Kependudukan dan",
-        y2: "Pencatatan Sipil Kabupaten Tuban",
-        di: "TUBAN"
-      },
-      isi: {
-        enabled: true,
-        text: "Dengan hormat,\n\nMenindaklanjuti Surat Saudara Nomor: {{nomor_surat_rujukan}} tanggal {{tanggal_rujukan}} perihal pada pokok surat, maka:\n\nBerdasarkan hasil verifikasi dan penelitian berkas, bahwa Dokumen Kutipan Akta Kelahiran tersebut tercatat dan benar dikeluarkan oleh Kepala Dinas Kependudukan dan Pencatatan Sipil Kabupaten Blitar, untuk selanjutnya bisa diproses sesuai asas domisili.\n\nDapat kami sampaikan bahwa dalam rangka menjaga Zona Integritas Wilayah Bebas Korupsi (WBK) menuju Wilayah Birokrasi Bersih Melayani (WBBM), kami berkomitmen untuk terus meningkatkan kualitas pelayanan dan menjaga integritas dan profesionalisme.\n\nDemikian untuk menjadikan maklum dan atas kerjasamanya disampaikan terima kasih.",
-        align: "justify"
-      },
-      ttd: {
-        enabled: true,
-        pejabatId: "dirut-001",
-        posisi: "kanan",
-        qrUrl: ""
-      }
+      kabupaten_asal: "Tuban",
+      jabatan_penandatangan: "Kepala Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban",
+      nama_penandatangan: "Agung Triwibowo, SE, MM",
+      pangkat_penandatangan: "Pembina Utama Muda",
+      nip_penandatangan: "19680219 199303 1 005"
     }
   },
+  {
+    key: "keabsahan_akta_kematian",
+    nama: "Jawaban Keabsahan Akta Kematian",
+    deskripsi: "Surat jawaban verifikasi keabsahan Kutipan Akta Kematian.",
+    layout: "official",
+    logo_url: "Lambang_Kabupaten_Tuban.webp",
+    logo: "Lambang_Kabupaten_Tuban.webp",
+    kop_foto_url: "",
+    signature_qr_url: "",
+    template: '<table class="blok-kop"><tr><td class="kop-logo"><img src="Lambang_Kabupaten_Tuban.webp" alt="Logo"></td><td class="kop-teks"><div class="kop-instansi">PEMERINTAH KABUPATEN TUBAN</div><div class="kop-dinas">DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL</div><div class="kop-alamat">Jl. Teuku Umar No. 7, Latsari, Kec. Tuban, Kabupaten Tuban, Jawa Timur 62315</div><div class="kop-alamat">Telepon: (0356) 321307 | WhatsApp Pelayanan: 0811-307-764</div><div class="kop-alamat">Pos-el (Email): dispendukcapil@tubankab.go.id / dispendukcapiltuban@gmail.com</div><div class="kop-alamat">Laman (Website): dukcapil.tubankab.go.id</div></td></tr></table><div class="kop-garis garis-double"></div><table class="blok-identitas"><tr><td class="id-kiri"><table class="id-table"><tr><td class="id-label">Nomor</td><td class="id-colon">:</td><td>{{nomor_surat}}</td></tr><tr><td class="id-label">Sifat</td><td class="id-colon">:</td><td>{{sifat_surat}}</td></tr><tr><td class="id-label">Lampiran</td><td class="id-colon">:</td><td>{{lampiran}}</td></tr><tr><td class="id-label">Hal</td><td class="id-colon">:</td><td>{{perihal}}</td></tr></table></td><td class="id-kanan">Tuban, {{tanggal_surat}}</td></tr></table><div class="blok-tujuan"><div>Yth. Kepala Dinas Kependudukan dan</div><div class="tujuan-2">Pencatatan Sipil Kabupaten {{kabupaten_tujuan}}</div><div>di</div><div class="tujuan-kota">{{kota_tujuan}}</div></div><div class="blok-isi"><p class="isi-justify">Dengan hormat,</p><p class="isi-justify">Menindaklanjuti Surat Saudara Nomor: {{nomor_surat_rujukan}} tanggal {{tanggal_rujukan}} perihal pada pokok surat, maka:</p><table class="tabel-data"><tr><td class="data-label">Nama Almarhum/ah</td><td class="data-colon">:</td><td>{{nama_almarhum}}</td></tr><tr><td class="data-label">NIK</td><td class="data-colon">:</td><td>{{nik_almarhum}}</td></tr><tr><td class="data-label">Tempat, Tanggal Lahir</td><td class="data-colon">:</td><td>{{tempat_tanggal_lahir}}</td></tr><tr><td class="data-label">Tanggal Meninggal</td><td class="data-colon">:</td><td>{{tanggal_meninggal}}</td></tr><tr><td class="data-label">Tempat Meninggal</td><td class="data-colon">:</td><td>{{tempat_meninggal}}</td></tr><tr><td class="data-label">No. Akta Kematian</td><td class="data-colon">:</td><td>{{nomor_akta}}</td></tr><tr><td class="data-label">Tgl. Akta Kematian</td><td class="data-colon">:</td><td>{{tanggal_akta}}</td></tr></table><p class="isi-justify">Berdasarkan hasil verifikasi dan penelitian berkas, bahwa Dokumen Kutipan Akta Kematian tersebut tercatat dan benar dikeluarkan oleh Kepala Dinas Kependudukan dan Pencatatan Sipil Kabupaten {{kabupaten_asal}}, untuk selanjutnya bisa diproses sesuai asas domisili.</p><p class="isi-justify">Dapat kami sampaikan bahwa dalam rangka menjaga Zona Integritas Wilayah Bebas Korupsi (WBK) menuju Wilayah Birokrasi Bersih Melayani (WBBM), kami berkomitmen untuk terus meningkatkan kualitas pelayanan dan menjaga integritas dan profesionalisme. Adapun seluruh layanan pada Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban tidak dipungut biaya apapun (<strong>GRATIS Rp 0,-</strong>).</p><p class="isi-justify">Demikian untuk menjadikan maklum dan atas kerjasamanya disampaikan terima kasih.</p></div><div class="blok-ttd blok-ttd-kanan"><div class="ttd-jabatan">{{jabatan_penandatangan}},</div><div class="ttd-qr-wrap"><div class="ttd-space-dummy"></div></div><div class="ttd-nama">{{nama_penandatangan}}</div><div class="ttd-pangkat">{{pangkat_penandatangan}}</div><div class="ttd-nip">NIP. {{nip_penandatangan}}</div></div>',
+    fields: [
+      { name: "nomor_surat_rujukan", label: "Nomor surat rujukan", type: "text", required: true },
+      { name: "tanggal_rujukan", label: "Tanggal surat rujukan", type: "date", required: true },
+      { name: "sifat_surat", label: "Sifat surat", type: "text", required: true },
+      { name: "lampiran", label: "Lampiran", type: "text", required: true },
+      { name: "perihal", label: "Perihal", type: "text", required: true },
+      { name: "tanggal_surat", label: "Tanggal surat", type: "date", required: true },
+      { name: "kabupaten_tujuan", label: "Kabupaten tujuan", type: "text", required: true },
+      { name: "kota_tujuan", label: "Kota tujuan", type: "text", required: true },
+      { name: "nama_almarhum", label: "Nama almarhum/ah", type: "text", required: true },
+      { name: "nik_almarhum", label: "NIK almarhum/ah", type: "text", required: true },
+      { name: "tempat_tanggal_lahir", label: "Tempat, tanggal lahir", type: "text", required: true },
+      { name: "tanggal_meninggal", label: "Tanggal meninggal", type: "date", required: true },
+      { name: "tempat_meninggal", label: "Tempat meninggal", type: "text", required: true },
+      { name: "nomor_akta", label: "Nomor akta kematian", type: "text", required: true },
+      { name: "tanggal_akta", label: "Tanggal akta kematian", type: "date", required: true },
+      { name: "kabupaten_asal", label: "Kabupaten asal penerbit akta", type: "text", required: true }
+    ],
+    sample_data: {
+      nomor_surat: "B/470.02/1786/409.20.3/2026",
+      nomor_surat_rujukan: "400.12.3.1/5972/419.112/2026",
+      tanggal_rujukan: "2026-09-21",
+      sifat_surat: "Biasa",
+      lampiran: "-",
+      perihal: "Jawaban Keabsahan Akta Kematian a.n. SUGIONO",
+      tanggal_surat: "2026-09-22",
+      kabupaten_tujuan: "Tuban",
+      kota_tujuan: "TUBAN",
+      nama_almarhum: "SUGIONO",
+      nik_almarhum: "3513012345670001",
+      tempat_tanggal_lahir: "Tuban, 12 Agustus 1960",
+      tanggal_meninggal: "2025-11-03",
+      tempat_meninggal: "RSUD Dr. R. Koesma Tuban",
+      nomor_akta: "121 TAHUN 2025",
+      tanggal_akta: "2025-11-05",
+      kabupaten_asal: "Tuban",
+      jabatan_penandatangan: "Kepala Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban",
+      nama_penandatangan: "Agung Triwibowo, SE, MM",
+      pangkat_penandatangan: "Pembina Utama Muda",
+      nip_penandatangan: "19680219 199303 1 005"
+    }
+  },
+  {
+    key: "keabsahan_akta_perkawinan",
+    nama: "Jawaban Keabsahan Akta Perkawinan",
+    deskripsi: "Surat jawaban verifikasi keabsahan Kutipan Akta Perkawinan.",
+    layout: "official",
+    logo_url: "Lambang_Kabupaten_Tuban.webp",
+    logo: "Lambang_Kabupaten_Tuban.webp",
+    kop_foto_url: "",
+    signature_qr_url: "",
+    template: '<table class="blok-kop"><tr><td class="kop-logo"><img src="Lambang_Kabupaten_Tuban.webp" alt="Logo"></td><td class="kop-teks"><div class="kop-instansi">PEMERINTAH KABUPATEN TUBAN</div><div class="kop-dinas">DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL</div><div class="kop-alamat">Jl. Teuku Umar No. 7, Latsari, Kec. Tuban, Kabupaten Tuban, Jawa Timur 62315</div><div class="kop-alamat">Telepon: (0356) 321307 | WhatsApp Pelayanan: 0811-307-764</div><div class="kop-alamat">Pos-el (Email): dispendukcapil@tubankab.go.id / dispendukcapiltuban@gmail.com</div><div class="kop-alamat">Laman (Website): dukcapil.tubankab.go.id</div></td></tr></table><div class="kop-garis garis-double"></div><table class="blok-identitas"><tr><td class="id-kiri"><table class="id-table"><tr><td class="id-label">Nomor</td><td class="id-colon">:</td><td>{{nomor_surat}}</td></tr><tr><td class="id-label">Sifat</td><td class="id-colon">:</td><td>{{sifat_surat}}</td></tr><tr><td class="id-label">Lampiran</td><td class="id-colon">:</td><td>{{lampiran}}</td></tr><tr><td class="id-label">Hal</td><td class="id-colon">:</td><td>{{perihal}}</td></tr></table></td><td class="id-kanan">Tuban, {{tanggal_surat}}</td></tr></table><div class="blok-tujuan"><div>Yth. Kepala Dinas Kependudukan dan</div><div class="tujuan-2">Pencatatan Sipil Kabupaten {{kabupaten_tujuan}}</div><div>di</div><div class="tujuan-kota">{{kota_tujuan}}</div></div><div class="blok-isi"><p class="isi-justify">Dengan hormat,</p><p class="isi-justify">Menindaklanjuti Surat Saudara Nomor: {{nomor_surat_rujukan}} tanggal {{tanggal_rujukan}} perihal pada pokok surat, maka:</p><table class="tabel-data"><tr><td class="data-label">Nama Suami</td><td class="data-colon">:</td><td>{{nama_suami}}</td></tr><tr><td class="data-label">Nama Istri</td><td class="data-colon">:</td><td>{{nama_istri}}</td></tr><tr><td class="data-label">Tanggal Perkawinan</td><td class="data-colon">:</td><td>{{tanggal_perkawinan}}</td></tr><tr><td class="data-label">Tempat Perkawinan</td><td class="data-colon">:</td><td>{{tempat_perkawinan}}</td></tr><tr><td class="data-label">No. Akta Perkawinan</td><td class="data-colon">:</td><td>{{nomor_akta}}</td></tr><tr><td class="data-label">Tgl. Akta Perkawinan</td><td class="data-colon">:</td><td>{{tanggal_akta}}</td></tr></table><p class="isi-justify">Berdasarkan hasil verifikasi dan penelitian berkas, bahwa Dokumen Kutipan Akta Perkawinan tersebut tercatat dan benar dikeluarkan oleh Kepala Dinas Kependudukan dan Pencatatan Sipil Kabupaten {{kabupaten_asal}}, untuk selanjutnya bisa diproses sesuai asas domisili.</p><p class="isi-justify">Dapat kami sampaikan bahwa dalam rangka menjaga Zona Integritas Wilayah Bebas Korupsi (WBK) menuju Wilayah Birokrasi Bersih Melayani (WBBM), kami berkomitmen untuk terus meningkatkan kualitas pelayanan dan menjaga integritas dan profesionalisme. Adapun seluruh layanan pada Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban tidak dipungut biaya apapun (<strong>GRATIS Rp 0,-</strong>).</p><p class="isi-justify">Demikian untuk menjadikan maklum dan atas kerjasamanya disampaikan terima kasih.</p></div><div class="blok-ttd blok-ttd-kanan"><div class="ttd-jabatan">{{jabatan_penandatangan}},</div><div class="ttd-qr-wrap"><div class="ttd-space-dummy"></div></div><div class="ttd-nama">{{nama_penandatangan}}</div><div class="ttd-pangkat">{{pangkat_penandatangan}}</div><div class="ttd-nip">NIP. {{nip_penandatangan}}</div></div>',
+    fields: [
+      { name: "nomor_surat_rujukan", label: "Nomor surat rujukan", type: "text", required: true },
+      { name: "tanggal_rujukan", label: "Tanggal surat rujukan", type: "date", required: true },
+      { name: "sifat_surat", label: "Sifat surat", type: "text", required: true },
+      { name: "lampiran", label: "Lampiran", type: "text", required: true },
+      { name: "perihal", label: "Perihal", type: "text", required: true },
+      { name: "tanggal_surat", label: "Tanggal surat", type: "date", required: true },
+      { name: "kabupaten_tujuan", label: "Kabupaten tujuan", type: "text", required: true },
+      { name: "kota_tujuan", label: "Kota tujuan", type: "text", required: true },
+      { name: "nama_suami", label: "Nama suami", type: "text", required: true },
+      { name: "nama_istri", label: "Nama istri", type: "text", required: true },
+      { name: "tanggal_perkawinan", label: "Tanggal perkawinan", type: "date", required: true },
+      { name: "tempat_perkawinan", label: "Tempat perkawinan", type: "text", required: true },
+      { name: "nomor_akta", label: "Nomor akta perkawinan", type: "text", required: true },
+      { name: "tanggal_akta", label: "Tanggal akta perkawinan", type: "date", required: true },
+      { name: "kabupaten_asal", label: "Kabupaten asal penerbit akta", type: "text", required: true }
+    ],
+    sample_data: {
+      nomor_surat: "B/470.02/1787/409.20.3/2026",
+      nomor_surat_rujukan: "400.12.3.1/5973/419.112/2026",
+      tanggal_rujukan: "2026-09-21",
+      sifat_surat: "Biasa",
+      lampiran: "-",
+      perihal: "Jawaban Keabsahan Akta Perkawinan a.n. BUDI & SITI",
+      tanggal_surat: "2026-09-22",
+      kabupaten_tujuan: "Tuban",
+      kota_tujuan: "TUBAN",
+      nama_suami: "BUDI SANTOSO",
+      nama_istri: "SITI AMINAH",
+      tanggal_perkawinan: "2015-06-12",
+      tempat_perkawinan: "KUA Kecamatan Tuban",
+      nomor_akta: "045/2015",
+      tanggal_akta: "2015-06-15",
+      kabupaten_asal: "Tuban",
+      jabatan_penandatangan: "Kepala Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban",
+      nama_penandatangan: "Agung Triwibowo, SE, MM",
+      pangkat_penandatangan: "Pembina Utama Muda",
+      nip_penandatangan: "19680219 199303 1 005"
+    }
+  },
+  {
+    key: "keabsahan_akta_perceraian",
+    nama: "Jawaban Keabsahan Akta Perceraian",
+    deskripsi: "Surat jawaban verifikasi keabsahan Kutipan Akta Perceraian.",
+    layout: "official",
+    logo_url: "Lambang_Kabupaten_Tuban.webp",
+    logo: "Lambang_Kabupaten_Tuban.webp",
+    kop_foto_url: "",
+    signature_qr_url: "",
+    template: '<table class="blok-kop"><tr><td class="kop-logo"><img src="Lambang_Kabupaten_Tuban.webp" alt="Logo"></td><td class="kop-teks"><div class="kop-instansi">PEMERINTAH KABUPATEN TUBAN</div><div class="kop-dinas">DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL</div><div class="kop-alamat">Jl. Teuku Umar No. 7, Latsari, Kec. Tuban, Kabupaten Tuban, Jawa Timur 62315</div><div class="kop-alamat">Telepon: (0356) 321307 | WhatsApp Pelayanan: 0811-307-764</div><div class="kop-alamat">Pos-el (Email): dispendukcapil@tubankab.go.id / dispendukcapiltuban@gmail.com</div><div class="kop-alamat">Laman (Website): dukcapil.tubankab.go.id</div></td></tr></table><div class="kop-garis garis-double"></div><table class="blok-identitas"><tr><td class="id-kiri"><table class="id-table"><tr><td class="id-label">Nomor</td><td class="id-colon">:</td><td>{{nomor_surat}}</td></tr><tr><td class="id-label">Sifat</td><td class="id-colon">:</td><td>{{sifat_surat}}</td></tr><tr><td class="id-label">Lampiran</td><td class="id-colon">:</td><td>{{lampiran}}</td></tr><tr><td class="id-label">Hal</td><td class="id-colon">:</td><td>{{perihal}}</td></tr></table></td><td class="id-kanan">Tuban, {{tanggal_surat}}</td></tr></table><div class="blok-tujuan"><div>Yth. Kepala Dinas Kependudukan dan</div><div class="tujuan-2">Pencatatan Sipil Kabupaten {{kabupaten_tujuan}}</div><div>di</div><div class="tujuan-kota">{{kota_tujuan}}</div></div><div class="blok-isi"><p class="isi-justify">Dengan hormat,</p><p class="isi-justify">Menindaklanjuti Surat Saudara Nomor: {{nomor_surat_rujukan}} tanggal {{tanggal_rujukan}} perihal pada pokok surat, maka:</p><table class="tabel-data"><tr><td class="data-label">Nama Penggugat</td><td class="data-colon">:</td><td>{{nama_penggugat}}</td></tr><tr><td class="data-label">Nama Tergugat</td><td class="data-colon">:</td><td>{{nama_tergugat}}</td></tr><tr><td class="data-label">Putusan Pengadilan</td><td class="data-colon">:</td><td>{{nomor_putusan}}</td></tr><tr><td class="data-label">Tanggal Putusan</td><td class="data-colon">:</td><td>{{tanggal_putusan}}</td></tr><tr><td class="data-label">Tanggal Perceraian</td><td class="data-colon">:</td><td>{{tanggal_perceraian}}</td></tr><tr><td class="data-label">No. Akta Perceraian</td><td class="data-colon">:</td><td>{{nomor_akta}}</td></tr><tr><td class="data-label">Tgl. Akta Perceraian</td><td class="data-colon">:</td><td>{{tanggal_akta}}</td></tr></table><p class="isi-justify">Berdasarkan hasil verifikasi dan penelitian berkas, bahwa Dokumen Kutipan Akta Perceraian tersebut tercatat dan benar dikeluarkan oleh Kepala Dinas Kependudukan dan Pencatatan Sipil Kabupaten {{kabupaten_asal}}, untuk selanjutnya bisa diproses sesuai asas domisili.</p><p class="isi-justify">Dapat kami sampaikan bahwa dalam rangka menjaga Zona Integritas Wilayah Bebas Korupsi (WBK) menuju Wilayah Birokrasi Bersih Melayani (WBBM), kami berkomitmen untuk terus meningkatkan kualitas pelayanan dan menjaga integritas dan profesionalisme. Adapun seluruh layanan pada Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban tidak dipungut biaya apapun (<strong>GRATIS Rp 0,-</strong>).</p><p class="isi-justify">Demikian untuk menjadikan maklum dan atas kerjasamanya disampaikan terima kasih.</p></div><div class="blok-ttd blok-ttd-kanan"><div class="ttd-jabatan">{{jabatan_penandatangan}},</div><div class="ttd-qr-wrap"><div class="ttd-space-dummy"></div></div><div class="ttd-nama">{{nama_penandatangan}}</div><div class="ttd-pangkat">{{pangkat_penandatangan}}</div><div class="ttd-nip">NIP. {{nip_penandatangan}}</div></div>',
+    fields: [
+      { name: "nomor_surat_rujukan", label: "Nomor surat rujukan", type: "text", required: true },
+      { name: "tanggal_rujukan", label: "Tanggal surat rujukan", type: "date", required: true },
+      { name: "sifat_surat", label: "Sifat surat", type: "text", required: true },
+      { name: "lampiran", label: "Lampiran", type: "text", required: true },
+      { name: "perihal", label: "Perihal", type: "text", required: true },
+      { name: "tanggal_surat", label: "Tanggal surat", type: "date", required: true },
+      { name: "kabupaten_tujuan", label: "Kabupaten tujuan", type: "text", required: true },
+      { name: "kota_tujuan", label: "Kota tujuan", type: "text", required: true },
+      { name: "nama_penggugat", label: "Nama penggugat", type: "text", required: true },
+      { name: "nama_tergugat", label: "Nama tergugat", type: "text", required: true },
+      { name: "nomor_putusan", label: "Nomor putusan pengadilan", type: "text", required: true },
+      { name: "tanggal_putusan", label: "Tanggal putusan", type: "date", required: true },
+      { name: "tanggal_perceraian", label: "Tanggal perceraian", type: "date", required: true },
+      { name: "nomor_akta", label: "Nomor akta perceraian", type: "text", required: true },
+      { name: "tanggal_akta", label: "Tanggal akta perceraian", type: "date", required: true },
+      { name: "kabupaten_asal", label: "Kabupaten asal penerbit akta", type: "text", required: true }
+    ],
+    sample_data: {
+      nomor_surat: "B/470.02/1788/409.20.3/2026",
+      nomor_surat_rujukan: "400.12.3.1/5974/419.112/2026",
+      tanggal_rujukan: "2026-09-21",
+      sifat_surat: "Biasa",
+      lampiran: "-",
+      perihal: "Jawaban Keabsahan Akta Perceraian a.n. BUDI SANTOSO",
+      tanggal_surat: "2026-09-22",
+      kabupaten_tujuan: "Tuban",
+      kota_tujuan: "TUBAN",
+      nama_penggugat: "SITI AMINAH",
+      nama_tergugat: "BUDI SANTOSO",
+      nomor_putusan: "123/Pdt.G/2024/PA.Tbn",
+      tanggal_putusan: "2024-08-14",
+      tanggal_perceraian: "2024-08-20",
+      nomor_akta: "078/2024",
+      tanggal_akta: "2024-09-02",
+      kabupaten_asal: "Tuban",
+      jabatan_penandatangan: "Kepala Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban",
+      nama_penandatangan: "Agung Triwibowo, SE, MM",
+      pangkat_penandatangan: "Pembina Utama Muda",
+      nip_penandatangan: "19680219 199303 1 005"
+    }
+  },
+  {
+    key: "keabsahan_akta_pengakuan_anak",
+    nama: "Jawaban Keabsahan Akta Pengakuan Anak",
+    deskripsi: "Surat jawaban verifikasi keabsahan Kutipan Akta Pengakuan Anak.",
+    layout: "official",
+    logo_url: "Lambang_Kabupaten_Tuban.webp",
+    logo: "Lambang_Kabupaten_Tuban.webp",
+    kop_foto_url: "",
+    signature_qr_url: "",
+    template: '<table class="blok-kop"><tr><td class="kop-logo"><img src="Lambang_Kabupaten_Tuban.webp" alt="Logo"></td><td class="kop-teks"><div class="kop-instansi">PEMERINTAH KABUPATEN TUBAN</div><div class="kop-dinas">DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL</div><div class="kop-alamat">Jl. Teuku Umar No. 7, Latsari, Kec. Tuban, Kabupaten Tuban, Jawa Timur 62315</div><div class="kop-alamat">Telepon: (0356) 321307 | WhatsApp Pelayanan: 0811-307-764</div><div class="kop-alamat">Pos-el (Email): dispendukcapil@tubankab.go.id / dispendukcapiltuban@gmail.com</div><div class="kop-alamat">Laman (Website): dukcapil.tubankab.go.id</div></td></tr></table><div class="kop-garis garis-double"></div><table class="blok-identitas"><tr><td class="id-kiri"><table class="id-table"><tr><td class="id-label">Nomor</td><td class="id-colon">:</td><td>{{nomor_surat}}</td></tr><tr><td class="id-label">Sifat</td><td class="id-colon">:</td><td>{{sifat_surat}}</td></tr><tr><td class="id-label">Lampiran</td><td class="id-colon">:</td><td>{{lampiran}}</td></tr><tr><td class="id-label">Hal</td><td class="id-colon">:</td><td>{{perihal}}</td></tr></table></td><td class="id-kanan">Tuban, {{tanggal_surat}}</td></tr></table><div class="blok-tujuan"><div>Yth. Kepala Dinas Kependudukan dan</div><div class="tujuan-2">Pencatatan Sipil Kabupaten {{kabupaten_tujuan}}</div><div>di</div><div class="tujuan-kota">{{kota_tujuan}}</div></div><div class="blok-isi"><p class="isi-justify">Dengan hormat,</p><p class="isi-justify">Menindaklanjuti Surat Saudara Nomor: {{nomor_surat_rujukan}} tanggal {{tanggal_rujukan}} perihal pada pokok surat, maka:</p><table class="tabel-data"><tr><td class="data-label">Nama Anak</td><td class="data-colon">:</td><td>{{nama_anak}}</td></tr><tr><td class="data-label">Tempat, Tanggal Lahir</td><td class="data-colon">:</td><td>{{tempat_tanggal_lahir}}</td></tr><tr><td class="data-label">Nama Ayah</td><td class="data-colon">:</td><td>{{nama_ayah}}</td></tr><tr><td class="data-label">Nama Ibu</td><td class="data-colon">:</td><td>{{nama_ibu}}</td></tr><tr><td class="data-label">Tanggal Pengakuan</td><td class="data-colon">:</td><td>{{tanggal_pengakuan}}</td></tr><tr><td class="data-label">No. Akta Pengakuan</td><td class="data-colon">:</td><td>{{nomor_akta}}</td></tr><tr><td class="data-label">Tgl. Akta Pengakuan</td><td class="data-colon">:</td><td>{{tanggal_akta}}</td></tr></table><p class="isi-justify">Berdasarkan hasil verifikasi dan penelitian berkas, bahwa Dokumen Kutipan Akta Pengakuan Anak tersebut tercatat dan benar dikeluarkan oleh Kepala Dinas Kependudukan dan Pencatatan Sipil Kabupaten {{kabupaten_asal}}, untuk selanjutnya bisa diproses sesuai asas domisili.</p><p class="isi-justify">Dapat kami sampaikan bahwa dalam rangka menjaga Zona Integritas Wilayah Bebas Korupsi (WBK) menuju Wilayah Birokrasi Bersih Melayani (WBBM), kami berkomitmen untuk terus meningkatkan kualitas pelayanan dan menjaga integritas dan profesionalisme. Adapun seluruh layanan pada Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban tidak dipungut biaya apapun (<strong>GRATIS Rp 0,-</strong>).</p><p class="isi-justify">Demikian untuk menjadikan maklum dan atas kerjasamanya disampaikan terima kasih.</p></div><div class="blok-ttd blok-ttd-kanan"><div class="ttd-jabatan">{{jabatan_penandatangan}},</div><div class="ttd-qr-wrap"><div class="ttd-space-dummy"></div></div><div class="ttd-nama">{{nama_penandatangan}}</div><div class="ttd-pangkat">{{pangkat_penandatangan}}</div><div class="ttd-nip">NIP. {{nip_penandatangan}}</div></div>',
+    fields: [
+      { name: "nomor_surat_rujukan", label: "Nomor surat rujukan", type: "text", required: true },
+      { name: "tanggal_rujukan", label: "Tanggal surat rujukan", type: "date", required: true },
+      { name: "sifat_surat", label: "Sifat surat", type: "text", required: true },
+      { name: "lampiran", label: "Lampiran", type: "text", required: true },
+      { name: "perihal", label: "Perihal", type: "text", required: true },
+      { name: "tanggal_surat", label: "Tanggal surat", type: "date", required: true },
+      { name: "kabupaten_tujuan", label: "Kabupaten tujuan", type: "text", required: true },
+      { name: "kota_tujuan", label: "Kota tujuan", type: "text", required: true },
+      { name: "nama_anak", label: "Nama anak", type: "text", required: true },
+      { name: "tempat_tanggal_lahir", label: "Tempat, tanggal lahir anak", type: "text", required: true },
+      { name: "nama_ayah", label: "Nama ayah", type: "text", required: true },
+      { name: "nama_ibu", label: "Nama ibu", type: "text", required: true },
+      { name: "tanggal_pengakuan", label: "Tanggal pengakuan", type: "date", required: true },
+      { name: "nomor_akta", label: "Nomor akta pengakuan", type: "text", required: true },
+      { name: "tanggal_akta", label: "Tanggal akta pengakuan", type: "date", required: true },
+      { name: "kabupaten_asal", label: "Kabupaten asal penerbit akta", type: "text", required: true }
+    ],
+    sample_data: {
+      nomor_surat: "B/470.02/1789/409.20.3/2026",
+      nomor_surat_rujukan: "400.12.3.1/5975/419.112/2026",
+      tanggal_rujukan: "2026-09-21",
+      sifat_surat: "Biasa",
+      lampiran: "-",
+      perihal: "Jawaban Keabsahan Akta Pengakuan Anak a.n. ANDI PRATAMA",
+      tanggal_surat: "2026-09-22",
+      kabupaten_tujuan: "Tuban",
+      kota_tujuan: "TUBAN",
+      nama_anak: "ANDI PRATAMA",
+      tempat_tanggal_lahir: "Tuban, 15 Februari 2018",
+      nama_ayah: "BUDI SANTOSO",
+      nama_ibu: "SITI AMINAH",
+      tanggal_pengakuan: "2018-03-01",
+      nomor_akta: "012/2018",
+      tanggal_akta: "2018-03-05",
+      kabupaten_asal: "Tuban",
+      jabatan_penandatangan: "Kepala Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban",
+      nama_penandatangan: "Agung Triwibowo, SE, MM",
+      pangkat_penandatangan: "Pembina Utama Muda",
+      nip_penandatangan: "19680219 199303 1 005"
+    }
+  },
+  {
+    key: "keabsahan_akta_pengesahan_anak",
+    nama: "Jawaban Keabsahan Akta Pengesahan Anak",
+    deskripsi: "Surat jawaban verifikasi keabsahan Kutipan Akta Pengesahan Anak.",
+    layout: "official",
+    logo_url: "Lambang_Kabupaten_Tuban.webp",
+    logo: "Lambang_Kabupaten_Tuban.webp",
+    kop_foto_url: "",
+    signature_qr_url: "",
+    template: '<table class="blok-kop"><tr><td class="kop-logo"><img src="Lambang_Kabupaten_Tuban.webp" alt="Logo"></td><td class="kop-teks"><div class="kop-instansi">PEMERINTAH KABUPATEN TUBAN</div><div class="kop-dinas">DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL</div><div class="kop-alamat">Jl. Teuku Umar No. 7, Latsari, Kec. Tuban, Kabupaten Tuban, Jawa Timur 62315</div><div class="kop-alamat">Telepon: (0356) 321307 | WhatsApp Pelayanan: 0811-307-764</div><div class="kop-alamat">Pos-el (Email): dispendukcapil@tubankab.go.id / dispendukcapiltuban@gmail.com</div><div class="kop-alamat">Laman (Website): dukcapil.tubankab.go.id</div></td></tr></table><div class="kop-garis garis-double"></div><table class="blok-identitas"><tr><td class="id-kiri"><table class="id-table"><tr><td class="id-label">Nomor</td><td class="id-colon">:</td><td>{{nomor_surat}}</td></tr><tr><td class="id-label">Sifat</td><td class="id-colon">:</td><td>{{sifat_surat}}</td></tr><tr><td class="id-label">Lampiran</td><td class="id-colon">:</td><td>{{lampiran}}</td></tr><tr><td class="id-label">Hal</td><td class="id-colon">:</td><td>{{perihal}}</td></tr></table></td><td class="id-kanan">Tuban, {{tanggal_surat}}</td></tr></table><div class="blok-tujuan"><div>Yth. Kepala Dinas Kependudukan dan</div><div class="tujuan-2">Pencatatan Sipil Kabupaten {{kabupaten_tujuan}}</div><div>di</div><div class="tujuan-kota">{{kota_tujuan}}</div></div><div class="blok-isi"><p class="isi-justify">Dengan hormat,</p><p class="isi-justify">Menindaklanjuti Surat Saudara Nomor: {{nomor_surat_rujukan}} tanggal {{tanggal_rujukan}} perihal pada pokok surat, maka:</p><table class="tabel-data"><tr><td class="data-label">Nama Anak</td><td class="data-colon">:</td><td>{{nama_anak}}</td></tr><tr><td class="data-label">Tempat, Tanggal Lahir</td><td class="data-colon">:</td><td>{{tempat_tanggal_lahir}}</td></tr><tr><td class="data-label">Nama Ayah</td><td class="data-colon">:</td><td>{{nama_ayah}}</td></tr><tr><td class="data-label">Nama Ibu</td><td class="data-colon">:</td><td>{{nama_ibu}}</td></tr><tr><td class="data-label">Tanggal Pengesahan</td><td class="data-colon">:</td><td>{{tanggal_pengesahan}}</td></tr><tr><td class="data-label">No. Akta Pengesahan</td><td class="data-colon">:</td><td>{{nomor_akta}}</td></tr><tr><td class="data-label">Tgl. Akta Pengesahan</td><td class="data-colon">:</td><td>{{tanggal_akta}}</td></tr></table><p class="isi-justify">Berdasarkan hasil verifikasi dan penelitian berkas, bahwa Dokumen Kutipan Akta Pengesahan Anak tersebut tercatat dan benar dikeluarkan oleh Kepala Dinas Kependudukan dan Pencatatan Sipil Kabupaten {{kabupaten_asal}}, untuk selanjutnya bisa diproses sesuai asas domisili.</p><p class="isi-justify">Dapat kami sampaikan bahwa dalam rangka menjaga Zona Integritas Wilayah Bebas Korupsi (WBK) menuju Wilayah Birokrasi Bersih Melayani (WBBM), kami berkomitmen untuk terus meningkatkan kualitas pelayanan dan menjaga integritas dan profesionalisme. Adapun seluruh layanan pada Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban tidak dipungut biaya apapun (<strong>GRATIS Rp 0,-</strong>).</p><p class="isi-justify">Demikian untuk menjadikan maklum dan atas kerjasamanya disampaikan terima kasih.</p></div><div class="blok-ttd blok-ttd-kanan"><div class="ttd-jabatan">{{jabatan_penandatangan}},</div><div class="ttd-qr-wrap"><div class="ttd-space-dummy"></div></div><div class="ttd-nama">{{nama_penandatangan}}</div><div class="ttd-pangkat">{{pangkat_penandatangan}}</div><div class="ttd-nip">NIP. {{nip_penandatangan}}</div></div>',
+    fields: [
+      { name: "nomor_surat_rujukan", label: "Nomor surat rujukan", type: "text", required: true },
+      { name: "tanggal_rujukan", label: "Tanggal surat rujukan", type: "date", required: true },
+      { name: "sifat_surat", label: "Sifat surat", type: "text", required: true },
+      { name: "lampiran", label: "Lampiran", type: "text", required: true },
+      { name: "perihal", label: "Perihal", type: "text", required: true },
+      { name: "tanggal_surat", label: "Tanggal surat", type: "date", required: true },
+      { name: "kabupaten_tujuan", label: "Kabupaten tujuan", type: "text", required: true },
+      { name: "kota_tujuan", label: "Kota tujuan", type: "text", required: true },
+      { name: "nama_anak", label: "Nama anak", type: "text", required: true },
+      { name: "tempat_tanggal_lahir", label: "Tempat, tanggal lahir anak", type: "text", required: true },
+      { name: "nama_ayah", label: "Nama ayah", type: "text", required: true },
+      { name: "nama_ibu", label: "Nama ibu", type: "text", required: true },
+      { name: "tanggal_pengesahan", label: "Tanggal pengesahan", type: "date", required: true },
+      { name: "nomor_akta", label: "Nomor akta pengesahan", type: "text", required: true },
+      { name: "tanggal_akta", label: "Tanggal akta pengesahan", type: "date", required: true },
+      { name: "kabupaten_asal", label: "Kabupaten asal penerbit akta", type: "text", required: true }
+    ],
+    sample_data: {
+      nomor_surat: "B/470.02/1790/409.20.3/2026",
+      nomor_surat_rujukan: "400.12.3.1/5976/419.112/2026",
+      tanggal_rujukan: "2026-09-21",
+      sifat_surat: "Biasa",
+      lampiran: "-",
+      perihal: "Jawaban Keabsahan Akta Pengesahan Anak a.n. ANDI PRATAMA",
+      tanggal_surat: "2026-09-22",
+      kabupaten_tujuan: "Tuban",
+      kota_tujuan: "TUBAN",
+      nama_anak: "ANDI PRATAMA",
+      tempat_tanggal_lahir: "Tuban, 15 Februari 2018",
+      nama_ayah: "BUDI SANTOSO",
+      nama_ibu: "SITI AMINAH",
+      tanggal_pengesahan: "2018-03-10",
+      nomor_akta: "013/2018",
+      tanggal_akta: "2018-03-12",
+      kabupaten_asal: "Tuban",
+      jabatan_penandatangan: "Kepala Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban",
+      nama_penandatangan: "Agung Triwibowo, SE, MM",
+      pangkat_penandatangan: "Pembina Utama Muda",
+      nip_penandatangan: "19680219 199303 1 005"
+    }
+  },
+  {
+    key: "keabsahan_akta_pengangkatan_anak",
+    nama: "Jawaban Keabsahan Akta Pengangkatan Anak",
+    deskripsi: "Surat jawaban verifikasi keabsahan Kutipan Akta Pengangkatan Anak.",
+    layout: "official",
+    logo_url: "Lambang_Kabupaten_Tuban.webp",
+    logo: "Lambang_Kabupaten_Tuban.webp",
+    kop_foto_url: "",
+    signature_qr_url: "",
+    template: '<table class="blok-kop"><tr><td class="kop-logo"><img src="Lambang_Kabupaten_Tuban.webp" alt="Logo"></td><td class="kop-teks"><div class="kop-instansi">PEMERINTAH KABUPATEN TUBAN</div><div class="kop-dinas">DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL</div><div class="kop-alamat">Jl. Teuku Umar No. 7, Latsari, Kec. Tuban, Kabupaten Tuban, Jawa Timur 62315</div><div class="kop-alamat">Telepon: (0356) 321307 | WhatsApp Pelayanan: 0811-307-764</div><div class="kop-alamat">Pos-el (Email): dispendukcapil@tubankab.go.id / dispendukcapiltuban@gmail.com</div><div class="kop-alamat">Laman (Website): dukcapil.tubankab.go.id</div></td></tr></table><div class="kop-garis garis-double"></div><table class="blok-identitas"><tr><td class="id-kiri"><table class="id-table"><tr><td class="id-label">Nomor</td><td class="id-colon">:</td><td>{{nomor_surat}}</td></tr><tr><td class="id-label">Sifat</td><td class="id-colon">:</td><td>{{sifat_surat}}</td></tr><tr><td class="id-label">Lampiran</td><td class="id-colon">:</td><td>{{lampiran}}</td></tr><tr><td class="id-label">Hal</td><td class="id-colon">:</td><td>{{perihal}}</td></tr></table></td><td class="id-kanan">Tuban, {{tanggal_surat}}</td></tr></table><div class="blok-tujuan"><div>Yth. Kepala Dinas Kependudukan dan</div><div class="tujuan-2">Pencatatan Sipil Kabupaten {{kabupaten_tujuan}}</div><div>di</div><div class="tujuan-kota">{{kota_tujuan}}</div></div><div class="blok-isi"><p class="isi-justify">Dengan hormat,</p><p class="isi-justify">Menindaklanjuti Surat Saudara Nomor: {{nomor_surat_rujukan}} tanggal {{tanggal_rujukan}} perihal pada pokok surat, maka:</p><table class="tabel-data"><tr><td class="data-label">Nama Anak Angkat</td><td class="data-colon">:</td><td>{{nama_anak}}</td></tr><tr><td class="data-label">Tempat, Tanggal Lahir</td><td class="data-colon">:</td><td>{{tempat_tanggal_lahir}}</td></tr><tr><td class="data-label">Nama Orang Tua Angkat</td><td class="data-colon">:</td><td>{{nama_orangtua_angkat}}</td></tr><tr><td class="data-label">Nama Orang Tua Kandung</td><td class="data-colon">:</td><td>{{nama_orangtua_kandung}}</td></tr><tr><td class="data-label">Tanggal Pengangkatan</td><td class="data-colon">:</td><td>{{tanggal_pengangkatan}}</td></tr><tr><td class="data-label">No. Akta Pengangkatan</td><td class="data-colon">:</td><td>{{nomor_akta}}</td></tr><tr><td class="data-label">Tgl. Akta Pengangkatan</td><td class="data-colon">:</td><td>{{tanggal_akta}}</td></tr></table><p class="isi-justify">Berdasarkan hasil verifikasi dan penelitian berkas, bahwa Dokumen Kutipan Akta Pengangkatan Anak tersebut tercatat dan benar dikeluarkan oleh Kepala Dinas Kependudukan dan Pencatatan Sipil Kabupaten {{kabupaten_asal}}, untuk selanjutnya bisa diproses sesuai asas domisili.</p><p class="isi-justify">Dapat kami sampaikan bahwa dalam rangka menjaga Zona Integritas Wilayah Bebas Korupsi (WBK) menuju Wilayah Birokrasi Bersih Melayani (WBBM), kami berkomitmen untuk terus meningkatkan kualitas pelayanan dan menjaga integritas dan profesionalisme. Adapun seluruh layanan pada Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban tidak dipungut biaya apapun (<strong>GRATIS Rp 0,-</strong>).</p><p class="isi-justify">Demikian untuk menjadikan maklum dan atas kerjasamanya disampaikan terima kasih.</p></div><div class="blok-ttd blok-ttd-kanan"><div class="ttd-jabatan">{{jabatan_penandatangan}},</div><div class="ttd-qr-wrap"><div class="ttd-space-dummy"></div></div><div class="ttd-nama">{{nama_penandatangan}}</div><div class="ttd-pangkat">{{pangkat_penandatangan}}</div><div class="ttd-nip">NIP. {{nip_penandatangan}}</div></div>',
+    fields: [
+      { name: "nomor_surat_rujukan", label: "Nomor surat rujukan", type: "text", required: true },
+      { name: "tanggal_rujukan", label: "Tanggal surat rujukan", type: "date", required: true },
+      { name: "sifat_surat", label: "Sifat surat", type: "text", required: true },
+      { name: "lampiran", label: "Lampiran", type: "text", required: true },
+      { name: "perihal", label: "Perihal", type: "text", required: true },
+      { name: "tanggal_surat", label: "Tanggal surat", type: "date", required: true },
+      { name: "kabupaten_tujuan", label: "Kabupaten tujuan", type: "text", required: true },
+      { name: "kota_tujuan", label: "Kota tujuan", type: "text", required: true },
+      { name: "nama_anak", label: "Nama anak angkat", type: "text", required: true },
+      { name: "tempat_tanggal_lahir", label: "Tempat, tanggal lahir anak", type: "text", required: true },
+      { name: "nama_orangtua_angkat", label: "Nama orang tua angkat", type: "text", required: true },
+      { name: "nama_orangtua_kandung", label: "Nama orang tua kandung", type: "text", required: true },
+      { name: "tanggal_pengangkatan", label: "Tanggal pengangkatan", type: "date", required: true },
+      { name: "nomor_akta", label: "Nomor akta pengangkatan", type: "text", required: true },
+      { name: "tanggal_akta", label: "Tanggal akta pengangkatan", type: "date", required: true },
+      { name: "kabupaten_asal", label: "Kabupaten asal penerbit akta", type: "text", required: true }
+    ],
+    sample_data: {
+      nomor_surat: "B/470.02/1791/409.20.3/2026",
+      nomor_surat_rujukan: "400.12.3.1/5977/419.112/2026",
+      tanggal_rujukan: "2026-09-21",
+      sifat_surat: "Biasa",
+      lampiran: "-",
+      perihal: "Jawaban Keabsahan Akta Pengangkatan Anak a.n. ANDI PRATAMA",
+      tanggal_surat: "2026-09-22",
+      kabupaten_tujuan: "Tuban",
+      kota_tujuan: "TUBAN",
+      nama_anak: "ANDI PRATAMA",
+      tempat_tanggal_lahir: "Tuban, 15 Februari 2018",
+      nama_orangtua_angkat: "BUDI SANTOSO & SITI AMINAH",
+      nama_orangtua_kandung: "AGUS SETIAWAN & RINA WATI",
+      tanggal_pengangkatan: "2019-01-15",
+      nomor_akta: "005/2019",
+      tanggal_akta: "2019-01-20",
+      kabupaten_asal: "Tuban",
+      jabatan_penandatangan: "Kepala Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban",
+      nama_penandatangan: "Agung Triwibowo, SE, MM",
+      pangkat_penandatangan: "Pembina Utama Muda",
+      nip_penandatangan: "19680219 199303 1 005"
+    }
+  },
+  {
+    key: "keabsahan_akta_pencatatan_sipil",
+    nama: "Jawaban Keabsahan Akta Pencatatan Sipil (Umum)",
+    deskripsi: "Surat jawaban verifikasi keabsahan dokumen pencatatan sipil lainnya.",
+    layout: "official",
+    logo_url: "Lambang_Kabupaten_Tuban.webp",
+    logo: "Lambang_Kabupaten_Tuban.webp",
+    kop_foto_url: "",
+    signature_qr_url: "",
+    template: '<table class="blok-kop"><tr><td class="kop-logo"><img src="Lambang_Kabupaten_Tuban.webp" alt="Logo"></td><td class="kop-teks"><div class="kop-instansi">PEMERINTAH KABUPATEN TUBAN</div><div class="kop-dinas">DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL</div><div class="kop-alamat">Jl. Teuku Umar No. 7, Latsari, Kec. Tuban, Kabupaten Tuban, Jawa Timur 62315</div><div class="kop-alamat">Telepon: (0356) 321307 | WhatsApp Pelayanan: 0811-307-764</div><div class="kop-alamat">Pos-el (Email): dispendukcapil@tubankab.go.id / dispendukcapiltuban@gmail.com</div><div class="kop-alamat">Laman (Website): dukcapil.tubankab.go.id</div></td></tr></table><div class="kop-garis garis-double"></div><table class="blok-identitas"><tr><td class="id-kiri"><table class="id-table"><tr><td class="id-label">Nomor</td><td class="id-colon">:</td><td>{{nomor_surat}}</td></tr><tr><td class="id-label">Sifat</td><td class="id-colon">:</td><td>{{sifat_surat}}</td></tr><tr><td class="id-label">Lampiran</td><td class="id-colon">:</td><td>{{lampiran}}</td></tr><tr><td class="id-label">Hal</td><td class="id-colon">:</td><td>{{perihal}}</td></tr></table></td><td class="id-kanan">Tuban, {{tanggal_surat}}</td></tr></table><div class="blok-tujuan"><div>Yth. Kepala Dinas Kependudukan dan</div><div class="tujuan-2">Pencatatan Sipil Kabupaten {{kabupaten_tujuan}}</div><div>di</div><div class="tujuan-kota">{{kota_tujuan}}</div></div><div class="blok-isi"><p class="isi-justify">Dengan hormat,</p><p class="isi-justify">Menindaklanjuti Surat Saudara Nomor: {{nomor_surat_rujukan}} tanggal {{tanggal_rujukan}} perihal pada pokok surat, maka:</p><table class="tabel-data"><tr><td class="data-label">Jenis Akta</td><td class="data-colon">:</td><td>{{jenis_akta}}</td></tr><tr><td class="data-label">Nama Pemilik</td><td class="data-colon">:</td><td>{{nama_pemilik}}</td></tr><tr><td class="data-label">NIK</td><td class="data-colon">:</td><td>{{nik_pemilik}}</td></tr><tr><td class="data-label">No. Akta</td><td class="data-colon">:</td><td>{{nomor_akta}}</td></tr><tr><td class="data-label">Tgl. Akta</td><td class="data-colon">:</td><td>{{tanggal_akta}}</td></tr><tr><td class="data-label">Keterangan</td><td class="data-colon">:</td><td>{{keterangan}}</td></tr></table><p class="isi-justify">Berdasarkan hasil verifikasi dan penelitian berkas, bahwa Dokumen Kutipan Akta Pencatatan Sipil tersebut tercatat dan benar dikeluarkan oleh Kepala Dinas Kependudukan dan Pencatatan Sipil Kabupaten {{kabupaten_asal}}, untuk selanjutnya bisa diproses sesuai asas domisili.</p><p class="isi-justify">Dapat kami sampaikan bahwa dalam rangka menjaga Zona Integritas Wilayah Bebas Korupsi (WBK) menuju Wilayah Birokrasi Bersih Melayani (WBBM), kami berkomitmen untuk terus meningkatkan kualitas pelayanan dan menjaga integritas dan profesionalisme. Adapun seluruh layanan pada Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban tidak dipungut biaya apapun (<strong>GRATIS Rp 0,-</strong>).</p><p class="isi-justify">Demikian untuk menjadikan maklum dan atas kerjasamanya disampaikan terima kasih.</p></div><div class="blok-ttd blok-ttd-kanan"><div class="ttd-jabatan">{{jabatan_penandatangan}},</div><div class="ttd-qr-wrap"><div class="ttd-space-dummy"></div></div><div class="ttd-nama">{{nama_penandatangan}}</div><div class="ttd-pangkat">{{pangkat_penandatangan}}</div><div class="ttd-nip">NIP. {{nip_penandatangan}}</div></div>',
+    fields: [
+      { name: "nomor_surat_rujukan", label: "Nomor surat rujukan", type: "text", required: true },
+      { name: "tanggal_rujukan", label: "Tanggal surat rujukan", type: "date", required: true },
+      { name: "sifat_surat", label: "Sifat surat", type: "text", required: true },
+      { name: "lampiran", label: "Lampiran", type: "text", required: true },
+      { name: "perihal", label: "Perihal", type: "text", required: true },
+      { name: "tanggal_surat", label: "Tanggal surat", type: "date", required: true },
+      { name: "kabupaten_tujuan", label: "Kabupaten tujuan", type: "text", required: true },
+      { name: "kota_tujuan", label: "Kota tujuan", type: "text", required: true },
+      { name: "jenis_akta", label: "Jenis akta", type: "text", required: true },
+      { name: "nama_pemilik", label: "Nama pemilik akta", type: "text", required: true },
+      { name: "nik_pemilik", label: "NIK pemilik", type: "text", required: true },
+      { name: "nomor_akta", label: "Nomor akta", type: "text", required: true },
+      { name: "tanggal_akta", label: "Tanggal akta", type: "date", required: true },
+      { name: "keterangan", label: "Keterangan tambahan", type: "textarea", required: false },
+      { name: "kabupaten_asal", label: "Kabupaten asal penerbit akta", type: "text", required: true }
+    ],
+    sample_data: {
+      nomor_surat: "B/470.02/1792/409.20.3/2026",
+      nomor_surat_rujukan: "400.12.3.1/5978/419.112/2026",
+      tanggal_rujukan: "2026-09-21",
+      sifat_surat: "Biasa",
+      lampiran: "-",
+      perihal: "Jawaban Keabsahan Akta Pencatatan Sipil a.n. EKA FARID SANI",
+      tanggal_surat: "2026-09-22",
+      kabupaten_tujuan: "Tuban",
+      kota_tujuan: "TUBAN",
+      jenis_akta: "Akta Kelahiran / Kematian / Perkawinan / Perceraian / Lainnya",
+      nama_pemilik: "EKA FARID SANI",
+      nik_pemilik: "3513012345670002",
+      nomor_akta: "429 TAHUN 1993",
+      tanggal_akta: "1993-03-09",
+      keterangan: "Dokumen terverifikasi dan sah.",
+      kabupaten_asal: "Tuban",
+      jabatan_penandatangan: "Kepala Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban",
+      nama_penandatangan: "Agung Triwibowo, SE, MM",
+      pangkat_penandatangan: "Pembina Utama Muda",
+      nip_penandatangan: "19680219 199303 1 005"
+    }
+  }
 ];
 
-const DEFAULT_DIRUT = [
+// =========================================================
+// DEFAULT DIRUT
+// =========================================================
+var DEFAULT_DIRUT = [
   { id: "dirut-001", nama: "Agung Triwibowo, SE, MM", jabatan: "Kepala Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban", pangkat: "Pembina Utama Muda", nip: "19680219 199303 1 005" },
-  { id: "dirut-002", nama: "Dina Widyaningtyas Winarni, SE., MM", jabatan: "Kepala Bidang Pelayanan Pencatatan Sipil", pangkat: "Pembina (IV/a)", nip: "197311032003122002" },
+  { id: "dirut-002", nama: "Dina Widyaningtyas Winarni, SE., MM", jabatan: "Kepala Bidang Pelayanan Pencatatan Sipil", pangkat: "Pembina (IV/a)", nip: "197311032003122002" }
 ];
 
 // =========================================================
@@ -180,7 +441,8 @@ function getSession() {
   catch (error) { return {}; }
 }
 function patchSession(values) {
-  const session = { ...getSession(), ...values };
+  var session = getSession();
+  for (var k in values) { if (values.hasOwnProperty(k)) session[k] = values[k]; }
   localStorage.setItem(SESSION_KEY, JSON.stringify(session));
   return session;
 }
@@ -188,12 +450,15 @@ function clearSession() { localStorage.removeItem(SESSION_KEY); }
 
 function getAuth() {
   try {
-    const auth = JSON.parse(localStorage.getItem(AUTH_KEY));
-    return auth && typeof auth === "object" && auth.version === AUTH_VERSION && String(auth.username || "").trim() ? auth : null;
+    var auth = JSON.parse(localStorage.getItem(AUTH_KEY));
+    if (auth && typeof auth === "object" && auth.version === AUTH_VERSION && String(auth.username || "").trim()) return auth;
+    return null;
   } catch (error) { return null; }
 }
 function setAuth(user) {
-  const auth = { ...user, version: AUTH_VERSION };
+  var auth = {};
+  for (var k in user) { if (user.hasOwnProperty(k)) auth[k] = user[k]; }
+  auth.version = AUTH_VERSION;
   localStorage.setItem(AUTH_KEY, JSON.stringify(auth));
   return auth;
 }
@@ -206,43 +471,42 @@ function isLoginPage() { return location.pathname.endsWith("/login.html"); }
 
 function showLoginModal() {
   if (isLoginPage() || getAuth() || document.getElementById("auth-modal")) return;
-  const modal = document.createElement("div");
+  var modal = document.createElement("div");
   modal.id = "auth-modal";
   modal.className = "auth-modal";
-  modal.innerHTML = `
-    <div class="auth-modal-backdrop"></div>
-    <section class="auth-modal-panel" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
-      <div class="auth-modal-logo" aria-hidden="true"></div>
-      <div class="preview-eyebrow">Akses petugas</div>
-      <h2 id="auth-modal-title">Silakan masuk dulu</h2>
-      <p>Login diperlukan sebelum Anda dapat memakai fitur Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban.</p>
-      <form id="auth-modal-form" class="auth-form">
-        <div class="field"><label for="auth-modal-username">Nama pengguna</label>
-          <input id="auth-modal-username" name="username" type="text" autocomplete="username" required></div>
-        <div class="field"><label for="auth-modal-password">Kata sandi</label>
-          <input id="auth-modal-password" name="password" type="password" autocomplete="current-password" required></div>
-        <p id="auth-modal-error" class="auth-error" role="alert"></p>
-        <button type="submit" class="btn btn-primary">Masuk</button>
-      </form>
-    </section>`;
+  modal.innerHTML = '<div class="auth-modal-backdrop"></div>' +
+    '<section class="auth-modal-panel" role="dialog" aria-modal="true">' +
+    '<div class="auth-modal-logo"></div>' +
+    '<div class="preview-eyebrow">Akses petugas</div>' +
+    '<h2>Silakan masuk dulu</h2>' +
+    '<p>Login diperlukan sebelum Anda dapat memakai fitur Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban.</p>' +
+    '<form id="auth-modal-form" class="auth-form">' +
+    '<div class="field"><label for="auth-modal-username">Nama pengguna</label>' +
+    '<input id="auth-modal-username" name="username" type="text" required></div>' +
+    '<div class="field"><label for="auth-modal-password">Kata sandi</label>' +
+    '<input id="auth-modal-password" name="password" type="password" required></div>' +
+    '<p id="auth-modal-error" class="auth-error"></p>' +
+    '<button type="submit" class="btn btn-primary">Masuk</button>' +
+    '</form>' +
+    '</section>';
   document.body.appendChild(modal);
 
-  modal.querySelector("form").addEventListener("submit", (event) => {
+  modal.querySelector("form").addEventListener("submit", function (event) {
     event.preventDefault();
-    const values = new FormData(event.currentTarget);
-    const username = String(values.get("username") || "").trim();
-    const password = String(values.get("password") || "");
-    const error = modal.querySelector(".auth-error");
+    var values = new FormData(event.currentTarget);
+    var username = String(values.get("username") || "").trim();
+    var password = String(values.get("password") || "");
+    var error = modal.querySelector(".auth-error");
     if (username !== "admin" || password !== "12345678") {
       error.textContent = "Nama pengguna atau kata sandi belum sesuai.";
       return;
     }
-    setAuth({ username, nama: "Admin Surat" });
+    setAuth({ username: username, nama: "Admin Surat" });
     modal.remove();
-    const control = pendingProtectedControl;
+    var control = pendingProtectedControl;
     pendingProtectedControl = null;
     if (control && control.isConnected) {
-      if (control.matches("button[type=submit]")) control.form?.requestSubmit(control);
+      if (control.matches("button[type=submit]") && control.form) control.form.requestSubmit(control);
       else control.click();
     }
   });
@@ -251,9 +515,9 @@ function showLoginModal() {
 
 function protectPage() {
   if (isLoginPage()) return;
-  document.addEventListener("click", (event) => {
+  document.addEventListener("click", function (event) {
     if (getAuth() || event.target.closest("#auth-modal")) return;
-    const control = event.target.closest("a, button, input, textarea, select, summary");
+    var control = event.target.closest("a, button, input, textarea, select, summary");
     if (!control) return;
     event.preventDefault();
     event.stopPropagation();
@@ -272,25 +536,26 @@ if (document.readyState === "loading") {
 // TEMPLATES
 // =========================================================
 function setTemplates(templates) {
-  const normalized = Array.isArray(templates) ? templates.map(normalizeTemplate) : [];
+  var normalized = Array.isArray(templates) ? templates.map(normalizeTemplate) : [];
   localStorage.setItem(TEMPLATES_KEY, JSON.stringify(normalized));
   return normalized;
 }
 
 function normalizeTemplate(template) {
-  const safeTemplate = template || {};
-  const fields = Array.isArray(safeTemplate.fields)
-    ? safeTemplate.fields.map((field, index) => ({
-        name: String(field?.name || `field_${index + 1}`),
-        label: String(field?.label || "Field baru"),
-        type: String(field?.type || "text"),
-        required: Boolean(field?.required),
-        options: Array.isArray(field?.options) ? field.options : undefined,
-        categories: Array.isArray(field?.categories) ? field.categories.map((category) => ({ name: String(category?.name || ""), options: Array.isArray(category?.options) ? category.options.map(String) : [] })).filter((category) => category.name) : undefined,
-      }))
+  var safeTemplate = template || {};
+  var fields = Array.isArray(safeTemplate.fields)
+    ? safeTemplate.fields.map(function (field, index) {
+        return {
+          name: String((field && field.name) || "field_" + (index + 1)),
+          label: String((field && field.label) || "Field baru"),
+          type: String((field && field.type) || "text"),
+          required: Boolean(field && field.required),
+          options: Array.isArray(field && field.options) ? field.options : undefined
+        };
+      })
     : [];
 
-  const renderedTemplate = plainTextToHtml(String(safeTemplate.template || "<p>Isi template surat.</p>"));
+  var renderedTemplate = plainTextToHtml(String(safeTemplate.template || "<p>Isi template surat.</p>"));
 
   return {
     key: String(safeTemplate.key || slugify(safeTemplate.nama || "template_baru")),
@@ -301,11 +566,11 @@ function normalizeTemplate(template) {
     logo: String(safeTemplate.logo || safeTemplate.logo_url || ""),
     kop_foto_url: String(safeTemplate.kop_foto_url || ""),
     signature_qr_url: String(safeTemplate.signature_qr_url || ""),
-    sample_data: safeTemplate.sample_data && typeof safeTemplate.sample_data === "object" ? { ...safeTemplate.sample_data } : {},
+    sample_data: safeTemplate.sample_data && typeof safeTemplate.sample_data === "object" ? JSON.parse(JSON.stringify(safeTemplate.sample_data)) : {},
     template: renderedTemplate,
-    fields,
+    fields: fields,
     blocks: safeTemplate.blocks && typeof safeTemplate.blocks === "object" ? safeTemplate.blocks : null,
-    updated_at: safeTemplate.updated_at || new Date().toISOString(),
+    updated_at: safeTemplate.updated_at || new Date().toISOString()
   };
 }
 
@@ -319,113 +584,100 @@ function slugify(value) {
 
 function getTemplates() {
   try {
-    const saved = JSON.parse(localStorage.getItem(TEMPLATES_KEY));
-    const deduped = Array.isArray(saved)
-      ? saved.reduce((result, item) => {
-          const normalized = normalizeTemplate(item);
-          if (!result.some((template) => template.key === normalized.key)) result.push(normalized);
-          return result;
-        }, [])
-      : [];
-
-    let templates = deduped.length ? deduped : DEFAULT_TEMPLATES;
-    const seededDummy = DEFAULT_TEMPLATES.find((template) => template.key === "dummy_keabsahan_akta_blitar");
-
-    // ===== BUMP VERSION: 6 → 7 =====
-    if (seededDummy && localStorage.getItem(DUMMY_TEMPLATE_VERSION_KEY) !== "7") {
-      const dummyIndex = templates.findIndex((template) => template.key === seededDummy.key);
-      templates = dummyIndex >= 0
-        ? templates.map((template, index) => index === dummyIndex ? seededDummy : template)
-        : [...templates, seededDummy];
-      localStorage.setItem(DUMMY_TEMPLATE_SEED_KEY, "1");
-      localStorage.setItem(DUMMY_TEMPLATE_VERSION_KEY, "7");
+    var saved = JSON.parse(localStorage.getItem(TEMPLATES_KEY));
+    var templates;
+    if (Array.isArray(saved) && saved.length) {
+      templates = saved.map(normalizeTemplate);
+    } else {
+      templates = DEFAULT_TEMPLATES.map(normalizeTemplate);
     }
-
-    const normalized = setTemplates(templates);
-    return normalized;
+    setTemplates(templates);
+    return templates;
   } catch (error) {
     return setTemplates(DEFAULT_TEMPLATES);
   }
 }
 
 function upsertTemplate(template) {
-  const templates = getTemplates();
-  const normalized = normalizeTemplate(template);
-  const existingIndex = templates.findIndex((item) => item.key === normalized.key);
-  const savedTemplate = { ...normalized, updated_at: new Date().toISOString() };
+  var templates = getTemplates();
+  var normalized = normalizeTemplate(template);
+  var existingIndex = -1;
+  for (var i = 0; i < templates.length; i++) { if (templates[i].key === normalized.key) { existingIndex = i; break; } }
+  normalized.updated_at = new Date().toISOString();
 
   if (existingIndex >= 0) {
-    templates[existingIndex] = { ...templates[existingIndex], ...savedTemplate };
+    templates[existingIndex] = normalized;
   } else {
-    templates.unshift(savedTemplate);
+    templates.unshift(normalized);
   }
   setTemplates(templates);
-  return savedTemplate;
+  return normalized;
 }
 
 function deleteTemplate(templateKey) {
-  const templates = getTemplates();
+  var templates = getTemplates();
   if (!templateKey || templates.length <= 1) return templates;
-  const next = templates.filter((template) => template.key !== templateKey);
+  var next = templates.filter(function (template) { return template.key !== templateKey; });
   return setTemplates(next);
 }
 
 function buildTemplatePreview(template) {
-  const safeTemplate = normalizeTemplate(template);
-  const sampleData = {};
-  (safeTemplate.fields || []).forEach((field) => {
-    const name = String(field.name || "field");
+  var safeTemplate = normalizeTemplate(template);
+  var sampleData = {};
+  (safeTemplate.fields || []).forEach(function (field) {
+    var name = String(field.name || "field");
     if (field.type === "date") sampleData[name] = "2026-09-21";
-    else if (field.type === "textarea") sampleData[name] = `Contoh ${field.label || "isi"} untuk preview.`;
-    else sampleData[name] = `Contoh ${field.label || name}`;
+    else if (field.type === "textarea") sampleData[name] = "Contoh " + (field.label || "isi") + " untuk preview.";
+    else sampleData[name] = "Contoh " + (field.label || name);
   });
   return renderTemplate(safeTemplate.template, sampleData);
 }
 
 // =========================================================
-// DIRUT / SIGNERS  (CRUD)
+// DIRUT
 // =========================================================
 function getDirut() {
   try {
-    const raw = localStorage.getItem(DIRUT_KEY);
+    var raw = localStorage.getItem(DIRUT_KEY);
     if (raw === null) return DEFAULT_DIRUT;
-    const saved = JSON.parse(raw);
+    var saved = JSON.parse(raw);
     return Array.isArray(saved) ? saved : DEFAULT_DIRUT;
   } catch (error) { return DEFAULT_DIRUT; }
 }
 
 function setDirut(signers) {
-  const normalized = Array.isArray(signers)
-    ? signers.map((s, i) => ({
-        id: String(s?.id || `dirut-${Date.now()}-${i}`),
-        nama: String(s?.nama || "").trim(),
-        jabatan: String(s?.jabatan || "").trim(),
-        pangkat: String(s?.pangkat || "").trim(),
-        nip: String(s?.nip || "").trim(),
-      })).filter((s) => s.nama)
-    : [];
+  var normalized = Array.isArray(signers) ? signers.map(function (s, i) {
+    return {
+      id: String((s && s.id) || "dirut-" + Date.now() + "-" + i),
+      nama: String((s && s.nama) || "").trim(),
+      jabatan: String((s && s.jabatan) || "").trim(),
+      pangkat: String((s && s.pangkat) || "").trim(),
+      nip: String((s && s.nip) || "").trim()
+    };
+  }).filter(function (s) { return s.nama; }) : [];
   localStorage.setItem(DIRUT_KEY, JSON.stringify(normalized));
   return normalized;
 }
 
 function upsertDirut(signer) {
-  const list = [...getDirut()];
-  const incoming = {
-    id: String(signer?.id || `dirut-${Date.now()}`),
-    nama: String(signer?.nama || "").trim(),
-    jabatan: String(signer?.jabatan || "").trim(),
-    pangkat: String(signer?.pangkat || "").trim(),
-    nip: String(signer?.nip || "").trim(),
+  var list = getDirut().slice();
+  var incoming = {
+    id: String((signer && signer.id) || "dirut-" + Date.now()),
+    nama: String((signer && signer.nama) || "").trim(),
+    jabatan: String((signer && signer.jabatan) || "").trim(),
+    pangkat: String((signer && signer.pangkat) || "").trim(),
+    nip: String((signer && signer.nip) || "").trim()
   };
   if (!incoming.nama) return list;
-  const idx = list.findIndex((s) => s.id === incoming.id);
+  var idx = -1;
+  for (var i = 0; i < list.length; i++) { if (list[i].id === incoming.id) { idx = i; break; } }
   if (idx >= 0) list[idx] = incoming;
   else list.push(incoming);
   return setDirut(list);
 }
 
 function deleteDirut(id) {
-  return setDirut(getDirut().filter((s) => s.id !== id));
+  return setDirut(getDirut().filter(function (s) { return s.id !== id; }));
 }
 
 // =========================================================
@@ -433,14 +685,14 @@ function deleteDirut(id) {
 // =========================================================
 function escapeHtml(value) {
   return String(value)
-    .replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;").replaceAll("'", "&#039;");
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 }
 
 function htmlToPlainText(value) {
-  const raw = String(value || "");
+  var raw = String(value || "");
   if (!raw) return "";
-  const withoutTags = raw.replace(/<br\s*\/?>/gi, "\n").replace(/<\/p>|<\/div>|<\/li>|<\/h[1-6]>/gi, "\n").replace(/<[^>]+>/g, "");
+  var withoutTags = raw.replace(/<br\s*\/?>/gi, "\n").replace(/<\/p>|<\/div>|<\/li>|<\/h[1-6]>/gi, "\n").replace(/<[^>]+>/g, "");
   return withoutTags
     .replace(/&nbsp;/gi, " ").replace(/&amp;/gi, "&").replace(/&lt;/gi, "<")
     .replace(/&gt;/gi, ">").replace(/&quot;/gi, '"').replace(/&#039;/gi, "'")
@@ -448,121 +700,136 @@ function htmlToPlainText(value) {
 }
 
 function plainTextToHtml(value) {
-  const raw = String(value || "").trim();
+  var raw = String(value || "").trim();
   if (!raw) return "<p></p>";
   if (/<[a-z][\s\S]*>/i.test(raw)) return raw;
 
-  const tokens = [];
-  const withTokens = raw.replace(/{{\s*([\w-]+)\s*}}/g, (match) => {
-    const token = `__SURAT_TOKEN_${tokens.length}__`;
+  var tokens = [];
+  var withTokens = raw.replace(/{{\s*([\w-]+)\s*}}/g, function (match) {
+    var token = "__SURAT_TOKEN_" + tokens.length + "__";
     tokens.push(match);
     return token;
   });
 
-  const paragraphs = withTokens.split(/\n\s*\n/).map((paragraph) => paragraph.trim()).filter(Boolean)
-    .map((paragraph) => {
-      const safeParagraph = escapeHtml(paragraph).replace(/__SURAT_TOKEN_(\d+)__/g, (_, index) => tokens[Number(index)]);
-      return `<p>${safeParagraph.replace(/\n/g, "<br>")}</p>`;
+  var paragraphs = withTokens.split(/\n\s*\n/).map(function (paragraph) { return paragraph.trim(); }).filter(Boolean)
+    .map(function (paragraph) {
+      var safeParagraph = escapeHtml(paragraph).replace(/__SURAT_TOKEN_(\d+)__/g, function (_, index) { return tokens[Number(index)]; });
+      return "<p>" + safeParagraph.replace(/\n/g, "<br>") + "</p>";
     });
   return paragraphs.join("") || "<p></p>";
 }
 
 function renderTemplate(template, data) {
-  return String(template || "").replace(/{{\s*([\w-]+)\s*}}/g, (match, key) => escapeHtml(data[key] || ""));
+  return String(template || "").replace(/{{\s*([\w-]+)\s*}}/g, function (match, key) { return escapeHtml(data[key] || ""); });
 }
 
 // =========================================================
-// DEMO SEED — 1 tahun berjalan
-// Hanya jalan sekali, kalau arsip masih kosong
+// SEED DEMO — sederhana, seperti kode lama yang JALAN
 // =========================================================
+var DUMMY_SEED_VERSION = "v8-simple";
+var DUMMY_FLAG = "is_dummy";
+
 function seedDemoLetters() {
-  const raw = localStorage.getItem(LETTERS_KEY);
-  let existing = [];
-  try { existing = JSON.parse(raw) || []; } catch (e) { existing = []; }
+  var existing = [];
+  try { existing = JSON.parse(localStorage.getItem(LETTERS_KEY)) || []; } catch (e) { existing = []; }
   if (existing.length > 0) {
-    localStorage.setItem(DUMMY_LETTERS_SEED_KEY, "v1");
+    localStorage.setItem(DUMMY_LETTERS_SEED_KEY, DUMMY_SEED_VERSION);
     return;
   }
 
-  const templates = getTemplates();
-  const signers = getDirut();
+  var templates = getTemplates();
+  var signers = getDirut();
   if (!templates.length || !signers.length) return;
 
-  // Pola volume per bulan: [11 bulan lalu, ..., bulan ini]
-  // Angka sengaja bervariasi supaya tren terlihat
-  const PATTERN_BY_TEMPLATE = {
-    "Konfirmasi Keabsahan Kutipan Akta Kelahiran": [3, 5, 7, 9, 11, 13, 12, 16, 18, 21, 24, 28],
-    "Surat Keterangan":                            [22, 20, 24, 21, 26, 24, 28, 26, 29, 27, 30, 32],
-    "Jawaban Keabsahan Akta Kelahiran":            [14, 18, 11, 20, 15, 22, 17, 24, 19, 26, 21, 30],
+  // Pola volume sederhana per template — total sekitar 3.500
+  var PATTERN_BY_KEY = {
+    "keabsahan_akta_kelahiran":            [14,18,11,20,15,22,17,24,19,26,21,30],
+    "keabsahan_akta_kematian":             [5,7,4,8,6,9,7,10,8,11,9,13],
+    "keabsahan_akta_perkawinan":           [4,6,3,7,5,8,6,9,7,10,8,11],
+    "keabsahan_akta_perceraian":           [2,3,2,4,3,5,4,6,5,7,6,9],
+    "keabsahan_akta_pengakuan_anak":       [1,2,1,3,2,4,3,5,4,6,5,7],
+    "keabsahan_akta_pengesahan_anak":      [1,2,1,3,2,4,3,5,4,6,5,7],
+    "keabsahan_akta_pengangkatan_anak":    [1,1,1,2,2,3,2,4,3,5,4,6],
+    "keabsahan_akta_pencatatan_sipil":     [7,8,9,8,10,11,10,12,13,12,14,15]
   };
-  const DEFAULT_PATTERN = [8, 9, 10, 9, 11, 12, 11, 13, 14, 13, 15, 16];
+  var DEFAULT_PATTERN = [8,9,10,9,11,12,11,13,14,13,15,16];
 
-  const creators = [
+  var creators = [
     "Ahmad Fauzi", "Budi Santoso", "Citra Dewi Lestari", "Dedi Kurniawan",
-    "Eka Farid Sani", "Fitri Handayani", "Gunawan Pratama", "Hesti Purnamasari",
+    "Eka Farid Sani", "Fitri Handayani", "Gunawan Pratama", "Hesti Purnamasari"
   ];
 
-  const today = new Date();
-  const letters = [];
-  let counter = 1;
+  var today = new Date();
+  var currentYear = today.getFullYear();
+  var letters = [];
+  var counter = 1;
 
-  templates.forEach((tpl) => {
-    const pattern = PATTERN_BY_TEMPLATE[tpl.nama] || DEFAULT_PATTERN;
+  // 4 tahun × 12 bulan
+  for (var yearOffset = 3; yearOffset >= 0; yearOffset--) {
+    var year = currentYear - yearOffset;
+    var maxMonth = yearOffset === 0 ? today.getMonth() : 11;
 
-    for (let i = 0; i < 12; i++) {
-      // bulan ke-(11-i): i=0 → 11 bulan lalu, i=11 → bulan ini
-      const monthDate = new Date(today.getFullYear(), today.getMonth() - (11 - i), 1);
-      const count = pattern[i] || 0;
+    for (var month = 0; month <= maxMonth; month++) {
+      for (var ti = 0; ti < templates.length; ti++) {
+        var tpl = templates[ti];
+        var pattern = PATTERN_BY_KEY[tpl.key] || DEFAULT_PATTERN;
+        var count = pattern[month] || 0;
 
-      for (let j = 0; j < count; j++) {
-        const day = 1 + Math.floor(Math.random() * 27);
-        const hour = 8 + Math.floor(Math.random() * 9);
-        const minute = Math.floor(Math.random() * 60);
+        for (var j = 0; j < count; j++) {
+          var day = 1 + Math.floor(Math.random() * 27);
+          var hour = 8 + Math.floor(Math.random() * 9);
+          var minute = Math.floor(Math.random() * 60);
+          var dt = new Date(year, month, day, hour, minute);
+          if (dt.getTime() > Date.now()) continue;
 
-        const dt = new Date(monthDate.getFullYear(), monthDate.getMonth(), day, hour, minute);
+          var signer = signers[Math.floor(Math.random() * signers.length)];
+          var creator = creators[Math.floor(Math.random() * creators.length)];
 
-        // Jangan sampai melampaui hari ini
-        if (dt.getTime() > Date.now()) continue;
+          var roll = Math.random();
+          var status = roll < 0.06 ? "draft" : roll < 0.10 ? "gagal" : "final";
 
-        const signer = signers[Math.floor(Math.random() * signers.length)];
-        const creator = creators[Math.floor(Math.random() * creators.length)];
+          var bulanRomawi = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII"][dt.getMonth()];
 
-        const roll = Math.random();
-        const status = roll < 0.06 ? "draft"
-                    : roll < 0.10 ? "gagal"
-                    : "final";
+          var mergedData = {};
+          var sd = tpl.sample_data || {};
+          for (var sk in sd) { if (sd.hasOwnProperty(sk)) mergedData[sk] = sd[sk]; }
+          mergedData.tanggal_surat = dt.toISOString().slice(0, 10);
+          mergedData.jabatan_penandatangan = signer.jabatan;
+          mergedData.nama_penandatangan = signer.nama;
+          mergedData.pangkat_penandatangan = signer.pangkat || "";
+          mergedData.nip_penandatangan = signer.nip || "";
 
-        const bulanRomawi = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII"][dt.getMonth()];
+          letters.push({
+            id: "L" + String(counter).padStart(4, "0"),
+            template_key: tpl.key,
+            created_by: creator,
+            created_by_detail: { jabatan: "Staf Pelayanan" },
+            signer_mode: "selected",
+            signer_id: signer.id,
+            signer_nama: signer.nama,
+            signer_jabatan: signer.jabatan,
+            signer_pangkat: signer.pangkat || "",
+            signer_nip: signer.nip || "",
+            nomor_surat: "B/" + String(400 + counter).padStart(4, "0") + "/470.02/" + bulanRomawi + "/" + dt.getFullYear(),
+            data: mergedData,
+            attachment: null,
+            status: status,
+            created_at: dt.toISOString(),
+            updated_at: dt.toISOString(),
+            is_dummy: true,
+            dummy_seed_version: DUMMY_SEED_VERSION
+          });
 
-        letters.push({
-          id: `L${String(counter).padStart(3, "0")}`,
-          template_key: tpl.key,
-          created_by: creator,
-          created_by_detail: { jabatan: "Staf Pelayanan" },
-          signer_mode: "selected",
-          signer_id: signer.id,
-          signer_nama: signer.nama,
-          signer_jabatan: signer.jabatan,
-          signer_pangkat: signer.pangkat || "",
-          signer_nip: signer.nip || "",
-          nomor_surat: `B/${String(400 + counter).padStart(3, "0")}/470.02/${bulanRomawi}/${dt.getFullYear()}`,
-          data: { ...(tpl.sample_data || {}) },
-          attachment: null,
-          status,
-          created_at: dt.toISOString(),
-          updated_at: dt.toISOString(),
-        });
-
-        counter++;
+          counter++;
+        }
       }
     }
-  });
+  }
 
-  // Urut dari terbaru
-  letters.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  letters.sort(function (a, b) { return new Date(b.created_at) - new Date(a.created_at); });
 
   localStorage.setItem(LETTERS_KEY, JSON.stringify(letters));
-  localStorage.setItem(DUMMY_LETTERS_SEED_KEY, "v1");
+  localStorage.setItem(DUMMY_LETTERS_SEED_KEY, DUMMY_SEED_VERSION);
 }
 
 // =========================================================
@@ -570,44 +837,82 @@ function seedDemoLetters() {
 // =========================================================
 function getLetters() {
   try {
-    // Auto-seed sekali kalau arsip masih kosong
-    if (localStorage.getItem(DUMMY_LETTERS_SEED_KEY) !== "v1") {
+    if (localStorage.getItem(DUMMY_LETTERS_SEED_KEY) !== DUMMY_SEED_VERSION) {
       seedDemoLetters();
     }
-    const saved = JSON.parse(localStorage.getItem(LETTERS_KEY));
+    var saved = JSON.parse(localStorage.getItem(LETTERS_KEY));
     return Array.isArray(saved) ? saved : [];
   } catch (error) { return []; }
 }
 
 function getNextLetterId(letters) {
-  const highestId = letters.reduce((highest, letter) => {
-    const value = Number(String(letter?.id || "").replace(/^L/, ""));
+  var highestId = letters.reduce(function (highest, letter) {
+    var value = Number(String((letter && letter.id) || "").replace(/^L/, ""));
     return Number.isFinite(value) ? Math.max(highest, value) : highest;
   }, 0);
-  return `L${String(highestId + 1).padStart(3, "0")}`;
+  return "L" + String(highestId + 1).padStart(4, "0");
 }
 
 function upsertLetter(letter) {
-  const letters = getLetters();
-  const now = new Date().toISOString();
-  const existingIndex = letter?.id ? letters.findIndex((item) => item.id === letter.id) : -1;
-  const savedLetter = {
-    ...letter,
-    id: existingIndex >= 0 ? letters[existingIndex].id : (letter?.id || getNextLetterId(letters)),
-    created_at: existingIndex >= 0 ? letters[existingIndex].created_at : now,
-    updated_at: now,
-  };
-  if (existingIndex >= 0) letters[existingIndex] = savedLetter;
-  else letters.unshift(savedLetter);
+  var letters = getLetters();
+  var now = new Date().toISOString();
+  var existingIndex = -1;
+  if (letter && letter.id) {
+    for (var i = 0; i < letters.length; i++) { if (letters[i].id === letter.id) { existingIndex = i; break; } }
+  }
+  var saved = {};
+  for (var k in letter) { if (letter.hasOwnProperty(k)) saved[k] = letter[k]; }
+  saved.id = existingIndex >= 0 ? letters[existingIndex].id : ((letter && letter.id) || getNextLetterId(letters));
+  saved.created_at = existingIndex >= 0 ? letters[existingIndex].created_at : now;
+  saved.updated_at = now;
+
+  if (existingIndex >= 0) letters[existingIndex] = saved;
+  else letters.unshift(saved);
   localStorage.setItem(LETTERS_KEY, JSON.stringify(letters));
-  return savedLetter;
+  return saved;
 }
 
 function deleteLetter(letterId) {
   if (!letterId) return getLetters();
-  const letters = getLetters().filter((letter) => letter.id !== letterId);
+  var letters = getLetters().filter(function (letter) { return letter.id !== letterId; });
   localStorage.setItem(LETTERS_KEY, JSON.stringify(letters));
   return letters;
 }
 
 function saveLetter(letter) { return upsertLetter(letter); }
+
+// =========================================================
+// DUMMY MANAGER
+// =========================================================
+function countDummyData() {
+  var letters = [];
+  try { letters = JSON.parse(localStorage.getItem(LETTERS_KEY)) || []; } catch (e) { letters = []; }
+  return {
+    letters: letters.filter(function (l) { return l && l.is_dummy === true; }).length,
+    total: letters.length
+  };
+}
+
+function purgeDummyData() {
+  var letters = [];
+  try { letters = JSON.parse(localStorage.getItem(LETTERS_KEY)) || []; } catch (e) { letters = []; }
+  var before = letters.length;
+  var clean = letters.filter(function (l) { return !(l && l.is_dummy === true); });
+  localStorage.setItem(LETTERS_KEY, JSON.stringify(clean));
+  localStorage.setItem(DUMMY_LETTERS_SEED_KEY, DUMMY_SEED_VERSION + "-purged");
+  return { removedLetters: before - clean.length, remainingLetters: clean.length };
+}
+
+function verifyDummyReport() {
+  var letters = [];
+  try { letters = JSON.parse(localStorage.getItem(LETTERS_KEY)) || []; } catch (e) { letters = []; }
+  var dummy = letters.filter(function (l) { return l && l.is_dummy === true; });
+  var byTemplate = {};
+  dummy.forEach(function (l) { byTemplate[l.template_key] = (byTemplate[l.template_key] || 0) + 1; });
+  var byYear = {};
+  dummy.forEach(function (l) { var y = new Date(l.created_at).getFullYear(); byYear[y] = (byYear[y] || 0) + 1; });
+  console.log("Total dummy:", dummy.length);
+  console.log("Per template:"); console.table(byTemplate);
+  console.log("Per tahun:"); console.table(byYear);
+  return { total: dummy.length, byTemplate: byTemplate, byYear: byYear };
+}

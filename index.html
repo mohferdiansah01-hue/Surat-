@@ -739,33 +739,108 @@
     font-weight: 700;
   }
 
+  /* ---------- LEGEND: HANYA KOTAK WARNA ---------- */
   .chart-legend {
     display: flex;
+    flex-direction: column;
     gap: 8px;
-    flex-wrap: wrap;
     margin-bottom: 14px;
-  }
-  .legend-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding: 6px 12px 6px 9px;
+    padding: 12px 14px;
+    background: #fbfdfb;
     border: 1px solid var(--line);
-    border-radius: 999px;
-    background: #fff;
-    color: var(--ink);
-    font-size: 12px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: .18s;
+    border-radius: 14px;
   }
-  .legend-chip:hover { border-color: #b9d2c4; background: var(--mist); }
-  .legend-chip.is-off { opacity: .45; }
-  .legend-chip-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    flex-shrink: 0;
+  .chart-legend-title {
+    display: block;
+    margin: 0;
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .chart-legend-swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .legend-swatch {
+    position: relative;
+    width: 28px;
+    height: 28px;
+    border: 2px solid #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 0 0 1px var(--line), 0 2px 6px -2px rgba(0,0,0,.15);
+    transition: transform .15s, box-shadow .15s;
+    padding: 0;
+  }
+  .legend-swatch:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 0 0 2px var(--green), 0 4px 10px -3px rgba(0,0,0,.2);
+    z-index: 5;
+  }
+  .legend-swatch.is-off {
+    opacity: .35;
+    filter: grayscale(0.7);
+  }
+  .legend-swatch.is-off::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(45deg, transparent 45%, #666 45%, #666 55%, transparent 55%);
+    border-radius: 6px;
+    pointer-events: none;
+  }
+  .legend-swatch-tooltip {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 7px 12px;
+    background: #17231f;
+    color: #fff;
+    font-size: 11.5px;
+    font-weight: 700;
+    white-space: nowrap;
+    border-radius: 8px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .15s, transform .15s;
+    box-shadow: 0 8px 20px -6px rgba(0,0,0,.4);
+    z-index: 100;
+    line-height: 1.3;
+  }
+  .legend-swatch-tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #17231f;
+  }
+  .legend-swatch-tooltip strong {
+    display: block;
+    font-size: 12px;
+    margin-bottom: 2px;
+  }
+  .legend-swatch-tooltip span {
+    opacity: .75;
+    font-size: 10.5px;
+    font-weight: 600;
+  }
+  .legend-swatch:hover .legend-swatch-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-2px);
+  }
+
+  /* ---------- GRID: chart + trend panel ---------- */
+  .chart-with-trend {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 20px;
+    align-items: start;
   }
 
   .chart-canvas {
@@ -799,7 +874,6 @@
     font-family: 'DM Sans', sans-serif;
     font-size: 11px;
     font-weight: 800;
-    fill: var(--ink);
   }
   .chart-canvas .x-label {
     font-family: 'DM Sans', sans-serif;
@@ -825,6 +899,7 @@
     position: absolute;
     z-index: 10;
     min-width: 180px;
+    max-width: 260px;
     padding: 12px 14px;
     border-radius: 12px;
     background: #fff;
@@ -848,7 +923,12 @@
     color: var(--muted);
     margin-bottom: 8px;
   }
-  .chart-tooltip-list { display: grid; gap: 5px; }
+  .chart-tooltip-list {
+    display: grid;
+    gap: 5px;
+    max-height: 220px;
+    overflow-y: auto;
+  }
   .chart-tooltip-row {
     display: flex;
     align-items: center;
@@ -902,6 +982,304 @@
     border-radius: 14px;
   }
   .chart-empty[hidden] { display: none; }
+
+  /* ---------- PANEL TREN — COLLAPSIBLE ---------- */
+  .trend-panel {
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 16px;
+    background: linear-gradient(180deg, #fbfdfb 0%, #f5faf6 100%);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .trend-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .trend-title {
+    margin: 0;
+    font-family: 'Manrope', sans-serif;
+    font-size: 13.5px;
+    font-weight: 800;
+    color: var(--ink);
+  }
+  .trend-year {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--green);
+    background: var(--mist);
+    padding: 3px 9px;
+    border-radius: 999px;
+  }
+  .trend-sub {
+    margin: 0 0 12px;
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 700;
+    line-height: 1.45;
+  }
+
+  .trend-current-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 14px;
+    border-radius: 12px;
+    background: #fff;
+    border: 1px solid var(--line);
+    margin-bottom: 12px;
+  }
+  .trend-current-month {
+    font-family: 'Manrope', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--green-dark);
+    margin: 0;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .trend-current-month small {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+  }
+  .trend-current-stack {
+    display: flex;
+    height: 16px;
+    border-radius: 999px;
+    background: #e6efe9;
+    overflow: hidden;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,.04);
+  }
+  .trend-current-stack-seg {
+    height: 100%;
+    min-width: 3px;
+  }
+  .trend-current-meta {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .trend-current-total {
+    font-family: 'Manrope', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .trend-current-total small {
+    font-size: 12px;
+    color: var(--muted);
+    margin-left: 3px;
+    font-weight: 700;
+  }
+  .trend-current-delta {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+  }
+  .trend-current-delta.up { background: #e6f4ec; color: #0d6047; }
+  .trend-current-delta.down { background: #fbe6e6; color: #a33d31; }
+  .trend-current-delta.flat { background: var(--mist); color: var(--muted); }
+  .trend-current-delta.new { background: #eef4fd; color: #1e40af; }
+
+  .trend-current-empty {
+    padding: 20px 0;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .trend-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    background: #fff;
+    color: var(--green-dark);
+    font: inherit;
+    font-size: 11.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .15s, border-color .15s;
+  }
+  .trend-toggle:hover {
+    background: var(--mist);
+    border-color: var(--green);
+  }
+  .trend-toggle svg {
+    width: 12px;
+    height: 12px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform .25s;
+  }
+  .trend-toggle.is-expanded svg {
+    transform: rotate(180deg);
+  }
+
+  .trend-full-list {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--line);
+    max-height: 340px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+  .trend-full-list.is-visible {
+    display: flex;
+  }
+  .trend-full-list::-webkit-scrollbar { width: 6px; }
+  .trend-full-list::-webkit-scrollbar-thumb {
+    background: #cfe0d6;
+    border-radius: 999px;
+  }
+
+  .trend-row {
+    display: grid;
+    grid-template-columns: 38px 1fr 58px;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 9px;
+    transition: background .15s;
+  }
+  .trend-row:hover { background: rgba(255,255,255,.9); }
+  .trend-row.is-current {
+    background: #fff;
+    box-shadow: 0 2px 10px -4px rgba(24,69,51,.25);
+    border: 1px solid var(--line);
+  }
+  .trend-month {
+    font-weight: 800;
+    color: var(--ink);
+    font-size: 11px;
+    letter-spacing: .02em;
+  }
+  .trend-row.is-current .trend-month { color: var(--green-dark); }
+
+  .trend-stack {
+    display: flex;
+    height: 9px;
+    border-radius: 999px;
+    background: #e6efe9;
+    overflow: hidden;
+    position: relative;
+  }
+  .trend-stack-seg {
+    height: 100%;
+    min-width: 2px;
+  }
+  .trend-stack-empty {
+    flex: 1;
+    background: #e6efe9;
+  }
+  .trend-row.is-current .trend-stack {
+    box-shadow: 0 0 0 2px rgba(23,167,111,.2);
+  }
+  .trend-count {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 11.5px;
+    color: var(--ink);
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1px;
+  }
+  .trend-delta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 800;
+    padding: 1px 5px;
+    border-radius: 999px;
+    line-height: 1.3;
+    white-space: nowrap;
+  }
+  .trend-delta.up { background: #e6f4ec; color: #0d6047; }
+  .trend-delta.down { background: #fbe6e6; color: #a33d31; }
+  .trend-delta.flat { background: #eef1ef; color: #6b7c75; }
+  .trend-delta.new { background: #eef4fd; color: #1e40af; }
+
+  .trend-declare {
+    display: none;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--line);
+  }
+  .trend-declare.is-visible { display: block; }
+  .trend-declare-title {
+    margin: 0 0 8px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .trend-declare-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 160px;
+    overflow-y: auto;
+  }
+  .trend-declare-list::-webkit-scrollbar { width: 4px; }
+  .trend-declare-list::-webkit-scrollbar-thumb {
+    background: #cfe0d6;
+    border-radius: 999px;
+  }
+  .trend-declare-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .trend-declare-swatch {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    flex: none;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,.05);
+  }
+  .trend-declare-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .trend-declare-num {
+    font-family: 'Manrope', sans-serif;
+    font-size: 10.5px;
+    color: var(--muted);
+  }
 
   /* STAT PANEL */
   .stat-panel {
@@ -998,6 +1376,7 @@
   /* RESPONSIVE */
   @media (max-width: 1200px) {
     .dash { grid-template-columns: 260px 1fr; }
+    .chart-with-trend { grid-template-columns: 1fr 280px; }
   }
   @media (max-width: 1080px) {
     .top-nav { display: none; }
@@ -1009,6 +1388,7 @@
       gap: 12px;
     }
     .side-col .side-card { flex: 1 1 260px; }
+    .chart-with-trend { grid-template-columns: 1fr; }
   }
   @media (max-width: 960px) {
     .hero { grid-template-columns: 1fr; min-height: 0; }
@@ -1178,11 +1558,37 @@
 
         <div class="chart-legend" id="chartLegend"></div>
 
-        <div class="chart-canvas" id="chartCanvas">
-          <svg id="chartSvg" viewBox="0 0 800 320" preserveAspectRatio="none" aria-hidden="true"></svg>
-          <div class="chart-tooltip" id="chartTooltip"></div>
+        <div class="chart-with-trend">
+          <div>
+            <div class="chart-canvas" id="chartCanvas">
+              <svg id="chartSvg" viewBox="0 0 800 320" preserveAspectRatio="none" aria-hidden="true"></svg>
+              <div class="chart-tooltip" id="chartTooltip"></div>
+            </div>
+            <p class="chart-empty" id="chartEmpty" hidden>Belum ada cukup data untuk menampilkan grafik.</p>
+          </div>
+
+          <aside class="trend-panel" id="trendPanel">
+            <div class="trend-head">
+              <h3 class="trend-title">Tren Bulanan</h3>
+              <span class="trend-year" id="trendYearLabel">—</span>
+            </div>
+            <p class="trend-sub" id="trendSub">Bulan ini saja — klik untuk lihat semua bulan</p>
+
+            <div class="trend-current-card" id="trendCurrentCard"></div>
+
+            <button type="button" class="trend-toggle" id="trendToggle" aria-expanded="false">
+              <span id="trendToggleLabel">Lihat semua bulan</span>
+              <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+
+            <div class="trend-full-list" id="trendFullList"></div>
+
+            <div class="trend-declare" id="trendDeclare">
+              <p class="trend-declare-title">Warna = Jenis Surat</p>
+              <div class="trend-declare-list" id="trendDeclareList"></div>
+            </div>
+          </aside>
         </div>
-        <p class="chart-empty" id="chartEmpty" hidden>Belum ada cukup data untuk menampilkan grafik.</p>
       </section>
 
       <section class="stat-panel">
@@ -1408,10 +1814,64 @@
       `;
     })();
 
-    const COLORS = ["#7c3aed", "#ec4899", "#f97316", "#3b82f6", "#10b981"];
+    // =========================================================
+    // LINE CHART — WARNA RANDOM UNIK PER TEMPLATE
+    // =========================================================
     const chartState = { range: "monthly", hiddenKeys: new Set() };
     const tooltipEl = document.getElementById("chartTooltip");
     const canvasEl = document.getElementById("chartCanvas");
+    let trendExpanded = false;
+
+    // ==== WARNA RANDOM UNIK ====
+    const colorCache = new Map();
+    const usedColors = new Set();
+    const MIN_DIST = 40;
+
+    function hashKey(key) {
+      let h = 0;
+      for (let i = 0; i < key.length; i++) {
+        h = ((h << 5) - h) + key.charCodeAt(i);
+        h |= 0;
+      }
+      return Math.abs(h);
+    }
+
+    function hslToKey(h, s, l) {
+      return `${Math.round(h)}|${Math.round(s)}|${Math.round(l)}`;
+    }
+
+    function tooCloseToUsed(h, s, l) {
+      for (const used of usedColors) {
+        const [uh, us, ul] = used.split("|").map(Number);
+        const dh = Math.min(Math.abs(h - uh), 360 - Math.abs(h - uh));
+        if (dh < MIN_DIST && Math.abs(s - us) < 25 && Math.abs(l - ul) < 20) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function getColorForTemplate(key) {
+      if (colorCache.has(key)) return colorCache.get(key);
+
+      const seed = hashKey(key);
+      let h = seed % 360;
+      let s = 60 + (seed % 25);
+      let l = 45 + ((seed >> 3) % 12);
+
+      let attempts = 0;
+      while (tooCloseToUsed(h, s, l) && attempts < 200) {
+        h = (h + 23) % 360;
+        s = 60 + ((seed + attempts * 7) % 25);
+        l = 45 + ((seed + attempts * 11) % 12);
+        attempts++;
+      }
+
+      const color = `hsl(${h}, ${s}%, ${l}%)`;
+      colorCache.set(key, color);
+      usedColors.add(hslToKey(h, s, l));
+      return color;
+    }
 
     function getBuckets(mode) {
       const list = [];
@@ -1475,15 +1935,26 @@
       return d;
     }
 
+    // LEGEND: hanya kotak warna + tooltip hover
     function renderChartLegend(series) {
       const el = document.getElementById("chartLegend");
       if (!series.length) { el.innerHTML = ""; return; }
-      el.innerHTML = series.map(s => `
-        <button type="button" class="legend-chip ${chartState.hiddenKeys.has(s.key) ? "is-off" : ""}" data-key="${escapeHtml(s.key)}">
-          <span class="legend-chip-dot" style="background:${s.color}"></span>
-          ${escapeHtml(s.name)}
-        </button>
-      `).join("");
+      el.innerHTML = `
+        <span class="chart-legend-title">Keterangan warna — klik untuk sembunyikan/tampilkan</span>
+        <div class="chart-legend-swatches">
+          ${series.map(s => `
+            <button type="button" class="legend-swatch ${chartState.hiddenKeys.has(s.key) ? "is-off" : ""}"
+                    data-key="${escapeHtml(s.key)}"
+                    style="background:${s.color}"
+                    aria-label="${escapeHtml(s.name)}">
+              <span class="legend-swatch-tooltip">
+                <strong>${escapeHtml(s.name)}</strong>
+                <span>${s.total} surat</span>
+              </span>
+            </button>
+          `).join("")}
+        </div>
+      `;
       el.querySelectorAll("[data-key]").forEach(btn => {
         btn.addEventListener("click", () => {
           const k = btn.dataset.key;
@@ -1532,38 +2003,42 @@
       }
     }
 
+    // ---- RENDER UTAMA: LINE CHART (SEMUA TEMPLATE) ----
     function renderChart() {
       const svg = document.getElementById("chartSvg");
       const emptyEl = document.getElementById("chartEmpty");
       const buckets = getBuckets(chartState.range);
       renderChartSummary();
 
-      const topTemplates = templates.map(t => ({
+      // SEMUA template, tidak dipotong
+      const allTemplates = templates.map(t => ({
         key: t.key,
         name: t.nama,
         total: letters.filter(l => l.template_key === t.key).length,
-      })).sort((a, b) => b.total - a.total).slice(0, 5);
+      })).sort((a, b) => b.total - a.total);
 
-      if (!letters.length || !topTemplates.length) {
+      if (!letters.length || !allTemplates.length) {
         svg.innerHTML = "";
         canvasEl.style.display = "none";
         emptyEl.hidden = false;
         renderChartLegend([]);
+        renderTrendPanel();
         return;
       }
       canvasEl.style.display = "";
       emptyEl.hidden = true;
 
-      const allSeries = topTemplates.map((t, i) => ({
+      const allSeries = allTemplates.map((t) => ({
         key: t.key,
         name: t.name,
-        color: COLORS[i % COLORS.length],
+        color: getColorForTemplate(t.key),
+        total: t.total,
         values: buckets.map(b => countInBucket(t.key, b)),
       }));
 
       const visibleSeries = allSeries.filter(s => !chartState.hiddenKeys.has(s.key));
       renderChartLegend(allSeries);
-      if (!visibleSeries.length) { svg.innerHTML = ""; return; }
+      if (!visibleSeries.length) { svg.innerHTML = ""; renderTrendPanel(); return; }
 
       const maxVal = Math.max(1, ...allSeries.flatMap(s => s.values));
       const yMax = Math.max(4, Math.ceil(maxVal * 1.15));
@@ -1629,6 +2104,8 @@
       svg.innerHTML = `<g>${gridLines.join("")}</g><g>${verticalLines.join("")}</g><g>${paths.join("")}</g><g>${xLabels.join("")}</g><g>${hoverCols}</g>`;
       bindTooltip(allSeries, buckets, xOf, W);
       svg.onmouseleave = () => tooltipEl.classList.remove("is-visible");
+
+      renderTrendPanel();
     }
 
     function bindTooltip(allSeries, buckets, xOf, W) {
@@ -1678,6 +2155,183 @@
         renderChart();
       });
     });
+
+    // =========================================================
+    // PANEL TREN BULANAN — COLLAPSIBLE
+    // =========================================================
+    function renderTrendPanel() {
+      const yearEl = document.getElementById("trendYearLabel");
+      const subEl  = document.getElementById("trendSub");
+      const currentCardEl = document.getElementById("trendCurrentCard");
+      const fullListEl = document.getElementById("trendFullList");
+      const declareListEl = document.getElementById("trendDeclareList");
+      if (!currentCardEl) return;
+
+      const yearNow = new Date().getFullYear();
+      yearEl.textContent = yearNow;
+
+      const allTemplates = templates.map(t => ({
+        key: t.key,
+        name: t.nama,
+        total: letters.filter(l => l.template_key === t.key).length,
+      })).sort((a, b) => b.total - a.total);
+
+      const colorByKey = {};
+      allTemplates.forEach(t => { colorByKey[t.key] = getColorForTemplate(t.key); });
+
+      const monthly = Array.from({ length: 12 }, () => ({ total: 0, byKey: {} }));
+      letters.forEach((l) => {
+        const d = new Date(l.created_at || l.tanggal || 0);
+        if (isNaN(d) || d.getFullYear() !== yearNow) return;
+        const m = d.getMonth();
+        monthly[m].total += 1;
+        monthly[m].byKey[l.template_key] = (monthly[m].byKey[l.template_key] || 0) + 1;
+      });
+
+      const maxCount = Math.max(1, ...monthly.map(m => m.total));
+      const currentMonth = new Date().getMonth();
+      const MONTHS_SHORT = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
+      const MONTHS_FULL  = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+
+      const cur = monthly[currentMonth];
+      const prev = currentMonth > 0 ? monthly[currentMonth - 1] : null;
+
+      let deltaHtml = `<span class="trend-current-delta flat">— 0%</span>`;
+      if (prev && prev.total === 0 && cur.total > 0) {
+        deltaHtml = `<span class="trend-current-delta new">✦ Baru</span>`;
+      } else if (prev && prev.total > 0) {
+        const pct = Math.round(((cur.total - prev.total) / prev.total) * 100);
+        if (pct > 0) deltaHtml = `<span class="trend-current-delta up">▲ +${pct}%</span>`;
+        else if (pct < 0) deltaHtml = `<span class="trend-current-delta down">▼ ${pct}%</span>`;
+        else deltaHtml = `<span class="trend-current-delta flat">→ 0%</span>`;
+      }
+
+      let stackHtml = "";
+      if (cur.total > 0) {
+        allTemplates.forEach(t => {
+          const segCount = cur.byKey[t.key] || 0;
+          if (segCount <= 0) return;
+          const widthPct = (segCount / cur.total) * 100;
+          stackHtml += `<div class="trend-current-stack-seg" style="flex:0 0 ${widthPct}%;background:${colorByKey[t.key]}"></div>`;
+        });
+      } else {
+        stackHtml = `<div style="flex:1"></div>`;
+      }
+
+      if (cur.total === 0) {
+        currentCardEl.innerHTML = `
+          <p class="trend-current-month">${MONTHS_FULL[currentMonth]} <small>Bulan ini</small></p>
+          <div class="trend-current-empty">Belum ada surat bulan ini.</div>
+        `;
+      } else {
+        currentCardEl.innerHTML = `
+          <p class="trend-current-month">${MONTHS_FULL[currentMonth]} <small>Bulan ini</small></p>
+          <div class="trend-current-stack">${stackHtml}</div>
+          <div class="trend-current-meta">
+            <span class="trend-current-total">${cur.total}<small>surat</small></span>
+            ${deltaHtml}
+          </div>
+        `;
+      }
+
+      let html = "";
+      let totalYear = 0;
+      let bestMonthIdx = -1;
+      let bestMonthCount = 0;
+
+      for (let i = 0; i < 12; i++) {
+        const m = monthly[i];
+        const count = m.total;
+        totalYear += count;
+        if (count > bestMonthCount) { bestMonthCount = count; bestMonthIdx = i; }
+
+        let dHtml = "";
+        if (i > 0) {
+          const p = monthly[i - 1].total;
+          if (p === 0 && count > 0) {
+            dHtml = `<span class="trend-delta new">✦</span>`;
+          } else if (p > 0) {
+            const pct = Math.round(((count - p) / p) * 100);
+            if (pct > 0) dHtml = `<span class="trend-delta up">▲${pct}%</span>`;
+            else if (pct < 0) dHtml = `<span class="trend-delta down">▼${Math.abs(pct)}%</span>`;
+            else dHtml = `<span class="trend-delta flat">—</span>`;
+          }
+        } else {
+          dHtml = `<span class="trend-delta flat">—</span>`;
+        }
+
+        let stackHtml2 = "";
+        if (count > 0) {
+          allTemplates.forEach((t) => {
+            const segCount = m.byKey[t.key] || 0;
+            if (segCount <= 0) return;
+            const widthPct = (segCount / maxCount) * 100;
+            stackHtml2 += `<div class="trend-stack-seg" style="flex:0 0 ${widthPct}%;background:${colorByKey[t.key]}"></div>`;
+          });
+          stackHtml2 += `<div class="trend-stack-empty"></div>`;
+        }
+
+        const isCurrent = i === currentMonth;
+        const isFuture = i > currentMonth;
+
+        html += `
+          <div class="trend-row ${isCurrent ? "is-current" : ""}" data-month="${i}"
+               title="${MONTHS_FULL[i]} ${yearNow}: ${count} surat${isFuture ? " (belum berjalan)" : ""}">
+            <span class="trend-month">${MONTHS_SHORT[i]}</span>
+            <div class="trend-stack" style="${isFuture ? "opacity:.35" : ""}">
+              ${stackHtml2}
+            </div>
+            <span class="trend-count">${count}${dHtml}</span>
+          </div>
+        `;
+      }
+
+      fullListEl.innerHTML = html;
+
+      if (bestMonthIdx >= 0 && bestMonthCount > 0) {
+        subEl.innerHTML = `Total <strong>${totalYear}</strong> surat di ${yearNow}. Bulan tertinggi: <strong>${MONTHS_FULL[bestMonthIdx]}</strong> (${bestMonthCount}).`;
+      } else {
+        subEl.textContent = `Belum ada surat di tahun ${yearNow}.`;
+      }
+
+      declareListEl.innerHTML = allTemplates.map(t => `
+        <div class="trend-declare-item">
+          <span class="trend-declare-swatch" style="background:${colorByKey[t.key]}"></span>
+          <span class="trend-declare-name" title="${escapeHtml(t.name)}">${escapeHtml(t.name)}</span>
+          <span class="trend-declare-num">${t.total}</span>
+        </div>
+      `).join("");
+
+      fullListEl.querySelectorAll(".trend-row").forEach((row) => {
+        row.addEventListener("mouseenter", () => {
+          if (chartState.range !== "monthly") return;
+          const idx = Number(row.dataset.month);
+          const chartIdx = idx - (currentMonth - 11);
+          if (chartIdx < 0 || chartIdx > 11) return;
+          const col = document.querySelector(`.hover-col[data-idx="${chartIdx}"]`);
+          if (col) col.classList.add("is-hovered");
+        });
+        row.addEventListener("mouseleave", () => {
+          document.querySelectorAll(".hover-col.is-hovered").forEach((c) => c.classList.remove("is-hovered"));
+        });
+      });
+    }
+
+    (function initTrendToggle() {
+      const btn = document.getElementById("trendToggle");
+      const list = document.getElementById("trendFullList");
+      const declare = document.getElementById("trendDeclare");
+      const label = document.getElementById("trendToggleLabel");
+
+      btn.addEventListener("click", () => {
+        trendExpanded = !trendExpanded;
+        list.classList.toggle("is-visible", trendExpanded);
+        declare.classList.toggle("is-visible", trendExpanded);
+        btn.classList.toggle("is-expanded", trendExpanded);
+        btn.setAttribute("aria-expanded", String(trendExpanded));
+        label.textContent = trendExpanded ? "Sembunyikan" : "Lihat semua bulan";
+      });
+    })();
 
     renderChart();
 
