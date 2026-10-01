@@ -10,6 +10,17 @@ var DUMMY_LETTERS_SEED_KEY = "suratapp_dummy_letters_seeded";
 var pendingProtectedControl = null;
 
 // =========================================================
+// SEED DETERMINISTIK — fungsi PRNG stabil
+// =========================================================
+function seededRandom(seed) {
+  var x = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
+  return x - Math.floor(x);
+}
+
+// Tanggal acuan DIBEKUKAN supaya seed stabil antar-waktu
+var SEED_ANCHOR = new Date("2026-09-30T00:00:00Z");
+
+// =========================================================
 // DEFAULT TEMPLATES — 8 JENIS KEABSAHAN
 // =========================================================
 var DEFAULT_TEMPLATES = [
@@ -585,17 +596,13 @@ function slugify(value) {
 function getTemplates() {
   try {
     var saved = JSON.parse(localStorage.getItem(TEMPLATES_KEY));
-    var templates;
     if (Array.isArray(saved) && saved.length) {
-      templates = saved.map(normalizeTemplate);
-    } else {
-      templates = DEFAULT_TEMPLATES.map(normalizeTemplate);
+      return saved.map(normalizeTemplate);
     }
-    setTemplates(templates);
-    return templates;
-  } catch (error) {
-    return setTemplates(DEFAULT_TEMPLATES);
-  }
+  } catch (error) { /* ignore */ }
+  var normalized = DEFAULT_TEMPLATES.map(normalizeTemplate);
+  localStorage.setItem(TEMPLATES_KEY, JSON.stringify(normalized));
+  return normalized;
 }
 
 function upsertTemplate(template) {
@@ -639,10 +646,13 @@ function buildTemplatePreview(template) {
 function getDirut() {
   try {
     var raw = localStorage.getItem(DIRUT_KEY);
-    if (raw === null) return DEFAULT_DIRUT;
-    var saved = JSON.parse(raw);
-    return Array.isArray(saved) ? saved : DEFAULT_DIRUT;
-  } catch (error) { return DEFAULT_DIRUT; }
+    if (raw !== null) {
+      var saved = JSON.parse(raw);
+      if (Array.isArray(saved) && saved.length) return saved;
+    }
+  } catch (error) { /* ignore */ }
+  localStorage.setItem(DIRUT_KEY, JSON.stringify(DEFAULT_DIRUT));
+  return DEFAULT_DIRUT;
 }
 
 function setDirut(signers) {
@@ -724,9 +734,9 @@ function renderTemplate(template, data) {
 }
 
 // =========================================================
-// SEED DEMO — sederhana, seperti kode lama yang JALAN
+// SEED DEMO — DETERMINISTIK (identik di semua origin)
 // =========================================================
-var DUMMY_SEED_VERSION = "v8-simple";
+var DUMMY_SEED_VERSION = "v9-deterministic";
 var DUMMY_FLAG = "is_dummy";
 
 function seedDemoLetters() {
@@ -741,7 +751,6 @@ function seedDemoLetters() {
   var signers = getDirut();
   if (!templates.length || !signers.length) return;
 
-  // Pola volume sederhana per template — total sekitar 3.500
   var PATTERN_BY_KEY = {
     "keabsahan_akta_kelahiran":            [14,18,11,20,15,22,17,24,19,26,21,30],
     "keabsahan_akta_kematian":             [5,7,4,8,6,9,7,10,8,11,9,13],
@@ -759,12 +768,11 @@ function seedDemoLetters() {
     "Eka Farid Sani", "Fitri Handayani", "Gunawan Pratama", "Hesti Purnamasari"
   ];
 
-  var today = new Date();
+  var today = SEED_ANCHOR;
   var currentYear = today.getFullYear();
   var letters = [];
   var counter = 1;
 
-  // 4 tahun × 12 bulan
   for (var yearOffset = 3; yearOffset >= 0; yearOffset--) {
     var year = currentYear - yearOffset;
     var maxMonth = yearOffset === 0 ? today.getMonth() : 11;
@@ -776,16 +784,17 @@ function seedDemoLetters() {
         var count = pattern[month] || 0;
 
         for (var j = 0; j < count; j++) {
-          var day = 1 + Math.floor(Math.random() * 27);
-          var hour = 8 + Math.floor(Math.random() * 9);
-          var minute = Math.floor(Math.random() * 60);
+          var seedBase = counter * 7919 + year * 104729 + month * 1299709 + j * 15485863;
+          var day    = 1 + Math.floor(seededRandom(seedBase + 1) * 27);
+          var hour   = 8 + Math.floor(seededRandom(seedBase + 2) * 9);
+          var minute = Math.floor(seededRandom(seedBase + 3) * 60);
           var dt = new Date(year, month, day, hour, minute);
-          if (dt.getTime() > Date.now()) continue;
+          if (dt.getTime() > SEED_ANCHOR.getTime()) continue;
 
-          var signer = signers[Math.floor(Math.random() * signers.length)];
-          var creator = creators[Math.floor(Math.random() * creators.length)];
+          var signer  = signers[Math.floor(seededRandom(seedBase + 4) * signers.length)];
+          var creator = creators[Math.floor(seededRandom(seedBase + 5) * creators.length)];
 
-          var roll = Math.random();
+          var roll = seededRandom(seedBase + 6);
           var status = roll < 0.06 ? "draft" : roll < 0.10 ? "gagal" : "final";
 
           var bulanRomawi = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII"][dt.getMonth()];
@@ -912,7 +921,9 @@ function verifyDummyReport() {
   var byYear = {};
   dummy.forEach(function (l) { var y = new Date(l.created_at).getFullYear(); byYear[y] = (byYear[y] || 0) + 1; });
   console.log("Total dummy:", dummy.length);
-  console.log("Per template:"); console.table(byTemplate);
-  console.log("Per tahun:"); console.table(byYear);
+  console.log("Per template:");
+  console.table(byTemplate);
+  console.log("Per tahun:");
+  console.table(byYear);
   return { total: dummy.length, byTemplate: byTemplate, byYear: byYear };
 }
