@@ -611,7 +611,12 @@
     .archive-filter { width: 100%; }
     .date-picker { width: 100%; }
     .date-trigger { width: 100%; justify-content: space-between; }
-    .date-panel { width: 100%; left: 0; right: 0; }
+    .date-panel {
+      width: 100%;
+      left: 0;
+      right: 0;
+      max-width: 100%;
+    }
 
     .letters-modal { padding: 0; }
     .letters-modal-panel {
@@ -628,6 +633,24 @@
 </style>
 </head>
 <body>
+
+<!-- ============ TOPBAR UNIVERSAL ============ -->
+<header class="topbar">
+  <div class="topbar-brand">
+    <span class="topbar-logo" aria-hidden="true"></span>
+    <span>Sistem Surat Dinas</span>
+  </div>
+  <nav class="top-nav" aria-label="Navigasi utama">
+    <a href="index.html">Dashboard</a>
+    <a href="arsip.html" class="active">Arsip</a>
+    <a href="template.html">Template</a>
+    <a href="buat-surat.html">Buat Surat</a>
+  </nav>
+  <div class="top-actions">
+    <a href="buat-surat.html" class="topbar-btn-primary">+ Surat baru</a>
+  </div>
+</header>
+
 <div class="split">
   <aside class="split-left">
     <a href="index.html" class="brand">
@@ -646,12 +669,6 @@
   </aside>
 
   <main class="split-right">
-    <nav class="category-nav" aria-label="Kategori Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban">
-      <a class="category-link" href="buat-surat.html">Buat Surat</a>
-      <a class="category-link" href="template.html">Kelola Surat</a>
-      <span class="category-link active" aria-current="page">Histori</span>
-    </nav>
-
     <h1 class="form-title">Histori Surat</h1>
     <p class="form-sub">Filter atau cari surat, lalu klik kartu jenis untuk melihat daftarnya.</p>
 
@@ -758,61 +775,80 @@
 
 <script src="data.js"></script>
 <script>
-  const letters = getLetters();
-  const templates = getTemplates();
+  /* =========================================================
+     GUARD: pastikan helper tersedia
+     ========================================================= */
+  if (typeof window.escapeHtml !== "function") {
+    window.escapeHtml = function (s) {
+      return String(s ?? "").replace(/[&<>"']/g, (c) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      }[c]));
+    };
+  }
 
-  const gridEl = document.getElementById("category-grid");
-  const countEl = document.getElementById("archive-count");
+  const letters   = typeof getLetters   === "function" ? getLetters()   : [];
+  const templates = typeof getTemplates === "function" ? getTemplates() : [];
+
+  const gridEl      = document.getElementById("category-grid");
+  const countEl     = document.getElementById("archive-count");
   const searchInput = document.getElementById("archive-search");
   const jenisSelect = document.getElementById("filter-jenis");
-  const sortSelect = document.getElementById("filter-sort");
-  const resetBtn = document.getElementById("reset-filter");
+  const sortSelect  = document.getElementById("filter-sort");
+  const resetBtn    = document.getElementById("reset-filter");
 
-  // Date picker elements
-  const datePickerEl = document.getElementById("datePicker");
-  const dateTrigger = document.getElementById("dateTrigger");
+  // Date picker
+  const datePickerEl     = document.getElementById("datePicker");
+  const dateTrigger      = document.getElementById("dateTrigger");
   const dateTriggerLabel = document.getElementById("dateTriggerLabel");
-  const datePanel = document.getElementById("datePanel");
-  const dateMonthEl = document.getElementById("dateMonth");
-  const dateDayEl = document.getElementById("dateDay");
-  const dateWeekEl = document.getElementById("dateWeek");
-  const dateNavLabel = document.getElementById("dateNavLabel");
-  const datePrev = document.getElementById("datePrev");
-  const dateNext = document.getElementById("dateNext");
-  const dateReset = document.getElementById("dateReset");
-  const dateToday = document.getElementById("dateToday");
+  const datePanel        = document.getElementById("datePanel");
+  const dateMonthEl      = document.getElementById("dateMonth");
+  const dateDayEl        = document.getElementById("dateDay");
+  const dateWeekEl       = document.getElementById("dateWeek");
+  const dateNavLabel     = document.getElementById("dateNavLabel");
+  const datePrev         = document.getElementById("datePrev");
+  const dateNext         = document.getElementById("dateNext");
+  const dateReset        = document.getElementById("dateReset");
+  const dateToday        = document.getElementById("dateToday");
 
   // Modal
-  const modal = document.getElementById("letters-modal");
-  const modalTitle = document.getElementById("letters-modal-title");
-  const modalSubtitle = document.getElementById("letters-modal-subtitle");
-  const modalBody = document.getElementById("letters-modal-body");
-  const modalSearch = document.getElementById("modal-search");
+  const modal            = document.getElementById("letters-modal");
+  const modalTitle       = document.getElementById("letters-modal-title");
+  const modalSubtitle    = document.getElementById("letters-modal-subtitle");
+  const modalBody        = document.getElementById("letters-modal-body");
+  const modalSearch      = document.getElementById("modal-search");
   const modalSearchClear = document.getElementById("modal-search-clear");
-  const modalSearchHint = document.getElementById("modal-search-hint");
+  const modalSearchHint  = document.getElementById("modal-search-hint");
 
   let currentTemplateKey = null;
-  let modalSearchQuery = "";
+  let modalSearchQuery   = "";
 
-  const DAY_MS = 24 * 60 * 60 * 1000;
-
-  // ============ ISI DROPDOWN JENIS ============
+  /* =========================================================
+     ISI DROPDOWN JENIS
+     ========================================================= */
   jenisSelect.innerHTML = '<option value="">Semua jenis</option>' +
-    templates.map((t) => `<option value="${escapeHtml(t.key)}">${escapeHtml(t.nama)}</option>`).join("");
+    templates.map((t) =>
+      `<option value="${escapeHtml(t.key)}">${escapeHtml(t.nama)}</option>`
+    ).join("");
 
   /* =========================================================
      STATE — filter tanggal + view kalender
      ========================================================= */
   const dateFilter = {
     mode: "all",       // "all" | "specific"
-    date: null,        // Date object kalau mode === "specific"
+    date: null,
     view: "weekly",    // "weekly" | "monthly"
     cursor: new Date(),
   };
 
   /* =========================================================
-     TRIGGER LABEL
+     HELPERS
      ========================================================= */
+  function isSameDay(a, b) {
+    return a.getFullYear() === b.getFullYear()
+        && a.getMonth()    === b.getMonth()
+        && a.getDate()     === b.getDate();
+  }
+
   function updateTriggerLabel() {
     const active = dateFilter.mode === "specific" && dateFilter.date;
     dateTrigger.classList.toggle("is-active", active);
@@ -822,8 +858,7 @@
       return;
     }
     const d = dateFilter.date;
-    const isToday = isSameDay(d, new Date());
-    if (isToday) {
+    if (isSameDay(d, new Date())) {
       dateTriggerLabel.textContent = "Hari ini";
     } else {
       dateTriggerLabel.textContent = d.toLocaleDateString("id-ID", {
@@ -832,39 +867,86 @@
     }
   }
 
-  function isSameDay(a, b) {
-    return a.getFullYear() === b.getFullYear()
-        && a.getMonth() === b.getMonth()
-        && a.getDate() === b.getDate();
-  }
-
   /* =========================================================
      PANEL RENDER
      ========================================================= */
-  function startOfWeek(d) {
-    const x = new Date(d);
-    const day = x.getDay(); // 0=Sun
-    const diff = (day === 0 ? -6 : 1 - day); // Senin sebagai awal
-    x.setDate(x.getDate() + diff);
-    x.setHours(0,0,0,0);
-    return x;
+  function getWeekRangeLabel(weekStart) {
+    const end = new Date(weekStart);
+    end.setDate(end.getDate() + 6);
+    const fmt = (d) => d.toLocaleDateString("id-ID", { day: "numeric", month: "short" });
+    return `${fmt(weekStart)} – ${fmt(end)}`;
+  }
+
+  function renderWeeklyStrip(weekStart, selected, today) {
+    const dayNames     = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
+    const dayNamesFull = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
+
+    let html = "";
+    for (let i = 0; i < 7; i++) {
+      html += `<span class="date-day-head">${dayNames[i]}</span>`;
+    }
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(weekStart);
+      d.setDate(d.getDate() + i);
+      const isSel = selected && isSameDay(d, selected);
+      const isTd  = isSameDay(d, today);
+      const cls = [
+        "date-day",
+        isSel ? "is-selected" : "",
+        !isSel && isTd ? "is-today" : "",
+      ].filter(Boolean).join(" ");
+      html += `<button type="button" class="${cls}" data-date="${d.toISOString()}"
+                        title="${dayNamesFull[i]}, ${d.getDate()}">${d.getDate()}</button>`;
+    }
+    dateWeekEl.innerHTML = html;
+    bindDateClicks();
+  }
+
+  function renderMonthlyGrid(monthCursor, selected, today) {
+    const year  = monthCursor.getFullYear();
+    const month = monthCursor.getMonth();
+    const first = new Date(year, month, 1);
+    const startOffset = (first.getDay() === 0 ? 6 : first.getDay() - 1);
+    const gridStart   = new Date(year, month, 1 - startOffset);
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const totalCells  = Math.ceil((startOffset + daysInMonth) / 7) * 7;
+
+    const dayNames = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
+    let html = "";
+    for (let i = 0; i < 7; i++) {
+      html += `<span class="date-day-head">${dayNames[i]}</span>`;
+    }
+    for (let i = 0; i < totalCells; i++) {
+      const d = new Date(gridStart);
+      d.setDate(d.getDate() + i);
+      const isOut = d.getMonth() !== month;
+      const isSel = selected && isSameDay(d, selected);
+      const isTd  = isSameDay(d, today);
+      const cls = [
+        "date-day",
+        isOut ? "is-out" : "",
+        isSel ? "is-selected" : "",
+        !isSel && !isOut && isTd ? "is-today" : "",
+      ].filter(Boolean).join(" ");
+      if (isOut) {
+        html += `<button type="button" class="${cls}" disabled>${d.getDate()}</button>`;
+      } else {
+        html += `<button type="button" class="${cls}" data-date="${d.toISOString()}">${d.getDate()}</button>`;
+      }
+    }
+    dateWeekEl.innerHTML = html;
+    bindDateClicks();
   }
 
   function renderPanel() {
-    const cursor = dateFilter.cursor;
+    const cursor   = dateFilter.cursor;
     const selected = dateFilter.date;
-    const today = new Date();
+    const today    = new Date();
 
     if (dateFilter.view === "weekly") {
-      const monthName = cursor.toLocaleDateString("id-ID", { month: "long" });
-      dateMonthEl.textContent = monthName;
-      if (selected) {
-        dateDayEl.textContent = String(selected.getDate());
-        dateDayEl.classList.remove("is-empty");
-      } else {
-        dateDayEl.textContent = String(cursor.getDate());
-        dateDayEl.classList.remove("is-empty");
-      }
+      dateMonthEl.textContent = cursor.toLocaleDateString("id-ID", { month: "long" });
+      dateDayEl.textContent   = String((selected || cursor).getDate());
+      dateDayEl.classList.remove("is-empty");
     } else {
       dateMonthEl.textContent = cursor.toLocaleDateString("id-ID", {
         month: "long", year: "numeric"
@@ -889,80 +971,13 @@
     }
   }
 
-  function getWeekRangeLabel(weekStart) {
-    const end = new Date(weekStart);
-    end.setDate(end.getDate() + 6);
-    const fmt = (d) => d.toLocaleDateString("id-ID", { day: "numeric", month: "short" });
-    return `${fmt(weekStart)} – ${fmt(end)}`;
-  }
-
-  function renderWeeklyStrip(weekStart, selected, today) {
-    const dayNames = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
-    const dayNamesFull = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
-
-    let html = "";
-    for (let i = 0; i < 7; i++) {
-      html += `<span class="date-day-head">${dayNames[i]}</span>`;
-    }
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(weekStart);
-      d.setDate(d.getDate() + i);
-      const isSel = selected && isSameDay(d, selected);
-      const isTd = isSameDay(d, today);
-      const cls = [
-        "date-day",
-        isSel ? "is-selected" : "",
-        !isSel && isTd ? "is-today" : "",
-      ].filter(Boolean).join(" ");
-      html += `<button type="button" class="${cls}" data-date="${d.toISOString()}"
-                        title="${dayNamesFull[i]}, ${d.getDate()}">${d.getDate()}</button>`;
-    }
-    dateWeekEl.innerHTML = html;
-    bindDateClicks();
-  }
-
-  function renderMonthlyGrid(monthCursor, selected, today) {
-    const year = monthCursor.getFullYear();
-    const month = monthCursor.getMonth();
-    const first = new Date(year, month, 1);
-    const startOffset = (first.getDay() === 0 ? 6 : first.getDay() - 1);
-    const gridStart = new Date(year, month, 1 - startOffset);
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const totalCells = Math.ceil((startOffset + daysInMonth) / 7) * 7;
-
-    const dayNames = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
-    let html = "";
-    for (let i = 0; i < 7; i++) {
-      html += `<span class="date-day-head">${dayNames[i]}</span>`;
-    }
-    for (let i = 0; i < totalCells; i++) {
-      const d = new Date(gridStart);
-      d.setDate(d.getDate() + i);
-      const isOut = d.getMonth() !== month;
-      const isSel = selected && isSameDay(d, selected);
-      const isTd = isSameDay(d, today);
-      const cls = [
-        "date-day",
-        isOut ? "is-out" : "",
-        isSel ? "is-selected" : "",
-        !isSel && !isOut && isTd ? "is-today" : "",
-      ].filter(Boolean).join(" ");
-      if (isOut) {
-        html += `<button type="button" class="${cls}" disabled>${d.getDate()}</button>`;
-      } else {
-        html += `<button type="button" class="${cls}" data-date="${d.toISOString()}">${d.getDate()}</button>`;
-      }
-    }
-    dateWeekEl.innerHTML = html;
-    bindDateClicks();
-  }
-
   function bindDateClicks() {
     dateWeekEl.querySelectorAll("[data-date]").forEach((btn) => {
-      btn.addEventListener("click", () => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation(); // ⬅️ cegah document click menutup panel
         const d = new Date(btn.dataset.date);
-        dateFilter.mode = "specific";
-        dateFilter.date = d;
+        dateFilter.mode   = "specific";
+        dateFilter.date   = d;
         dateFilter.cursor = new Date(d);
         closePanel();
         updateTriggerLabel();
@@ -994,10 +1009,13 @@
     togglePanel();
   });
 
+  // Tutup panel saat klik di luar — tapi JANGAN tutup saat klik di dalam panel
   document.addEventListener("click", (e) => {
     if (datePanel.hidden) return;
-    if (!datePickerEl.contains(e.target)) closePanel();
+    if (datePickerEl.contains(e.target)) return; // klik di dalam datePicker, abaikan
+    closePanel();
   });
+
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && !datePanel.hidden) closePanel();
   });
@@ -1046,8 +1064,8 @@
 
   dateToday.addEventListener("click", () => {
     const today = new Date();
-    dateFilter.mode = "specific";
-    dateFilter.date = today;
+    dateFilter.mode   = "specific";
+    dateFilter.date   = today;
     dateFilter.cursor = new Date(today);
     closePanel();
     updateTriggerLabel();
@@ -1060,13 +1078,22 @@
   function passesDate(letter) {
     if (dateFilter.mode === "all") return true;
     if (dateFilter.mode === "specific" && dateFilter.date) {
-      const ts = new Date(letter.created_at || letter.updated_at || 0).getTime();
-      if (!ts) return false;
+      const dateStr = letter.created_at || letter.updated_at;
+      if (!dateStr) return false;
+      const ts = new Date(dateStr).getTime();
+      if (isNaN(ts)) return false;
       const start = new Date(dateFilter.date); start.setHours(0,0,0,0);
-      const end = new Date(dateFilter.date); end.setHours(23,59,59,999);
+      const end   = new Date(dateFilter.date); end.setHours(23,59,59,999);
       return ts >= start.getTime() && ts <= end.getTime();
     }
     return true;
+  }
+
+  function formatDate(iso) {
+    if (!iso) return "-";
+    const d = new Date(iso);
+    if (isNaN(d)) return "-";
+    return d.toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" });
   }
 
   function letterMatchesQuery(letter, q) {
@@ -1121,10 +1148,10 @@
       .filter(Boolean);
 
     result.sort((a, b) => {
-      if (sort === "terbanyak") return b.count - a.count;
-      if (sort === "tersedikit") return a.count - b.count;
-      if (sort === "az") return a.template.nama.localeCompare(b.template.nama, "id");
-      if (sort === "za") return b.template.nama.localeCompare(a.template.nama, "id");
+      if (sort === "terbanyak")   return b.count - a.count;
+      if (sort === "tersedikit")  return a.count - b.count;
+      if (sort === "az")          return a.template.nama.localeCompare(b.template.nama, "id");
+      if (sort === "za")          return b.template.nama.localeCompare(a.template.nama, "id");
       if (sort === "terbaru") {
         const aTs = Math.max(0, ...a.letters.map((l) => new Date(l.created_at || 0).getTime()));
         const bTs = Math.max(0, ...b.letters.map((l) => new Date(l.created_at || 0).getTime()));
@@ -1144,6 +1171,12 @@
   /* =========================================================
      RENDER GRID
      ========================================================= */
+  function getInitials(name) {
+    return String(name || "?")
+      .split(/\s+/).filter(Boolean).slice(0, 2)
+      .map((w) => w[0]).join("").toUpperCase();
+  }
+
   function renderCategories() {
     const list = buildFilteredCategories();
     const totalLetters = list.reduce((sum, c) => sum + c.count, 0);
@@ -1174,12 +1207,6 @@
     });
   }
 
-  function getInitials(name) {
-    return String(name || "?")
-      .split(/\s+/).filter(Boolean).slice(0, 2)
-      .map((w) => w[0]).join("").toUpperCase();
-  }
-
   /* =========================================================
      MODAL
      ========================================================= */
@@ -1201,8 +1228,8 @@
   function closeModal() {
     modal.hidden = true;
     currentTemplateKey = null;
-    modalSearchQuery = "";
-    modalSearch.value = "";
+    modalSearchQuery   = "";
+    modalSearch.value  = "";
     modalSearchClear.classList.remove("is-visible");
     modalSearchHint.hidden = true;
   }
@@ -1221,15 +1248,19 @@
   function highlight(text, q) {
     const s = String(text || "");
     if (!q) return escapeHtml(s);
-    const esc = escapeHtml(s);
+    const esc  = escapeHtml(s);
     const qEsc = q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const re = new RegExp(`(${qEsc})`, "gi");
-    return esc.replace(re, "<mark>$1</mark>");
+    try {
+      const re = new RegExp(`(${qEsc})`, "gi");
+      return esc.replace(re, "<mark>$1</mark>");
+    } catch (err) {
+      return esc; // fallback kalau regex gagal
+    }
   }
 
   function renderModalBody() {
     const allItems = getCurrentCategoryLetters();
-    const items = filterModalItems(allItems);
+    const items    = filterModalItems(allItems);
 
     if (modalSearchQuery) {
       modalSubtitle.textContent = `${items.length} dari ${allItems.length} surat`;
@@ -1278,11 +1309,27 @@
     bindModalActions();
   }
 
-  function formatDate(iso) {
-    if (!iso) return "-";
-    const d = new Date(iso);
-    if (isNaN(d)) return "-";
-    return d.toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" });
+  function findLetter(id) {
+    return letters.find((l) => l.id === id);
+  }
+
+  function putLetterInSession(letter) {
+    if (!letter) return false;
+    if (typeof patchSession !== "function") return false;
+    patchSession({
+      letter_id: letter.id,
+      pembuat: { nama: letter.created_by || "", jabatan: letter.created_by_detail?.jabatan || "" },
+      template_key: letter.template_key,
+      signer_mode: letter.signer_mode,
+      signer_id: letter.signer_id,
+      signer_nama: letter.signer_nama,
+      signer_jabatan: letter.signer_jabatan,
+      signer_nip: letter.signer_nip,
+      nomor_surat: letter.nomor_surat,
+      data: letter.data || {},
+      attachment: letter.attachment || null,
+    });
+    return true;
   }
 
   function bindModalActions() {
@@ -1301,35 +1348,13 @@
         const letter = findLetter(btn.dataset.letterDelete);
         if (!letter) return;
         if (!window.confirm(`Hapus surat ${letter.nomor_surat || letter.id}?`)) return;
-        deleteLetter(letter.id);
+        if (typeof deleteLetter === "function") deleteLetter(letter.id);
         const idx = letters.findIndex((l) => l.id === letter.id);
         if (idx >= 0) letters.splice(idx, 1);
         renderModalBody();
         renderCategories();
       });
     });
-  }
-
-  function findLetter(id) {
-    return letters.find((l) => l.id === id);
-  }
-
-  function putLetterInSession(letter) {
-    if (!letter) return false;
-    patchSession({
-      letter_id: letter.id,
-      pembuat: { nama: letter.created_by || "", jabatan: letter.created_by_detail?.jabatan || "" },
-      template_key: letter.template_key,
-      signer_mode: letter.signer_mode,
-      signer_id: letter.signer_id,
-      signer_nama: letter.signer_nama,
-      signer_jabatan: letter.signer_jabatan,
-      signer_nip: letter.signer_nip,
-      nomor_surat: letter.nomor_surat,
-      data: letter.data || {},
-      attachment: letter.attachment || null,
-    });
-    return true;
   }
 
   /* =========================================================
@@ -1340,11 +1365,11 @@
   sortSelect.addEventListener("change", renderCategories);
 
   resetBtn.addEventListener("click", () => {
-    searchInput.value = "";
-    jenisSelect.value = "";
-    sortSelect.value = "terbanyak";
-    dateFilter.mode = "all";
-    dateFilter.date = null;
+    searchInput.value  = "";
+    jenisSelect.value  = "";
+    sortSelect.value   = "terbanyak";
+    dateFilter.mode    = "all";
+    dateFilter.date    = null;
     updateTriggerLabel();
     markActiveFilters();
     renderCategories();
@@ -1359,7 +1384,7 @@
   });
   modalSearchClear.addEventListener("click", () => {
     modalSearch.value = "";
-    modalSearchQuery = "";
+    modalSearchQuery  = "";
     modalSearchClear.classList.remove("is-visible");
     modalSearch.focus();
     renderModalBody();
@@ -1368,6 +1393,7 @@
   modal.querySelectorAll("[data-close-modal]").forEach((el) => {
     el.addEventListener("click", closeModal);
   });
+
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && !modal.hidden) closeModal();
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k" && !modal.hidden) {
@@ -1376,7 +1402,9 @@
     }
   });
 
-  // Init
+  /* =========================================================
+     INIT
+     ========================================================= */
   updateTriggerLabel();
   renderCategories();
 </script>

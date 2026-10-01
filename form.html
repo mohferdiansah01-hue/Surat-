@@ -16,6 +16,24 @@
 </style>
 </head>
 <body>
+
+<!-- ============ TOPBAR UNIVERSAL ============ -->
+<header class="topbar">
+  <div class="topbar-brand">
+    <span class="topbar-logo" aria-hidden="true"></span>
+    <span>Sistem Surat Dinas</span>
+  </div>
+  <nav class="top-nav" aria-label="Navigasi utama">
+    <a href="index.html">Dashboard</a>
+    <a href="arsip.html">Arsip</a>
+    <a href="template.html">Template</a>
+    <a href="buat-surat.html" class="active">Buat Surat</a>
+  </nav>
+  <div class="top-actions">
+    <a href="buat-surat.html" class="topbar-btn-primary">+ Surat baru</a>
+  </div>
+</header>
+
 <div class="split">
   <aside class="split-left">
     <a href="index.html" class="brand"><span class="brand-mark">S</span> DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL KABUPATEN TUBAN</a>
@@ -30,12 +48,6 @@
   </aside>
 
   <main class="split-right">
-    <nav class="category-nav" aria-label="Kategori Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban">
-      <span class="category-link active" aria-current="page">Buat Surat</span>
-      <a class="category-link" href="template.html">Kelola Surat</a>
-      <a class="category-link" href="arsip.html">Histori</a>
-    </nav>
-
     <div class="progress">
       <div class="progress-step active"><div class="progress-dot"></div><div class="progress-line"></div></div>
       <div class="progress-step active"><div class="progress-dot"></div><div class="progress-line"></div></div>
@@ -169,7 +181,6 @@
   document.getElementById("nomor_surat").value =
     session.nomor_surat || sampleData.nomor_surat || "";
 
-  // Hal: coba ambil dari session.data.perihal
   const perihalValue = existingData.perihal || sampleData.perihal || "";
   const halOptions = [...halSelect.options].map((o) => o.value);
   if (perihalValue && halOptions.includes(perihalValue)) {
@@ -180,7 +191,6 @@
     halCustom.value = perihalValue;
   }
 
-  // Sifat
   const sifatValue = existingData.sifat_surat || sampleData.sifat_surat || "Biasa";
   const sifatSelect = document.getElementById("sifat");
   if ([...sifatSelect.options].some((o) => o.value === sifatValue)) {
@@ -193,18 +203,15 @@
     sifatSelect.appendChild(opt);
   }
 
-  // Lampiran
   document.getElementById("lampiran").value =
     existingData.lampiran || sampleData.lampiran || "-";
 
-  // Field dinamis
   (template.fields || []).forEach((field) => {
     const input = document.getElementById(field.name);
     if (!input) return;
     input.value = existingData[field.name] || sampleData[field.name] || "";
   });
 
-  // Lampiran file
   const attachmentInput = document.getElementById("attachment");
   const attachmentHelp = document.getElementById("attachment-help");
   if (attachmentInput && session.attachment?.name && attachmentHelp) {
@@ -217,15 +224,12 @@
     const formData = new FormData(event.target);
     const values = Object.fromEntries(formData.entries());
 
-    // Ambil nilai hal final
     const halFinal = values.hal_select === "__custom__"
       ? (values.hal_custom || "").trim()
       : values.hal_select || "";
 
-    // Susun data untuk template
     const data = { ...values };
 
-    // Buang field teknis
     delete data.hal_select;
     delete data.hal_custom;
     delete data.nomor_surat;
@@ -233,13 +237,11 @@
     delete data.lampiran;
     delete data.attachment;
 
-    // Masukkan nilai yang sudah diformat
     data.perihal = halFinal;
     data.sifat_surat = values.sifat;
     data.lampiran = values.lampiran;
     data.nomor_surat = values.nomor_surat;
 
-    // Attachment file
     const file = attachmentInput?.files?.[0];
     const fileExtension = file?.name.toLowerCase().split(".").pop();
     if (file && !["pdf", "doc", "docx"].includes(fileExtension)) {

@@ -853,3 +853,149 @@ button, input { font: inherit; }
   .paper { width: 100%; min-height: 0; padding: 0; box-shadow: none; }
   .official-paper { width: 215mm; min-height: 330mm; padding: 20mm 20mm 25mm 30mm; }
 }
+
+/* =========================================================
+   TOPBAR UNIVERSAL — dipakai di semua halaman
+   ========================================================= */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 12px 26px;
+  background: rgba(255,255,255,.86);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--line);
+}
+.topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--green-dark);
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.topbar-logo {
+  width: 36px;
+  height: 36px;
+  flex: none;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: #fff url('Lambang_Kabupaten_Tuban.webp') center/contain no-repeat;
+}
+.top-nav {
+  display: flex;
+  gap: 2px;
+  margin: 0 auto;
+}
+.top-nav a {
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+  text-decoration: none;
+  transition: .2s;
+}
+.top-nav a:hover { color: var(--green-dark); background: var(--mist); }
+.top-nav a.active {
+  background: var(--green);
+  color: #fff;
+  box-shadow: 0 10px 20px -12px rgba(23,123,92,.9);
+}
+.top-actions { display: flex; align-items: center; gap: 10px; }
+
+.topbar-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  border: 0;
+  background: var(--green);
+  color: #fff;
+  text-decoration: none;
+  box-shadow: 0 14px 28px -14px rgba(23,123,92,.8);
+  transition: .25s cubic-bezier(.4,0,.2,1);
+}
+.topbar-btn-primary:hover { background: var(--green-dark); transform: translateY(-1px); }
+
+/* Profile dropdown (untuk topbar) */
+.topbar .profile { position: relative; }
+.topbar .profile-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 14px 4px 4px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: .2s;
+}
+.topbar .profile-button:hover { border-color: var(--green); }
+.topbar .profile-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--green-dark);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+}
+.topbar .profile-popover {
+  position: absolute;
+  z-index: 70;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 220px;
+  padding: 15px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: var(--shadow);
+}
+.topbar .profile-popover[hidden] { display: none; }
+.topbar .profile-name { margin: 0 0 3px; font-size: 13px; font-weight: 800; }
+.topbar .profile-role { margin: 0 0 13px; color: var(--muted); font-size: 11px; line-height: 1.5; }
+.topbar .profile-guide, .topbar .profile-logout {
+  width: 100%;
+  padding: 9px 11px;
+  border-radius: 9px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: left;
+  transition: .2s;
+}
+.topbar .profile-guide { margin: 0 0 7px; border: 0; background: var(--mist); color: var(--green-dark); }
+.topbar .profile-guide:hover { background: var(--lime); }
+.topbar .profile-logout { border: 1px solid var(--line); background: transparent; color: var(--ink); }
+.topbar .profile-logout:hover { background: var(--mist); }
+
+/* Responsive topbar */
+@media (max-width: 1080px) {
+  .top-nav { display: none; }
+}
+@media (max-width: 640px) {
+  .topbar { padding: 10px 16px; gap: 10px; }
+  .topbar-brand span:last-child { display: none; }
+}

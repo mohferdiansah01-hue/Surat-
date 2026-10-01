@@ -6,16 +6,12 @@
 <title>Preview Surat · Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban</title>
 <link rel="stylesheet" href="style.css">
 <style>
-  /* =========================================================
-     PREVIEW PAGE — Sticky topbar + kertas
-     ========================================================= */
   .preview-page {
     min-height: 100vh;
     background: #dfe8e2;
     padding: 0;
   }
 
-  /* ---------- STICKY TOP BAR ---------- */
   .preview-topbar {
     position: sticky;
     top: 0;
@@ -35,7 +31,6 @@
     flex-wrap: wrap;
   }
 
-  /* Sisi kiri: tombol kembali + breadcrumb */
   .preview-topbar-left {
     display: flex;
     align-items: center;
@@ -57,14 +52,12 @@
     font-weight: 700;
   }
 
-  /* Sisi kanan: aksi */
   .preview-topbar-actions {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
   }
 
-  /* ---------- TOMBOL ---------- */
   .btn-nav,
   .btn-outline,
   .btn-primary-action {
@@ -128,14 +121,12 @@
     stroke-linejoin: round;
   }
 
-  /* ---------- SHELL ---------- */
   .preview-shell {
     max-width: 900px;
     margin: 0 auto;
     padding: 28px 20px 60px;
   }
 
-  /* Judul halaman */
   .preview-hero {
     text-align: center;
     margin-bottom: 24px;
@@ -155,7 +146,6 @@
     color: var(--ink);
   }
 
-  /* ---------- KERTAS ---------- */
   .preview-shell .paper {
     margin: 0 auto;
     width: 794px;
@@ -171,7 +161,6 @@
   }
   .paper-kop[hidden] { display: none; }
 
-  /* ---------- CATATAN ---------- */
   .archive-note,
   .attachment-note {
     margin: 16px 0 0;
@@ -181,11 +170,6 @@
   }
   .attachment-note a { color: var(--green); font-weight: 700; }
 
-  /* =========================================================
-     RESPONSIVE
-     ========================================================= */
-
-  /* Tablet — breadcrumb disembunyikan, tombol tetap 1 baris */
   @media (max-width: 850px) {
     .preview-topbar-inner { padding: 10px 16px; }
     .preview-breadcrumb { display: none; }
@@ -194,7 +178,6 @@
     .preview-shell .paper { width: 100%; min-height: auto; padding: 40px 24px; }
   }
 
-  /* Tablet kecil — tombol dipecah 2 baris untuk kenyamanan */
   @media (max-width: 640px) {
     .preview-topbar-inner {
       padding: 10px 14px;
@@ -218,7 +201,6 @@
     }
   }
 
-  /* HP — semua full width */
   @media (max-width: 420px) {
     .preview-topbar-actions {
       grid-template-columns: 1fr;
@@ -242,13 +224,9 @@
 </head>
 <body class="preview-page">
 
-  <!-- ============================================================
-       STICKY TOP BAR — selalu terlihat saat scroll
-       ============================================================ -->
   <header class="preview-topbar">
     <div class="preview-topbar-inner">
 
-      <!-- Kiri: tombol kembali + breadcrumb -->
       <div class="preview-topbar-left">
         <a href="form.html" class="btn-nav">
           <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
@@ -261,7 +239,6 @@
         </nav>
       </div>
 
-      <!-- Kanan: aksi -->
       <div class="preview-topbar-actions">
         <button class="btn-nav" id="dashboard-button" type="button">
           <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -280,9 +257,6 @@
     </div>
   </header>
 
-  <!-- ============================================================
-       KONTEN
-       ============================================================ -->
   <div class="preview-shell">
 
     <div class="preview-hero">
@@ -318,9 +292,6 @@
     throw new Error("Template not found");
   }
 
-  // =========================================================
-  // DATA PENANDATANGAN
-  // =========================================================
   const signerFromStore = session.signer_id
     ? getDirut().find((s) => s.id === session.signer_id)
     : null;
@@ -332,9 +303,6 @@
     nip:     signerFromStore?.nip     || session.signer_nip     || "",
   };
 
-  // =========================================================
-  // DATA UNTUK RENDER TEMPLATE
-  // =========================================================
   const templateData = {
     ...session.data,
     nomor_surat: session.nomor_surat,
@@ -350,18 +318,12 @@
 
   document.getElementById("letter-content").innerHTML = renderedHtml;
 
-  // =========================================================
-  // KOP FOTO UTUH
-  // =========================================================
   if (template.kop_foto_url) {
     const kop = document.getElementById("paper-kop");
     kop.src = template.kop_foto_url;
     kop.hidden = false;
   }
 
-  // =========================================================
-  // QR TTE
-  // =========================================================
   if (template.signature_qr_url) {
     document.querySelectorAll(".official-qr, .ttd-qr").forEach((qr) => {
       const src = qr.getAttribute("src") || "";
@@ -369,16 +331,10 @@
     });
   }
 
-  // =========================================================
-  // Layout official
-  // =========================================================
   if (template.key === "dummy_keabsahan_akta_blitar" || template.layout === "official") {
     document.getElementById("paper").classList.add("official-paper");
   }
 
-  // =========================================================
-  // SIMPAN ARSIP
-  // =========================================================
   const letter = upsertLetter({
     id: session.letter_id,
     template_key: session.template_key,

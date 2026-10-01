@@ -81,6 +81,24 @@
 </style>
 </head>
 <body>
+
+<!-- ============ TOPBAR UNIVERSAL ============ -->
+<header class="topbar">
+  <div class="topbar-brand">
+    <span class="topbar-logo" aria-hidden="true"></span>
+    <span>Sistem Surat Dinas</span>
+  </div>
+  <nav class="top-nav" aria-label="Navigasi utama">
+    <a href="index.html">Dashboard</a>
+    <a href="arsip.html">Arsip</a>
+    <a href="template.html">Template</a>
+    <a href="buat-surat.html" class="active">Buat Surat</a>
+  </nav>
+  <div class="top-actions">
+    <a href="buat-surat.html" class="topbar-btn-primary">+ Surat baru</a>
+  </div>
+</header>
+
 <div class="split">
   <aside class="split-left">
     <a href="index.html" class="brand">
@@ -99,12 +117,6 @@
   </aside>
 
   <main class="split-right">
-    <nav class="category-nav" aria-label="Kategori Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban">
-      <span class="category-link active" aria-current="page">Buat Surat</span>
-      <a class="category-link" href="template.html">Kelola Surat</a>
-      <a class="category-link" href="arsip.html">Histori</a>
-    </nav>
-
     <div class="progress">
       <div class="progress-step active"><div class="progress-dot"></div><div class="progress-line"></div></div>
       <div class="progress-step active"><div class="progress-dot"></div><div class="progress-line"></div></div>
@@ -199,12 +211,10 @@
   const confirmMessage = document.getElementById("confirm-message");
   const confirmYes = document.getElementById("confirm-yes");
 
-  // editingId: null = mode tambah, string = mode edit
   let editingId = null;
   let selectedId = null;
   let pendingDeleteId = null;
 
-  // ---------- RENDER DAFTAR ----------
   function renderSignerList() {
     const list = getDirut();
     if (!list.length) {
@@ -256,7 +266,6 @@
     });
   }
 
-  // ---------- MODAL EDITOR ----------
   function openEditor(id = null) {
     editingId = id || null;
     const isEdit = Boolean(editingId);
@@ -302,7 +311,6 @@
         nama, jabatan, pangkat, nip,
       });
 
-      // Set yang baru diedit/ditambah jadi terpilih
       if (isEdit) {
         selectedId = editingId;
       } else {
@@ -318,7 +326,6 @@
     }
   }
 
-  // ---------- MODAL KONFIRMASI ----------
   function openConfirm(id) {
     const target = getDirut().find((s) => s.id === id);
     if (!target) return;
@@ -332,11 +339,9 @@
     confirmModal.hidden = true;
   }
 
-  // ---------- EVENT ----------
   document.getElementById("btn-add-signer").addEventListener("click", () => openEditor(null));
   document.getElementById("btn-save-editor").addEventListener("click", saveEditor);
 
-  // Tutup modal lewat backdrop / tombol X / tombol Batal
   editorModal.querySelectorAll("[data-close-editor]").forEach((el) => {
     el.addEventListener("click", closeEditor);
   });
@@ -344,7 +349,6 @@
     el.addEventListener("click", closeConfirm);
   });
 
-  // ESC menutup modal yang aktif
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;
     if (!editorModal.hidden) closeEditor();
@@ -365,7 +369,6 @@
     }
   });
 
-  // ---------- SUBMIT ----------
   document.getElementById("signer-form").addEventListener("submit", (event) => {
     event.preventDefault();
 

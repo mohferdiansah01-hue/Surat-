@@ -5,8 +5,111 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Buat Surat · Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban</title>
 <link rel="stylesheet" href="style.css">
+<style>
+  /* =========================================================
+     TOPBAR UNIVERSAL — dipakai di semua halaman
+     ========================================================= */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 12px 26px;
+    background: rgba(255,255,255,.86);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--line);
+  }
+  .topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--green-dark);
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .topbar-logo {
+    width: 36px;
+    height: 36px;
+    flex: none;
+    padding: 4px;
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    background: #fff url('Lambang_Kabupaten_Tuban.webp') center/contain no-repeat;
+  }
+  .top-nav {
+    display: flex;
+    gap: 2px;
+    margin: 0 auto;
+  }
+  .top-nav a {
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    text-decoration: none;
+    transition: .2s;
+  }
+  .top-nav a:hover { color: var(--green-dark); background: var(--mist); }
+  .top-nav a.active {
+    background: var(--green);
+    color: #fff;
+    box-shadow: 0 10px 20px -12px rgba(23,123,92,.9);
+  }
+  .top-actions { display: flex; align-items: center; gap: 10px; }
+  .topbar-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 18px;
+    border-radius: 999px;
+    font-size: 12.5px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    border: 0;
+    background: var(--green);
+    color: #fff;
+    text-decoration: none;
+    box-shadow: 0 14px 28px -14px rgba(23,123,92,.8);
+    transition: .25s cubic-bezier(.4,0,.2,1);
+  }
+  .topbar-btn-primary:hover { background: var(--green-dark); transform: translateY(-1px); }
+
+  @media (max-width: 1080px) {
+    .top-nav { display: none; }
+  }
+  @media (max-width: 640px) {
+    .topbar { padding: 10px 16px; gap: 10px; }
+    .topbar-brand span:last-child { display: none; }
+  }
+</style>
 </head>
 <body>
+
+<!-- ============ TOPBAR UNIVERSAL ============ -->
+<header class="topbar">
+  <div class="topbar-brand">
+    <span class="topbar-logo" aria-hidden="true"></span>
+    <span>Sistem Surat Dinas</span>
+  </div>
+  <nav class="top-nav" aria-label="Navigasi utama">
+    <a href="index.html">Dashboard</a>
+    <a href="arsip.html">Arsip</a>
+    <a href="template.html">Template</a>
+    <a href="buat-surat.html" class="active">Buat Surat</a>
+  </nav>
+  <div class="top-actions">
+    <a href="buat-surat.html" class="topbar-btn-primary">+ Surat baru</a>
+  </div>
+</header>
+
 <div class="split">
   <aside class="split-left">
     <a href="index.html" class="brand">
@@ -33,12 +136,6 @@
   </aside>
 
   <main class="split-right">
-    <nav class="category-nav" aria-label="Kategori Dinas Kependudukan dan Pencatatan Sipil Kabupaten Tuban">
-      <span class="category-link active" aria-current="page">Buat Surat</span>
-      <a class="category-link" href="template.html">Kelola Surat</a>
-      <a class="category-link" href="arsip.html">Histori</a>
-    </nav>
-
     <div class="progress">
       <div class="progress-step active"><div class="progress-dot"></div><div class="progress-line"></div></div>
       <div class="progress-step"><div class="progress-dot"></div><div class="progress-line"></div></div>
